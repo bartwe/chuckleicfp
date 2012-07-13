@@ -73,6 +73,13 @@ public class SolidWorldState extends WorldState {
         for (int i = 0; i < m + 2; i++) {
             result.data[i] = Arrays.copyOf(data[i], data[i].length);
         }
+
+        result.robotX = robotX;
+        result.robotY = robotY;
+        result.exitX = exitX;
+        result.exitY = exitY;
+        result.lambdaCollected = lambdaCollected;
+        result.lambdaRemaining = lambdaRemaining;
         return result;
     }
 }

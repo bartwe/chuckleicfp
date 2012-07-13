@@ -1,10 +1,16 @@
 import java.awt.*;
 
 public class StepLogic {
+    WorldState scratch;
+
     public StepResult applyStep(WorldState current, WorldState next, RobotAction action) {
-        next.copyFrom(current);
-        StepResult result = applyRobotAction(current, next, action);
-        applyWorldStep(current, next);
+        if (scratch == null)
+            scratch = current.copy();
+        else
+            scratch.copyFrom(current);
+        StepResult result = applyRobotAction(current, scratch, action);
+        next.copyFrom(scratch);
+        applyWorldStep(scratch, next);
         if ((next.robotX == next.exitX) && (next.robotY == next.exitY))
             return StepResult.Win;
         if ((next.get(next.robotX, next.robotY + 1) == Cell.Rock) && (current.get(next.robotX, next.robotY + 1) != Cell.Rock))
