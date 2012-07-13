@@ -40,7 +40,7 @@ Map* readMap()
 	for (int i=0;i<lines.size(); i++) 
 	{
 		char* mapline = &map.at(0, i);
-		memcpy( mapline, lines[i].data(), width );
+		memcpy( mapline, lines[lines.size()-i-1].data(), width );
 		void* pos = memchr(mapline, 'R', width);
 		if (pos) map.setRover((char*)pos-mapline, i);
 	}
