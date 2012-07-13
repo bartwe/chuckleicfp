@@ -49,6 +49,8 @@ public class Cell {
                 return Cell.Lambda;
             case 76: // L
                 return Cell.ClosedLambdaLift;
+            case 79: // O
+                return Cell.ClosedLambdaLift; // open lambda, but i don't distinguish
             case 46: // .
                 return Cell.Earth;
             case 32: // <space>
@@ -59,5 +61,32 @@ public class Cell {
                 assert false;
                 return Cell.Invalid;
         }
+    }
+
+    public static boolean isEmptyEarthLambdaLift(byte cell) {
+        switch (cell) {
+            case Cell.Empty:
+                return true;
+            case Cell.Earth:
+                return true;
+            case Cell.Lambda:
+                return true;
+            case Cell.ClosedLambdaLift:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public static boolean isRock(byte cell) {
+        return cell == Cell.Rock;
+    }
+
+    public static boolean isEmpty(byte cell) {
+        return cell == Cell.Empty;
+    }
+
+    public static boolean isLambda(byte cell) {
+        return cell == Cell.Lambda;
     }
 }

@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public abstract class WorldState {
+    protected int robotX, robotY;
+    protected int exitX, exitY;
+    protected int lambdaCollected;
+    protected int lambdaRemaining;
+
     public abstract byte get(int x, int y);
 
     public abstract void set(int x, int y, byte cellState);
@@ -16,8 +21,8 @@ public abstract class WorldState {
         int n = getN();
         int m = getM();
         int idx = 0;
-        for (int y = 0; y < m + 2; y++) {
-            for (int x = 0; x < n + 2; x++) {
+        for (int y = m; y >= 1; y--) {
+            for (int x = 1; x < n + 1; x++) {
                 byte cell = get(x, y);
                 raw[idx] = Cell.getColor(cell);
                 idx++;
@@ -91,5 +96,24 @@ public abstract class WorldState {
         result.expensiveScan();
         return result;
     }
+
+    public void copyFrom(WorldState current) {
+        int n = getN();
+        int m = getM();
+        for (int y = 0; y < m + 2; y++) {
+            for (int x = 0; x < n + 2; x++) {
+                set(x, y, current.get(x, y));
+            }
+        }
+
+        robotX = current.robotX;
+        robotY = current.robotY;
+        exitX = current.exitX;
+        exitY = current.exitY;
+        lambdaCollected = current.lambdaCollected;
+        lambdaRemaining = current.lambdaRemaining;
+    }
+
+    public abstract WorldState copy();
 }
 

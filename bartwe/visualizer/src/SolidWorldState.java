@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 public class SolidWorldState extends WorldState {
     byte[][] data;
     int n, m;
@@ -40,6 +42,37 @@ public class SolidWorldState extends WorldState {
     }
 
     public void expensiveScan() {
-        // scan for robot, exit etc if that is needed
+        lambdaCollected = 0;
+        lambdaRemaining = 0;
+        int n = getN();
+        int m = getM();
+        for (int y = 0; y < m + 2; y++) {
+            for (int x = 0; x < n + 2; x++) {
+                byte cell = get(x, y);
+                switch (cell) {
+                    case Cell.RobotLocation:
+                        robotX = x;
+                        robotY = y;
+                        break;
+                    case Cell.ClosedLambdaLift:
+                        exitX = x;
+                        exitY = y;
+                        break;
+                    case Cell.Lambda:
+                        lambdaRemaining++;
+                        break;
+                    default:
+                }
+            }
+        }
+    }
+
+    public WorldState copy() {
+        SolidWorldState result = new SolidWorldState(n, m);
+        result.data = new byte[m + 2][];
+        for (int i = 0; i < m + 2; i++) {
+            result.data[i] = Arrays.copyOf(data[i], data[i].length);
+        }
+        return result;
     }
 }
