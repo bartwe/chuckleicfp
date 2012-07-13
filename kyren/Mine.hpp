@@ -59,7 +59,7 @@ public:
   bool popMove();
 
   int moveCount() const;
-
+  std::vector<RobotCommand> const& commands() const;
 
   void print();
 
@@ -76,7 +76,7 @@ private:
     MineContent c;
   };
 
-  struct MoveHistory {
+  struct MineHistory {
     // The updates it takes to go back to the previous state.
     std::vector<MineUpdate> updates;
     // Old robot position
@@ -87,7 +87,8 @@ private:
   };
 
   std::vector<MineContent> content;
-  std::vector<MoveHistory> historyList;
+  std::vector<MineHistory> historyList;
+  std::vector<RobotCommand> commandHistory;
 
   int width;
   int height;

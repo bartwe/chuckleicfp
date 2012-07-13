@@ -234,8 +234,10 @@ bool Mine::pushMove(RobotCommand command) {
   if (command != RobotCommand::Wait && newRobotX == robotX && newRobotY == robotY)
     return false;
 
+  commandHistory.push_back(command);
+
   // Record history for this state before updating.
-  MoveHistory historyEntry;
+  MineHistory historyEntry;
   historyEntry.collectedLambdas = collectedLambdas;
   historyEntry.robotX = robotX;
   historyEntry.robotY = robotY;
@@ -299,6 +301,10 @@ int Mine::moveCount() const {
   return totalMoves;
 }
 
+std::vector<RobotCommand> const& Mine::commands() const {
+  return commandHistory;
+}
+
 bool Mine::popMove() {
   if (historyList.empty())
     return false;
@@ -311,6 +317,7 @@ bool Mine::popMove() {
     set(update.x, update.y, update.c);
 
   historyList.pop_back();
+  commandHistory.pop_back();
   return true;
 }
 
