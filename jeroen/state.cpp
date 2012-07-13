@@ -60,8 +60,8 @@ void Map::domove(char move)
 		return;
 	}
 
-	setRover(nx, ny);
 	at(rx, ry) = EMPTY;
+	setRover(nx, ny);
 }
 
 static char& rightof(char& pos)

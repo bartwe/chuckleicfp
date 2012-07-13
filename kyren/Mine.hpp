@@ -5,7 +5,7 @@
 #include <vector>
 #include <algorithm>
 
-enum RobotCommand {
+enum class RobotCommand : uint8_t {
   Left,
   Right,
   Up,
@@ -14,7 +14,7 @@ enum RobotCommand {
   Abort
 };
 
-enum MineContent {
+enum class MineContent : uint8_t {
   Robot,
   Wall,
   Rock,
@@ -25,7 +25,7 @@ enum MineContent {
   Empty
 };
 
-enum State {
+enum class State : uint8_t {
   InProgress,
   Win,
   Lose,
@@ -37,6 +37,8 @@ public:
   static MineContent contentFromChar(char c);
   static char charFromContent(MineContent c);
   static std::string stateToString(State s);
+  static char commandChar(RobotCommand command);
+  static std::string commandString(RobotCommand command);
 
   void read(std::istream& is);
 
@@ -51,23 +53,41 @@ public:
 
   void evaluateAndPrint(std::vector<RobotCommand> commandList);
 
-  // If done, returns true.
-  bool move(RobotCommand command);
+  // Returns false if illegal move (and does nothing)
+  bool pushMove(RobotCommand command);
+  // Revert the most recent move action.  Returns false if no more moves to revert.
+  bool popMove();
+
+  int moveCount() const;
+
 
   void print();
+
+  // Returns 20 char (binary) SHA-1 hash of map state.
+  std::string hashcode() const;
 
 private:
   void set(int x, int y, MineContent c);
 
   void updateMine();
 
-  struct QueuedUpdate {
+  struct MineUpdate {
     int x, y;
     MineContent c;
   };
 
+  struct MoveHistory {
+    // The updates it takes to go back to the previous state.
+    std::vector<MineUpdate> updates;
+    // Old robot position
+    int robotX;
+    int robotY;
+    // Old collectedLambdas
+    int collectedLambdas;
+  };
+
   std::vector<MineContent> content;
-  std::vector<QueuedUpdate> updateQueue;
+  std::vector<MoveHistory> historyList;
 
   int width;
   int height;

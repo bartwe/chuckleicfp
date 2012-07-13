@@ -6,6 +6,7 @@
 #include <string.h>
 
 #include "state.h"
+#include "main.h"
 
 void bailout( const char* w )
 {
@@ -14,6 +15,15 @@ void bailout( const char* w )
 }
 
 int main(int argc, char** argv)
+{
+	Map* map = readMap();
+
+	delete map;
+
+	return 0;
+}
+
+Map* readMap()
 {
 	std::vector<std::string> lines;
 	std::string line;
@@ -35,5 +45,5 @@ int main(int argc, char** argv)
 		if (pos) map.setRover((char*)pos-mapline, i);
 	}
 
-	return 0;
+	return &map;
 }

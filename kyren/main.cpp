@@ -6,6 +6,26 @@ int main(int argc, char** argv) {
 
   // Run sample for contest1.map
 
-  mine.evaluateAndPrint({Down, Left, Left, Left, Down, Down, Right, Right, Right, Left, Up, Left, Left, Down, Left});
+  mine.evaluateAndPrint({
+      RobotCommand::Down,
+      RobotCommand::Left,
+      RobotCommand::Left,
+      RobotCommand::Left,
+      RobotCommand::Down,
+      RobotCommand::Down,
+      RobotCommand::Right,
+      RobotCommand::Right,
+      RobotCommand::Right,
+      RobotCommand::Left,
+      RobotCommand::Up,
+      RobotCommand::Left,
+      RobotCommand::Left,
+      RobotCommand::Down,
+      RobotCommand::Left});
+
+  std::cout << std::endl << "now rewinding!" << std::endl << std::endl;
+
+  while (mine.popMove())
+    mine.print();
   return 0;
 }

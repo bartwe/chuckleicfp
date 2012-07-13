@@ -1,0 +1,3 @@
+class Map;
+
+Map* readMap();
