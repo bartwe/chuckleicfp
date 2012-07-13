@@ -1,5 +1,5 @@
 #include <iostream>
-#include <deque>
+#include <vector>
 #include <string>
 
 enum class TileTypes {
@@ -14,8 +14,8 @@ enum class TileTypes {
 };
 
 int main() {
-  std::deque<std::string> mapStrings;
-  std::deque<std::deque<TileTypes>> map;
+  std::vector<std::string> mapStrings;
+  std::vector<std::vector<TileTypes>> map;
   std::string tmp;
 
   while (std::getline(std::cin, tmp)) {
@@ -24,7 +24,7 @@ int main() {
 
   for (auto i : mapStrings) {
     for (auto j : i) {
-      std::deque<TileTypes> row;
+      std::vector<TileTypes> row;
       switch (j) {
         case 'R':
           row.push_back(TileTypes::Robot);
