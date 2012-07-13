@@ -260,6 +260,15 @@ bool Mine::pushMove(RobotCommand command) {
 
   updateQueue.push_back({robotX, robotY, MineContent::Empty});
   updateQueue.push_back({newRobotX, newRobotY, MineContent::Robot});
+
+  // Apply all of the robot moves before computing the world update.
+  for (auto update : updateQueue) {
+    // Add the required update to go *backwards* onto the history entry.
+    historyEntry.updates.push_back({update.x, update.y, get(update.x, update.y)});
+    set(update.x, update.y, update.c);
+  }
+  updateQueue.clear();
+
   robotX = newRobotX;
   robotY = newRobotY;
 
@@ -288,7 +297,6 @@ bool Mine::pushMove(RobotCommand command) {
   if (allLambdasCollected)
     updateQueue.push_back({liftX, liftY, MineContent::OpenLift});
 
-  historyEntry.updates.clear();
   for (auto update : updateQueue) {
     // Add the required update to go *backwards* onto the history entry.
     historyEntry.updates.push_back({update.x, update.y, get(update.x, update.y)});

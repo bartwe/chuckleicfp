@@ -13,11 +13,15 @@ Searcher::Result Searcher::bruteForce(int maxLength) {
 Searcher::Result Searcher::bruteForceSearch(int maxLength, Mine& mine) {
   std::vector<Result> results;
 
+  // Skip if we have visited this mine state before with a better score
   auto hashcode = mine.hashcode();
-  if (visited.find(hashcode) != visited.end())
-    return {{}, 0};
+  auto vi = visited.find(hashcode);
+  if (vi != visited.end()) {
+    if (mine.score() < vi->second)
+      return {{}, 0};
+  }
 
-  visited.insert(hashcode);
+  visited[hashcode] = mine.score();
   results.push_back({mine.commands(), mine.score()});
 
   if (mine.moveCount() >= maxLength)

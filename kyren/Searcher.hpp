@@ -1,7 +1,7 @@
 #ifndef SEARCHER_HPP
 #define SEARCHER_HPP
 
-#include <unordered_set>
+#include <unordered_map>
 
 #include "Mine.hpp"
 
@@ -20,7 +20,7 @@ private:
   Result bruteForceSearch(int maxLength, Mine& mine);
 
   Mine mineInitialState;
-  std::unordered_set<std::string> visited;
+  std::unordered_map<std::string, int> visited;
 };
 
 #endif
