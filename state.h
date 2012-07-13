@@ -2,8 +2,8 @@
 
 class Map
 {
-	std::vector<char> data;
 public:
+	std::vector<char> data;
 	int n, m;
 
 	Map(int n_, int m_)
@@ -17,4 +17,6 @@ public:
 	{
 		return data[n*y + x];
 	}
+
+	void update();
 };
