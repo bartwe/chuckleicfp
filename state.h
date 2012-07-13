@@ -25,5 +25,5 @@ public:
 	}
 
 	void update();
-	bool validateMove(char move);
+	void domove(char move);
 };

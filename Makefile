@@ -1,4 +1,4 @@
 all: prog
 
-prog: main.o
+prog: main.o state.o
 	g++ -o prog $<

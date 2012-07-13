@@ -1,43 +1,55 @@
-#include <state.h>
+#include "state.h"
+
+#include <string.h>
 
 struct Move { int dx, dy; };
 
-class Moves
+struct Moves
 {
 	Move moves[128];
 
 	Moves()
 	{
-		memset(char2move, 0, sizeof char2move);
-		char2move['R'].x = 1;
-		char2move['L'].x = -1;
-		char2move['U'].y = 1;
-		char2move['D'].y = -1;
+		memset(moves, 0, sizeof moves);
+		moves['R'].dx = 1;
+		moves['L'].dx = -1;
+		moves['U'].dy = 1;
+		moves['D'].dy = -1;
 	}
 };
 static Moves moves;
 
-bool Map::validateMove(char move)
+void Map::domove(char move)
 {
 	int ok = 1;
 
-	int nx  = rx + moves[move].dx;
-	int nnx = nx + moves[move].dx;
-	int ny  = ry + moves[move].dy;
+	int nx  = rx + moves.moves[move].dx;
+	int nnx = nx + moves.moves[move].dx;
+	int ny  = ry + moves.moves[move].dy;
 
 	if ( nx < 0 || nx >= n ) ok = 0;
 	if ( ny < 0 || ny >= m ) ok = 0;
 
-	char atnext = map.at(nx, ny);
+	char atnext = at(nx, ny);
 	if (atnext == ' ' || atnext == '.' || atnext == '\\' || atnext == 'O')
-		return ok;
+	{
+		// ok
+	}
+	else if (atnext == '*' && ny == ry && nnx >= 0 && nnx < n && at(nnx, ny) == ' ')
+	{
+		at(nnx, ny) = '*';
+		at(nx, ny) = ' ';
+	}
+	else
+	{
+		// not ok, do nothing
+		return;
+	}
 
-	if (atnext == '*' && ny == y && nnx >= 0 && nnx < n && at(nnx, ny) == ' ')
-		return ok;
-
-	return 0;
+	setRover(nx, ny);
+	at(rx, ry) = ' ';
 }
 
-Map::update()
+void Map::update()
 {
 }
