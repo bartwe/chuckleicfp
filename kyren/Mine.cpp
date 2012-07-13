@@ -62,6 +62,44 @@ std::string Mine::stateToString(State s) {
   }
 }
 
+char Mine::commandChar(RobotCommand command) {
+  switch (command) {
+    case RobotCommand::Left:
+      return 'L';
+    case RobotCommand::Right:
+      return 'R';
+    case RobotCommand::Up:
+      return 'U';
+    case RobotCommand::Down:
+      return 'D';
+    case RobotCommand::Wait:
+      return 'W';
+    case RobotCommand::Abort:
+      return 'A';
+    default:
+      return ' ';
+  }
+}
+
+std::string Mine::commandString(RobotCommand command) {
+  switch (command) {
+    case RobotCommand::Left:
+      return "Left";
+    case RobotCommand::Right:
+      return "Right";
+    case RobotCommand::Up:
+      return "Up";
+    case RobotCommand::Down:
+      return "Down";
+    case RobotCommand::Wait:
+      return "Wait";
+    case RobotCommand::Abort:
+      return "Abort";
+    default:
+      return "";
+  }
+}
+
 void Mine::read(std::istream& is) {
   state = State::InProgress;
   collectedLambdas = 0;
@@ -130,26 +168,30 @@ int Mine::score() {
 }
 
 void Mine::evaluate(std::vector<RobotCommand> commandList) {
-  for (auto c : commandList)
-    if (move(c))
+  for (auto c : commandList) {
+    pushMove(c);
+    if (state != State::InProgress)
       return;
+  }
 }
 
 void Mine::evaluateAndPrint(std::vector<RobotCommand> commandList) {
   print();
   for (auto c : commandList) {
-    bool done = move(c);
+    if (!pushMove(c))
+      std::cout << "Illegal command: " << commandString(c) << std::endl;
+
     print();
-    if (done)
+    if (state != State::InProgress)
       break;
   }
   std::cout << "Final state: " << stateToString(state) << std::endl;
   std::cout << "Final score: " << score() << std::endl;
 }
 
-bool Mine::move(RobotCommand command) {
+bool Mine::pushMove(RobotCommand command) {
   if (state != State::InProgress)
-    return true;
+    return false;
 
   if (command == RobotCommand::Abort) {
     state = State::Aborted;
@@ -159,12 +201,14 @@ bool Mine::move(RobotCommand command) {
   int newRobotX = robotX;
   int newRobotY = robotY;
 
+  std::vector<MineUpdate> updateQueue;
+
   if (command == RobotCommand::Left) {
     auto c = get(robotX - 1, robotY);
     if (c == MineContent::Empty || c == MineContent::Earth || c == MineContent::Lambda || c == MineContent::OpenLift) {
       newRobotX = robotX - 1;
     } else if (c == MineContent::Rock && get(robotX - 2, robotY) == MineContent::Empty) {
-      set(robotX - 2, robotY, MineContent::Rock);
+      updateQueue.push_back({robotX - 2, robotY, MineContent::Rock});
       newRobotX = robotX - 1;
     }
   } else if (command == RobotCommand::Right) {
@@ -172,7 +216,7 @@ bool Mine::move(RobotCommand command) {
     if (c == MineContent::Empty || c == MineContent::Earth || c == MineContent::Lambda || c == MineContent::OpenLift) {
       newRobotX = robotX + 1;
     } else if (c == MineContent::Rock && get(robotX + 2, robotY) == MineContent::Empty) {
-      set(robotX + 2, robotY, MineContent::Rock);
+      updateQueue.push_back({robotX + 2, robotY, MineContent::Rock});
       newRobotX = robotX + 1;
     }
   } else if (command == RobotCommand::Up) {
@@ -185,46 +229,28 @@ bool Mine::move(RobotCommand command) {
       newRobotY = robotY - 1;
   }
 
+  // If we have been commanded to move, but haven't moved, command must not
+  // have been valid, do nothing.
+  if (command != RobotCommand::Wait && newRobotX == robotX && newRobotY == robotY)
+    return false;
+
+  // Record history for this state before updating.
+  MoveHistory historyEntry;
+  historyEntry.collectedLambdas = collectedLambdas;
+  historyEntry.robotX = robotX;
+  historyEntry.robotY = robotY;
+
   auto nr = get(newRobotX, newRobotY);
   if (nr == MineContent::Lambda)
     ++collectedLambdas;
   else if (nr == MineContent::OpenLift)
     state = State::Win;
 
-  set(robotX, robotY, MineContent::Empty);
-  set(newRobotX, newRobotY, MineContent::Robot);
+  updateQueue.push_back({robotX, robotY, MineContent::Empty});
+  updateQueue.push_back({newRobotX, newRobotY, MineContent::Robot});
   robotX = newRobotX;
   robotY = newRobotY;
 
-  updateMine();
-  ++totalMoves;
-
-  return state != State::InProgress;
-}
-
-void Mine::print() {
-  for (int y = height - 1; y >= 0; --y) {
-    for (int x = 0; x < height; ++x)
-      std::cout << charFromContent(get(x, y));
-    std::cout << std::endl;
-  }
-  std::cout << std::endl;
-}
-
-std::string Mine::hashcode() const {
-  unsigned char hash[20];
-  sha1::calc(&content[0], content.size(), hash);
-  return std::string((char const*)hash, 20);
-}
-
-void Mine::set(int x, int y, MineContent c) {
-  if (x < 0 || x >= width || y < 0 || y >= width)
-    return;
-  else
-    content[x * width + y] = c;
-}
-
-void Mine::updateMine() {
   bool allLambdasCollected = true;
 
   for (int x = 0; x < width; ++x) {
@@ -250,7 +276,11 @@ void Mine::updateMine() {
   if (allLambdasCollected)
     updateQueue.push_back({liftX, liftY, MineContent::OpenLift});
 
+  historyEntry.updates.clear();
   for (auto update : updateQueue) {
+    // Add the required update to go *backwards* onto the history entry.
+    historyEntry.updates.push_back({update.x, update.y, get(update.x, update.y)});
+
     if (update.c == MineContent::Rock && update.x == robotX && update.y == robotY + 1) {
       // Robot was hit on the head by rock
       state = State::Lose;
@@ -258,5 +288,53 @@ void Mine::updateMine() {
     set(update.x, update.y, update.c);
   }
 
-  updateQueue.clear();
+  historyList.push_back(historyEntry);
+
+  ++totalMoves;
+
+  return true;
+}
+
+int Mine::moveCount() const {
+  return totalMoves;
+}
+
+bool Mine::popMove() {
+  if (historyList.empty())
+    return false;
+
+  auto const& history = historyList[historyList.size() - 1];
+  robotX = history.robotX;
+  robotY = history.robotY;
+  collectedLambdas = history.collectedLambdas;
+  for (auto const& update : history.updates)
+    set(update.x, update.y, update.c);
+
+  historyList.pop_back();
+  return true;
+}
+
+void Mine::print() {
+  for (int y = height - 1; y >= 0; --y) {
+    for (int x = 0; x < height; ++x)
+      std::cout << charFromContent(get(x, y));
+    std::cout << std::endl;
+  }
+  std::cout << std::endl;
+}
+
+std::string Mine::hashcode() const {
+  unsigned char hash[20];
+  sha1::calc(&content[0], content.size(), hash);
+  return std::string((char const*)hash, 20);
+}
+
+void Mine::set(int x, int y, MineContent c) {
+  if (x < 0 || x >= width || y < 0 || y >= width)
+    return;
+  else
+    content[x * width + y] = c;
+}
+
+void Mine::updateMine() {
 }

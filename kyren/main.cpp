@@ -22,5 +22,10 @@ int main(int argc, char** argv) {
       RobotCommand::Left,
       RobotCommand::Down,
       RobotCommand::Left});
+
+  std::cout << std::endl << "now rewinding!" << std::endl << std::endl;
+
+  while (mine.popMove())
+    mine.print();
   return 0;
 }

@@ -37,6 +37,8 @@ public:
   static MineContent contentFromChar(char c);
   static char charFromContent(MineContent c);
   static std::string stateToString(State s);
+  static char commandChar(RobotCommand command);
+  static std::string commandString(RobotCommand command);
 
   void read(std::istream& is);
 
@@ -51,8 +53,13 @@ public:
 
   void evaluateAndPrint(std::vector<RobotCommand> commandList);
 
-  // If done, returns true.
-  bool move(RobotCommand command);
+  // Returns false if illegal move (and does nothing)
+  bool pushMove(RobotCommand command);
+  // Revert the most recent move action.  Returns false if no more moves to revert.
+  bool popMove();
+
+  int moveCount() const;
+
 
   void print();
 
@@ -64,13 +71,23 @@ private:
 
   void updateMine();
 
-  struct QueuedUpdate {
+  struct MineUpdate {
     int x, y;
     MineContent c;
   };
 
+  struct MoveHistory {
+    // The updates it takes to go back to the previous state.
+    std::vector<MineUpdate> updates;
+    // Old robot position
+    int robotX;
+    int robotY;
+    // Old collectedLambdas
+    int collectedLambdas;
+  };
+
   std::vector<MineContent> content;
-  std::vector<QueuedUpdate> updateQueue;
+  std::vector<MoveHistory> historyList;
 
   int width;
   int height;
