@@ -1,0 +1,2 @@
+A similar problem by topcoder:
+http://community.topcoder.com/longcontest/stats/?module=ViewOverview&rd=144
