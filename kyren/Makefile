@@ -1,5 +1,5 @@
 CXX=g++-4.7
-CFLAGS=-std=c++11 -O2
+CFLAGS=-std=c++11 -O3
 
 main: main.o mine.o sha1.o searcher.o
 	$(CXX) $(CFLAGS) main.o mine.o sha1.o searcher.o -o main

@@ -22,8 +22,12 @@ Searcher::Result Searcher::bruteForceSearch(int maxLength, Mine& mine) {
     mine.popMove();
   }
 
-  if (mine.moveCount() >= maxLength)
-    return results[0];
+  if (mine.moveCount() >= maxLength) {
+    if (!results.empty())
+      return results[0];
+    else
+      return {{}, 0};
+  }
 
   if (mine.pushMove(RobotCommand::Right)) {
     results.push_back(bruteForceSearch(maxLength, mine));
@@ -54,5 +58,8 @@ Searcher::Result Searcher::bruteForceSearch(int maxLength, Mine& mine) {
       return rb.score < ra.score;
     });
 
-  return *results.begin();
+  if (!results.empty())
+    return results[0];
+  else
+    return {{}, 0};
 }
