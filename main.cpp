@@ -33,7 +33,10 @@ int main(int argc, char** argv)
 	Map& map = *new Map(width, lines.size());
 	for (int i=0;i<lines.size(); i++) 
 	{
-		memcpy( &map.at(0, i), lines[i].data(), width );
+		char* mapline = &map.at(0, i);
+		memcpy( mapline, lines[i].data(), width );
+		void* pos = memchr(mapline, 'R', width);
+		if (pos) map.setRover((char*)pos-mapline, i);
 	}
 
 	return 0;
