@@ -22,6 +22,10 @@ public class DisplayWindow {
         frame.draw(raw);
     }
 
+    public void setKeyListener(KeyListener keyListener) {
+        frame.setKeyListener(keyListener);
+    }
+
     private class DisplayFrame extends JFrame implements KeyListener {
         static final long serialVersionUID = 1;
 
@@ -29,6 +33,8 @@ public class DisplayWindow {
         private int width;
         private int height;
         private int scaleShift;
+        KeyListener keyListener;
+
 
         public DisplayFrame(int width, int height, int scaleShift) {
 
@@ -65,7 +71,7 @@ public class DisplayWindow {
                 }
             } else {
                 for (int y = 0; y < height; y++) {
-                    int ly = (y >> scaleShift) * (width  >> scaleShift);
+                    int ly = (y >> scaleShift) * (width >> scaleShift);
                     for (int x = 0; x < width; x++) {
                         int c = raw[ly + (x >> scaleShift)];
                         shownImage.setRGB(x, y, c);
@@ -80,25 +86,25 @@ public class DisplayWindow {
         }
 
         public void keyPressed(KeyEvent e) {
-            if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-            }
-            if (e.getKeyCode() == KeyEvent.VK_UP) {
-            }
-            if (e.getKeyCode() == KeyEvent.VK_END) {
-            }
-            if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-            }
-            if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-            }
+            if (keyListener != null)
+                keyListener.keyPressed(e);
             drawShownImage();
         }
 
         public void keyTyped(KeyEvent e) {
-
+            if (keyListener != null)
+                keyListener.keyTyped(e);
+            drawShownImage();
         }
 
         public void keyReleased(KeyEvent e) {
+            if (keyListener != null)
+                keyListener.keyReleased(e);
+            drawShownImage();
+        }
 
+        public void setKeyListener(KeyListener keyListener) {
+            this.keyListener = keyListener;
         }
 
         class DisplayPanel extends JPanel {
