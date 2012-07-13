@@ -8,4 +8,4 @@ mine.o: Mine.cpp Mine.hpp
 	g++-4.7 -std=c++11 Mine.cpp -c -o mine.o
 
 clean:
-	rm -f mine.o main.o
+	rm -f mine.o main.o main
