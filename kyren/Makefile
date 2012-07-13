@@ -1,2 +1,2 @@
 main: main.cpp
-	clang++ -stdlib=libc++ -std=c++11 main.cpp -o main
+	g++-4.7 -std=c++11 main.cpp -o main
