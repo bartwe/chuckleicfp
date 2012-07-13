@@ -4,14 +4,10 @@ Searcher::Searcher(Mine const& mine) {
   mineInitialState = mine;
 }
 
-std::pair<std::string, int> Searcher::bruteForce(int maxLength) {
+Searcher::Result Searcher::bruteForce(int maxLength) {
   visited.clear();
   auto mine = mineInitialState;
-  auto result = bruteForceSearch(maxLength, mine);
-  std::string cmd;
-  for (auto c : result.commands)
-    cmd.push_back(Mine::commandChar(c));
-  return std::make_pair(cmd, result.score);
+  return bruteForceSearch(maxLength, mine);
 }
 
 Searcher::Result Searcher::bruteForceSearch(int maxLength, Mine& mine) {

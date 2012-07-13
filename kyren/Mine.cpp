@@ -81,7 +81,7 @@ char Mine::commandChar(RobotCommand command) {
   }
 }
 
-std::string Mine::commandString(RobotCommand command) {
+std::string Mine::commandName(RobotCommand command) {
   switch (command) {
     case RobotCommand::Left:
       return "Left";
@@ -98,6 +98,13 @@ std::string Mine::commandString(RobotCommand command) {
     default:
       return "";
   }
+}
+
+std::string Mine::commandString(std::vector<RobotCommand> commands) {
+  std::string str;
+  for (auto c : commands)
+    str.push_back(commandChar(c));
+  return str;
 }
 
 void Mine::read(std::istream& is) {
@@ -179,7 +186,7 @@ void Mine::evaluateAndPrint(std::vector<RobotCommand> commandList) {
   print();
   for (auto c : commandList) {
     if (!pushMove(c))
-      std::cout << "Illegal command: " << commandString(c) << std::endl;
+      std::cout << "Illegal command: " << commandName(c) << std::endl;
 
     print();
     if (state != State::InProgress)

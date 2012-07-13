@@ -39,7 +39,8 @@ public:
   static char charFromContent(MineContent c);
   static std::string stateToString(State s);
   static char commandChar(RobotCommand command);
-  static std::string commandString(RobotCommand command);
+  static std::string commandName(RobotCommand command);
+  static std::string commandString(std::vector<RobotCommand> commands);
 
   void read(std::istream& is);
 

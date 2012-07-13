@@ -9,14 +9,14 @@ class Searcher {
 public:
   Searcher(Mine const& mine);
 
-  std::pair<std::string, int> bruteForce(int maxLength);
-
-private:
   struct Result {
     std::vector<RobotCommand> commands;
     int score;
   };
 
+  Result bruteForce(int maxLength);
+
+private:
   Result bruteForceSearch(int maxLength, Mine& mine);
 
   Mine mineInitialState;
