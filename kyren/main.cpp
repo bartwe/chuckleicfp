@@ -7,6 +7,7 @@ int main(int argc, char** argv) {
   Searcher searcher(mine);;
   auto result = searcher.bruteForce(20);
   mine.evaluateAndPrint(result.commands);
+  std::cout << "solution: " << Mine::commandString(result.commands) << " length: " << result.commands.size() << " score: " << result.score << std::endl;
 
   return 0;
 }
