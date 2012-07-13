@@ -32,7 +32,7 @@ class Projection(wx.Control):
         self.bmp[' '] =  wx.Bitmap('images/empty.png')
         self.bmp['#'] =  wx.Bitmap('images/wall.png')
         self.bmp['*'] =  wx.Bitmap('images/rock.png')
-        self.bmp['R'] =  wx.Bitmap('images/empty.png') # fixme
+        self.bmp['R'] =  wx.Bitmap('images/rover.png')
         self.bmp['L'] =  wx.Bitmap('images/lift.png')
         self.bmp['.'] =  wx.Bitmap('images/earth.png')
         self.bmp['\\'] = wx.Bitmap('images/lambda.png')
