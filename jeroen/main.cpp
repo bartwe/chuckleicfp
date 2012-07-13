@@ -16,19 +16,19 @@ void bailout( const char* w )
 
 int main(int argc, char** argv)
 {
-	Map* map = readMap();
+	Map* map = readMap(std::cin);
 
 	delete map;
 
 	return 0;
 }
 
-Map* readMap()
+Map* readMap(std::istream& is)
 {
 	std::vector<std::string> lines;
 	std::string line;
 	int width = -1;
-	while (std::getline(std::cin, line)) {
+	while (std::getline(is, line)) {
 		width = std::max<int>(width, line.size());
 		lines.push_back(line);
 	}

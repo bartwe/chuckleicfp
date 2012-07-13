@@ -1,11 +1,21 @@
 #include "state.h"
 #include "main.h"
+#include <iostream>
+#include <fstream>
 
 extern "C" {
 
-Map* Init()
+Map* Init(const char* map)
 {
-	return readMap();
+	if ( map )
+	{
+		std::ifstream is(map);
+		return readMap(is);
+	}
+	else
+	{
+		return readMap(std::cin);
+	}
 }
 
 char* GetData(Map* m, int* width, int* height)

@@ -1,3 +1,5 @@
+#include <iostream>
+
 class Map;
 
-Map* readMap();
+Map* readMap(std::istream&);
