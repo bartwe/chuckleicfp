@@ -13,17 +13,15 @@ Searcher::Result Searcher::bruteForce(int maxLength) {
 Searcher::Result Searcher::bruteForceSearch(int maxLength, Mine& mine) {
   std::vector<Result> results;
 
-  if (mine.pushMove(RobotCommand::Abort)) {
-    results.push_back({mine.commands(), mine.score()});
-    mine.popMove();
-  }
+  auto hashcode = mine.hashcode();
+  if (visited.find(hashcode) != visited.end())
+    return {{}, 0};
 
-  if (mine.moveCount() >= maxLength) {
-    if (!results.empty())
-      return results[0];
-    else
-      return {{}, 0};
-  }
+  visited.insert(hashcode);
+  results.push_back({mine.commands(), mine.score()});
+
+  if (mine.moveCount() >= maxLength)
+    return results[0];
 
   if (mine.pushMove(RobotCommand::Right)) {
     results.push_back(bruteForceSearch(maxLength, mine));
@@ -54,8 +52,5 @@ Searcher::Result Searcher::bruteForceSearch(int maxLength, Mine& mine) {
       return rb.score < ra.score;
     });
 
-  if (!results.empty())
-    return results[0];
-  else
-    return {{}, 0};
+  return results[0];
 }

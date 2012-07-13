@@ -5,7 +5,7 @@ int main(int argc, char** argv) {
   mine.read(std::cin);
 
   Searcher searcher(mine);;
-  auto result = searcher.bruteForce(12);
+  auto result = searcher.bruteForce(20);
   mine.evaluateAndPrint(result.commands);
 
   return 0;
