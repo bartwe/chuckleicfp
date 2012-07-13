@@ -92,19 +92,19 @@ private:
   std::vector<MineHistory> historyList;
   std::vector<RobotCommand> commandHistory;
 
-  int width;
-  int height;
-
-  int robotX;
-  int robotY;
-
   // NOTE: there can be more than one lift, this is wrong!!! --Jeroen
   int liftX;
   int liftY;
 
   int totalMoves;
 public:
+  int width;
+  int height;
+
   State state;
+  int robotX;
+  int robotY;
+
   int collectedLambdas;
   int numInitialLambdas;
 };
