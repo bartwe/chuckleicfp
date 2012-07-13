@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <cstdint>
 
 enum class RobotCommand : uint8_t {
   Left,
