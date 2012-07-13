@@ -137,6 +137,8 @@ void Mine::read(std::istream& is) {
   // Turn upside down so (0, 0) is bottom left
   std::reverse(readContent.begin(), readContent.end());
 
+  numInitialLambdas = 0;
+
   for (size_t i = 0; i < readContent.size(); ++i) {
     auto const& row = readContent[i];
     for (size_t j = 0; j < row.size(); ++j) {
@@ -147,6 +149,8 @@ void Mine::read(std::istream& is) {
       } else if (c == MineContent::ClosedLift) {
         liftX = j;
         liftY = i;
+      } else if (c == MineContent::Lambda) {
+	      numInitialLambdas++;
       }
 
       set(j, i, c);
