@@ -1,45 +1,46 @@
 #include "Mine.hpp"
+#include "sha1.h"
 
 MineContent Mine::contentFromChar(char c) {
   switch (c) {
     case 'R':
-      return Robot;
+      return MineContent::Robot;
     case '#':
-      return Wall;
+      return MineContent::Wall;
     case '*':
-      return Rock;
+      return MineContent::Rock;
     case '\\':
-      return Lambda;
+      return MineContent::Lambda;
     case 'L':
-      return ClosedLift;
+      return MineContent::ClosedLift;
     case 'O':
-      return OpenLift;
+      return MineContent::OpenLift;
     case '.':
-      return Earth;
+      return MineContent::Earth;
     case ' ':
-      return Empty;
+      return MineContent::Empty;
     default:
-      return Wall;
+      return MineContent::Wall;
   }
 }
 
 char Mine::charFromContent(MineContent c) {
   switch (c) {
-    case Robot:
+    case MineContent::Robot:
       return 'R';
-    case Wall:
+    case MineContent::Wall:
       return '#';
-    case Rock:
+    case MineContent::Rock:
       return '*';
-    case Lambda:
+    case MineContent::Lambda:
       return '\\';
-    case ClosedLift:
+    case MineContent::ClosedLift:
       return 'L';
-    case OpenLift:
+    case MineContent::OpenLift:
       return 'O';
-    case Earth:
+    case MineContent::Earth:
       return '.';
-    case Empty:
+    case MineContent::Empty:
       return ' ';
     default:
       return '#';
@@ -48,13 +49,13 @@ char Mine::charFromContent(MineContent c) {
 
 std::string Mine::stateToString(State s) {
   switch (s) {
-    case InProgress:
+    case State::InProgress:
       return "InProgress";
-    case Win:
+    case State::Win:
       return "Win";
-    case Lose:
+    case State::Lose:
       return "Lose";
-    case Aborted:
+    case State::Aborted:
       return "Aborted";
     default:
       return "Unknown";
@@ -62,7 +63,7 @@ std::string Mine::stateToString(State s) {
 }
 
 void Mine::read(std::istream& is) {
-  state = InProgress;
+  state = State::InProgress;
   collectedLambdas = 0;
   totalMoves = 0;
 
@@ -87,7 +88,7 @@ void Mine::read(std::istream& is) {
   width = maxRow;
   height = readContent.size();
 
-  content.resize(width * height, Empty);
+  content.resize(width * height, MineContent::Empty);
   // Turn upside down so (0, 0) is bottom left
   std::reverse(readContent.begin(), readContent.end());
 
@@ -95,10 +96,10 @@ void Mine::read(std::istream& is) {
     auto const& row = readContent[i];
     for (size_t j = 0; j < row.size(); ++j) {
       auto c = row[j];
-      if (c == Robot) {
+      if (c == MineContent::Robot) {
         robotX = j;
         robotY = i;
-      } else if (c == ClosedLift) {
+      } else if (c == MineContent::ClosedLift) {
         liftX = j;
         liftY = i;
       }
@@ -110,7 +111,7 @@ void Mine::read(std::istream& is) {
 
 MineContent Mine::get(int x, int y) {
   if (x < 0 || x >= width || y < 0 || y >= width)
-    return Wall;
+    return MineContent::Wall;
   else
     return content[x * width + y];
 }
@@ -121,9 +122,9 @@ State Mine::currentState() {
 
 int Mine::score() {
   int s = collectedLambdas * 25 - totalMoves;
-  if (state == Aborted)
+  if (state == State::Aborted)
     s += collectedLambdas * 25;
-  else if (state == Win)
+  else if (state == State::Win)
     s += collectedLambdas * 50;
   return s;
 }
@@ -147,58 +148,58 @@ void Mine::evaluateAndPrint(std::vector<RobotCommand> commandList) {
 }
 
 bool Mine::move(RobotCommand command) {
-  if (state != InProgress)
+  if (state != State::InProgress)
     return true;
 
-  if (command == Abort) {
-    state = Aborted;
+  if (command == RobotCommand::Abort) {
+    state = State::Aborted;
     return true;
   }
 
   int newRobotX = robotX;
   int newRobotY = robotY;
 
-  if (command == Left) {
+  if (command == RobotCommand::Left) {
     auto c = get(robotX - 1, robotY);
-    if (c == Empty || c == Earth || c == Lambda || c == OpenLift) {
+    if (c == MineContent::Empty || c == MineContent::Earth || c == MineContent::Lambda || c == MineContent::OpenLift) {
       newRobotX = robotX - 1;
-    } else if (c == Rock && get(robotX - 2, robotY) == Empty) {
-      set(robotX - 2, robotY, Rock);
+    } else if (c == MineContent::Rock && get(robotX - 2, robotY) == MineContent::Empty) {
+      set(robotX - 2, robotY, MineContent::Rock);
       newRobotX = robotX - 1;
     }
-  } else if (command == Right) {
+  } else if (command == RobotCommand::Right) {
     auto c = get(robotX + 1, robotY);
-    if (c == Empty || c == Earth || c == Lambda || c == OpenLift) {
+    if (c == MineContent::Empty || c == MineContent::Earth || c == MineContent::Lambda || c == MineContent::OpenLift) {
       newRobotX = robotX + 1;
-    } else if (c == Rock && get(robotX + 2, robotY) == Empty) {
-      set(robotX + 2, robotY, Rock);
+    } else if (c == MineContent::Rock && get(robotX + 2, robotY) == MineContent::Empty) {
+      set(robotX + 2, robotY, MineContent::Rock);
       newRobotX = robotX + 1;
     }
-  } else if (command == Up) {
+  } else if (command == RobotCommand::Up) {
     auto c = get(robotX, robotY + 1);
-    if (c == Empty || c == Earth || c == Lambda || c == OpenLift)
+    if (c == MineContent::Empty || c == MineContent::Earth || c == MineContent::Lambda || c == MineContent::OpenLift)
       newRobotY = robotY + 1;
-  } else if (command == Down) {
+  } else if (command == RobotCommand::Down) {
     auto c = get(robotX, robotY - 1);
-    if (c == Empty || c == Earth || c == Lambda || c == OpenLift)
+    if (c == MineContent::Empty || c == MineContent::Earth || c == MineContent::Lambda || c == MineContent::OpenLift)
       newRobotY = robotY - 1;
   }
 
   auto nr = get(newRobotX, newRobotY);
-  if (nr == Lambda)
+  if (nr == MineContent::Lambda)
     ++collectedLambdas;
-  else if (nr == OpenLift)
-    state = Win;
+  else if (nr == MineContent::OpenLift)
+    state = State::Win;
 
-  set(robotX, robotY, Empty);
-  set(newRobotX, newRobotY, Robot);
+  set(robotX, robotY, MineContent::Empty);
+  set(newRobotX, newRobotY, MineContent::Robot);
   robotX = newRobotX;
   robotY = newRobotY;
 
   updateMine();
   ++totalMoves;
 
-  return state != InProgress;
+  return state != State::InProgress;
 }
 
 void Mine::print() {
@@ -208,6 +209,12 @@ void Mine::print() {
     std::cout << std::endl;
   }
   std::cout << std::endl;
+}
+
+std::string Mine::hashcode() const {
+  unsigned char hash[20];
+  sha1::calc(&content[0], content.size(), hash);
+  return std::string((char const*)hash, 20);
 }
 
 void Mine::set(int x, int y, MineContent c) {
@@ -222,31 +229,31 @@ void Mine::updateMine() {
 
   for (int x = 0; x < width; ++x) {
     for (int y = 0; y < height; ++y) {
-      if (get(x, y) == Lambda) {
+      if (get(x, y) == MineContent::Lambda) {
         allLambdasCollected = false;
-      } else if (get(x, y) == Rock && get(x, y - 1) == Empty) {
-        updateQueue.push_back({x, y, Empty});
-        updateQueue.push_back({x, y - 1, Rock});
-      } else if (get(x, y) == Rock && get(x, y - 1) == Rock && get(x + 1, y) == Empty && get(x + 1, y - 1) == Empty) {
-        updateQueue.push_back({x, y, Empty});
-        updateQueue.push_back({x + 1, y - 1, Rock});
-      } else if (get(x, y) == Rock && get(x, y - 1) == Rock && get(x - 1, y) == Empty && get(x - 1, y - 1) == Empty) {
-        updateQueue.push_back({x, y, Empty});
-        updateQueue.push_back({x - 1, y - 1, Rock});
-      } else if (get(x, y) == Rock && get(x, y - 1) == Lambda && get(x + 1, y) == Empty && get(x + 1, y - 1) == Empty) {
-        updateQueue.push_back({x, y, Empty});
-        updateQueue.push_back({x + 1, y - 1, Rock});
+      } else if (get(x, y) == MineContent::Rock && get(x, y - 1) == MineContent::Empty) {
+        updateQueue.push_back({x, y, MineContent::Empty});
+        updateQueue.push_back({x, y - 1, MineContent::Rock});
+      } else if (get(x, y) == MineContent::Rock && get(x, y - 1) == MineContent::Rock && get(x + 1, y) == MineContent::Empty && get(x + 1, y - 1) == MineContent::Empty) {
+        updateQueue.push_back({x, y, MineContent::Empty});
+        updateQueue.push_back({x + 1, y - 1, MineContent::Rock});
+      } else if (get(x, y) == MineContent::Rock && get(x, y - 1) == MineContent::Rock && get(x - 1, y) == MineContent::Empty && get(x - 1, y - 1) == MineContent::Empty) {
+        updateQueue.push_back({x, y, MineContent::Empty});
+        updateQueue.push_back({x - 1, y - 1, MineContent::Rock});
+      } else if (get(x, y) == MineContent::Rock && get(x, y - 1) == MineContent::Lambda && get(x + 1, y) == MineContent::Empty && get(x + 1, y - 1) == MineContent::Empty) {
+        updateQueue.push_back({x, y, MineContent::Empty});
+        updateQueue.push_back({x + 1, y - 1, MineContent::Rock});
       }
     }
   }
 
   if (allLambdasCollected)
-    updateQueue.push_back({liftX, liftY, OpenLift});
+    updateQueue.push_back({liftX, liftY, MineContent::OpenLift});
 
   for (auto update : updateQueue) {
-    if (update.c == Rock && update.x == robotX && update.y == robotY + 1) {
+    if (update.c == MineContent::Rock && update.x == robotX && update.y == robotY + 1) {
       // Robot was hit on the head by rock
-      state = Lose;
+      state = State::Lose;
     }
     set(update.x, update.y, update.c);
   }

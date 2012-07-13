@@ -5,7 +5,7 @@
 #include <vector>
 #include <algorithm>
 
-enum RobotCommand {
+enum class RobotCommand : uint8_t {
   Left,
   Right,
   Up,
@@ -14,7 +14,7 @@ enum RobotCommand {
   Abort
 };
 
-enum MineContent {
+enum class MineContent : uint8_t {
   Robot,
   Wall,
   Rock,
@@ -25,7 +25,7 @@ enum MineContent {
   Empty
 };
 
-enum State {
+enum class State : uint8_t {
   InProgress,
   Win,
   Lose,
@@ -55,6 +55,9 @@ public:
   bool move(RobotCommand command);
 
   void print();
+
+  // Returns 20 char (binary) SHA-1 hash of map state.
+  std::string hashcode() const;
 
 private:
   void set(int x, int y, MineContent c);
