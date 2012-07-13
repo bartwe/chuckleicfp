@@ -3,5 +3,12 @@
 
 int Heuristic::bestCase(Mine& mine)
 {
-	return mine.score();
+	if (mine.state != State::InProgress)
+		return mine.score();
+
+	// Assuming we can reach the exit, we still need one step for each lambda to
+	// collect
+	return mine.score()
+		+ (mine.numInitialLambdas-mine.collectedLambdas)*24
+		+ mine.numInitialLambdas * 50;
 }

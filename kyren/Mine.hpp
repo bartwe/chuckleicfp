@@ -97,13 +97,15 @@ private:
 
   int robotX;
   int robotY;
-  State state;
 
+  // NOTE: there can be more than one lift, this is wrong!!! --Jeroen
   int liftX;
   int liftY;
 
-  int collectedLambdas;
   int totalMoves;
+public:
+  State state;
+  int collectedLambdas;
   int numInitialLambdas;
 };
 
