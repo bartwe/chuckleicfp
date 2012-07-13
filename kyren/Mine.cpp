@@ -195,6 +195,9 @@ bool Mine::pushMove(RobotCommand command) {
 
   if (command == RobotCommand::Abort) {
     state = State::Aborted;
+    commandHistory.push_back(command);
+    historyList.push_back({{}, robotX, robotY, collectedLambdas});
+    ++totalMoves;
     return true;
   }
 
@@ -318,6 +321,8 @@ bool Mine::popMove() {
 
   historyList.pop_back();
   commandHistory.pop_back();
+  state = State::InProgress;
+  --totalMoves;
   return true;
 }
 
