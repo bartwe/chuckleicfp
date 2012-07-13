@@ -34,17 +34,20 @@ void Map::domove(char move)
 	switch (atnext) {
 
 	// These ones are always okay:
-	case '\\': lambdacollect++;
-	case ' ': // ok
-	case '.': // ok
-	case 'O': // todo
+	case LAMBDA: lambdacollect++;
+	case EMPTY: // ok
+	case EARTH: // ok
+		   break;
+
+	// Special one...
+	case GATE: // todo: check whether open, do stuff then
 		   break;
 
 	// Boulder:
-	case '*':
-		if (ny == ry && nnx >= 0 && nnx < n && at(nnx, ny) == ' ')
+	case ROCK:
+		if (ny == ry && nnx >= 0 && nnx < n && at(nnx, ny) == EMPTY)
 		{
-			at(nnx, ny) = '*';
+			at(nnx, ny) = ROCK;
 			//at(nx, ny) = ' '; // rover position is always //undefined...?
 		}
 		else
@@ -58,9 +61,56 @@ void Map::domove(char move)
 	}
 
 	setRover(nx, ny);
-	at(rx, ry) = ' ';
+	at(rx, ry) = EMPTY;
+}
+
+static char& rightof(char& pos)
+{
+	return *( (&pos) + 1 );
+}
+static char& leftof(char& pos)
+{
+	return *( (&pos) - 1);
 }
 
 void Map::update()
 {
+	for (int y = 1; y<m; y++) for (int x = 0; x<n; x++)
+	{
+		char& self = at(x, y);
+		if (self != ROCK) continue;
+		char& under = at(x, y-1);
+
+		if (under == EMPTY) {
+			self = EMPTY;
+			under = ROCK;
+		}
+		else if ( under == ROCK || under == LAMBDA ) {
+			if (x+1 < n && rightof(self) == EMPTY && rightof(under) == EMPTY) {
+				queueupdate(x, y, EMPTY);
+				queueupdate(x+1, y-1, self);
+			}
+			else if ( under == ROCK && x>0 && leftof(self) == EMPTY && leftof(under) == EMPTY ) {
+				queueupdate(x, y, EMPTY);
+				queueupdate(x-1, y-1, self);
+			}
+		}
+	}
+
+	commitupdates();
 }
+
+void Map::queueupdate(int x, int y, char newcell)
+{
+	Update u = {x, y, newcell};
+	updqueue.push_back( u );
+}
+void Map::commitupdates()
+{
+	for ( updqueue_t::iterator it = updqueue.begin(); it != updqueue.end(); ++it )
+	{
+		at(it->x, it->y) = it->c;
+	}
+	updqueue.clear();
+}
+

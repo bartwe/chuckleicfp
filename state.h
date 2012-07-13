@@ -1,9 +1,27 @@
 #include <vector>
 
+#define ROBOT 'R'
+#define ROCK '*'
+#define GATE 'L'
+#define EARTH '.'
+#define WALL '#'
+#define LAMBDA '\\'
+// #define OPEN_LAMBDA 'O'  // not going to use, use 'GATE'
+#define EMPTY ' '
+
+struct Update
+{
+	int x, y;
+	char c;
+};
+
 class Map
 {
 public:
 	std::vector<char> data;
+	typedef std::vector<Update> updqueue_t;
+	updqueue_t updqueue;
+
 	int n, m;
 	int rx, ry;
 
@@ -29,4 +47,7 @@ public:
 
 	void update();
 	void domove(char move);
+
+	void queueupdate(int x, int y, char newcell);
+	void commitupdates();
 };
