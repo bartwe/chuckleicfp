@@ -104,6 +104,7 @@ private:
 
   int collectedLambdas;
   int totalMoves;
+  int numInitialLambdas;
 };
 
 #endif
