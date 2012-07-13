@@ -7,8 +7,11 @@ public:
 	int n, m;
 	int rx, ry;
 
+	int lambdacollect;
+
 	Map(int n_, int m_)
 		: n(n_), m(m_)
+		  , lambdacollect(0)
 	{
 		data.resize(n*m);
 	}

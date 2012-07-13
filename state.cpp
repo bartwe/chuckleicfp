@@ -31,18 +31,29 @@ void Map::domove(char move)
 	if ( ny < 0 || ny >= m ) ok = 0;
 
 	char atnext = at(nx, ny);
-	if (atnext == ' ' || atnext == '.' || atnext == '\\' || atnext == 'O')
-	{
-		// ok
-	}
-	else if (atnext == '*' && ny == ry && nnx >= 0 && nnx < n && at(nnx, ny) == ' ')
-	{
-		at(nnx, ny) = '*';
-		at(nx, ny) = ' ';
-	}
-	else
-	{
-		// not ok, do nothing
+	switch (atnext) {
+
+	// These ones are always okay:
+	case '\\': lambdacollect++;
+	case ' ': // ok
+	case '.': // ok
+	case 'O': // todo
+		   break;
+
+	// Boulder:
+	case '*':
+		if (ny == ry && nnx >= 0 && nnx < n && at(nnx, ny) == ' ')
+		{
+			at(nnx, ny) = '*';
+			//at(nx, ny) = ' '; // rover position is always //undefined...?
+		}
+		else
+		{
+			return;
+		}
+		break;
+	default:
+		// not okay, execute wait
 		return;
 	}
 
