@@ -5,7 +5,7 @@ int main(int argc, char** argv) {
   mine.read(std::cin);
 
   Searcher searcher(mine);;
-  auto pair = searcher.bruteForce(10);
+  auto pair = searcher.bruteForce(13);
   std::cout << pair.first << " " << pair.second << std::endl;
 
   return 0;
