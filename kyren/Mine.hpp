@@ -39,6 +39,7 @@ public:
   static char charFromContent(MineContent c);
   static std::string stateToString(State s);
   static char commandChar(RobotCommand command);
+  static RobotCommand charToCommand(char command);
   static std::string commandName(RobotCommand command);
   static std::string commandString(std::vector<RobotCommand> commands);
 
@@ -88,7 +89,9 @@ private:
     int collectedLambdas;
   };
 
+public:
   std::vector<MineContent> content;
+private:
   std::vector<MineHistory> historyList;
   std::vector<RobotCommand> commandHistory;
 

@@ -81,6 +81,20 @@ char Mine::commandChar(RobotCommand command) {
   }
 }
 
+RobotCommand Mine::charToCommand(char command)
+{
+	switch (command) {
+		case 'L': return RobotCommand::Left;
+		case 'R': return RobotCommand::Right;
+		case 'U': return RobotCommand::Up;
+		case 'D': return RobotCommand::Down;
+		case 'W': return RobotCommand::Wait;
+		case 'A': return RobotCommand::Abort;
+		default: // eh
+			return RobotCommand::Wait;
+	}
+}
+
 std::string Mine::commandName(RobotCommand command) {
   switch (command) {
     case RobotCommand::Left:
