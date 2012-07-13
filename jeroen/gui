@@ -15,6 +15,8 @@ libicfp.Init.argtypes = ()
 libicfp.Init.restype = data_t
 libicfp.GetData.argtypes = data_t, POINTER(c_int), POINTER(c_int)
 libicfp.GetData.restype = POINTER(c_char)
+libicfp.DoMove.argtypes = data_t, c_char
+libicfp.DoMove.restype = None
 
 # begin wxGlade: extracode
 # end wxGlade
@@ -30,7 +32,7 @@ class Projection(wx.Control):
         self.bmp[' '] =  wx.Bitmap('images/empty.png')
         self.bmp['#'] =  wx.Bitmap('images/wall.png')
         self.bmp['*'] =  wx.Bitmap('images/rock.png')
-        self.bmp['R'] =  wx.Bitmap('images/empty.png') # fixme
+        self.bmp['R'] =  wx.Bitmap('images/robot.png')
         self.bmp['L'] =  wx.Bitmap('images/lift.png')
         self.bmp['.'] =  wx.Bitmap('images/earth.png')
         self.bmp['\\'] = wx.Bitmap('images/lambda.png')
@@ -64,8 +66,15 @@ class Projection(wx.Control):
         char = unichr(kc)
         p = self.GetParent()
 
-        if False:
-            pass
+        kc2char = {
+                wx.WXK_UP: 'U',
+                wx.WXK_DOWN: 'D',
+                wx.WXK_LEFT: 'L',
+                wx.WXK_RIGHT: 'R',
+                }
+
+        if kc in kc2char:
+            libicfp.DoMove(self.data, kc2char[kc])
         else:
             print 'Unknown key: %d (%r)' % (kc, char)
             e.Skip()
