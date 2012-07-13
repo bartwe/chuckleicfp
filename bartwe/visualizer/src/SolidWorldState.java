@@ -1,8 +1,12 @@
+import java.nio.ByteBuffer;
 import java.util.Arrays;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class SolidWorldState extends WorldState {
     byte[][] data;
     int n, m;
+    private WorldStateHash hash;
 
     public int getN() {
         return n;
@@ -81,5 +85,34 @@ public class SolidWorldState extends WorldState {
         result.lambdaCollected = lambdaCollected;
         result.lambdaRemaining = lambdaRemaining;
         return result;
+    }
+
+    static MessageDigest md = null;
+
+    @Override
+    public WorldStateHash getHash() {
+        if (hash != null)
+            return hash;
+        if (md == null) {
+            // not thread safe, yay
+            try {
+                md = MessageDigest.getInstance("SHA-1");
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        md.reset();
+        ByteBuffer bb = ByteBuffer.allocate(6 * 4);
+        bb.putInt(robotX);
+        bb.putInt(robotY);
+        bb.putInt(exitX);
+        bb.putInt(exitY);
+        bb.putInt(lambdaCollected);
+        bb.putInt(lambdaRemaining);
+        bb.flip();
+        md.update(bb);
+        for (int i = 0; i < data.length; ++i)
+            md.update(data[i]);
+        return new WorldStateHash(md.digest());
     }
 }

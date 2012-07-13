@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public abstract class WorldState {
+
     protected int robotX, robotY;
     protected int exitX, exitY;
     protected int lambdaCollected;
@@ -115,5 +116,7 @@ public abstract class WorldState {
     }
 
     public abstract WorldState copy();
+
+    public abstract WorldStateHash getHash();
 }
 
