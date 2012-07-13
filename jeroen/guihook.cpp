@@ -18,6 +18,7 @@ char* GetData(Map* m, int* width, int* height)
 void DoMove(Map* m, char move)
 {
 	m->domove(move);
+	m->update();
 }
 
 } // extern

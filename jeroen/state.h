@@ -37,6 +37,7 @@ public:
 	void setRover(int x, int y)
 	{
 		rx = x; ry = y;
+		at(x,y) = ROBOT;
 	}
 
 
