@@ -44,7 +44,7 @@ public class DualAStarApproach {
                 return state.stepResult == StepResult.Win;
             }
 
-            public AStar.AStarNode findBest(AStar.AStarNode best, HashMap<WorldStateHash, AStar.AStarNode> nodes) {
+            public AStar.AStarNode findBest(AStar.AStarNode best, boolean singleSolution, HashMap<WorldStateHash, AStar.AStarNode> nodes) {
                 if (best.state.stepResult == StepResult.Win)
                     return best;
                 double bestScore = best.state.score();
@@ -126,7 +126,10 @@ public class DualAStarApproach {
 
         ArrayList<LambdaGoal> goals = new ArrayList<LambdaGoal>();
 
+        if (initialState.lambdaRemaining > 0)
         findLambdas(initialState, goals);
+        else
+            goals.add(new LambdaGoal(initialState, initialState.exitX, initialState.exitY, 0));
 
         //find a number of lambdas to try and reach, path find them concurrently, stop looking if you find enough of them, abandon rest.
         for (LambdaGoal goal : goals) {
@@ -166,8 +169,9 @@ public class DualAStarApproach {
                     return Math.abs(state.robotX - lg.x) + Math.abs(state.robotY - lg.y) == 0;
                 }
 
-
-                public AStar.AStarNode findBest(AStar.AStarNode best, HashMap<WorldStateHash, AStar.AStarNode> nodes) {
+                public AStar.AStarNode findBest(AStar.AStarNode best, boolean singleSolution, HashMap<WorldStateHash, AStar.AStarNode> nodes) {
+                    if (!singleSolution)
+                        return null;
                     if (isEndPoint(best.state))
                         return best;
                     return null; // no runner up solutions, we just want to go to the specified lambdas

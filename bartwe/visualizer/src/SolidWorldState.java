@@ -120,6 +120,6 @@ public class SolidWorldState extends WorldState {
     }
 
     public int score() {
-        return lambdaCollected * 50 - steps;
+        return lambdaCollected * 25 + ((stepResult == StepResult.Abort) ? (lambdaCollected * 25) : 0) + ((stepResult == StepResult.Win) ? (lambdaCollected * 50) : 0) - steps;
     }
 }

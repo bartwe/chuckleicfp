@@ -6,7 +6,7 @@ public class AStar {
         double goalHeuristic(WorldState state);
         double edgeCost(WorldState from, WorldState to);
         boolean isEndPoint(WorldState state);
-        AStarNode findBest(AStarNode best, HashMap<WorldStateHash, AStarNode> nodes);
+        AStarNode findBest(AStarNode best, boolean singleSolution, HashMap<WorldStateHash, AStarNode> nodes);
         double horizon();
     }
 
@@ -97,7 +97,7 @@ public class AStar {
         if (!completed)
             throw new RuntimeException("!");
         if (!controller.isEndPoint(bestNode.state))
-            bestNode = controller.findBest(bestNode, nodes);
+            bestNode = controller.findBest(bestNode, openSet.size() == 0, nodes);
         if (bestNode == null)
             return null;
 
