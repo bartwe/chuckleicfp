@@ -37,7 +37,7 @@ public class DualAStarApproach {
             }
 
             public double edgeCost(WorldState from, WorldState to) {
-                return -(to.score() - from.score());
+                return to.steps - from.steps;
             }
 
             public boolean isEndPoint(WorldState state) {
