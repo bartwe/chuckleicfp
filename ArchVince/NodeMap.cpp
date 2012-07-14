@@ -6,14 +6,13 @@ NodeMap::NodeMap(Mine tmine) : mine(tmine)
   robot = mine.robot;
   lift = mine.lift;
   std::vector< Point > expand;
-  expand.push_back({mine.rx, mine.ry});
+  expand.push_back(robot);
   while((int)expand.size() > 0)
   {
     MNode tNode;
     Point tPoint = expand.back();
     tNode.x = tPoint.x;
     tNode.y = tPoint.y;
-    //if(mine.getID(tPoint) == -1) std::cout << expand.size() << " " << tPoint.x << " " << tPoint.y << std::endl;
     expand.pop_back();
     if(mine.getID(tPoint) == -1)
     {
@@ -28,8 +27,9 @@ NodeMap::NodeMap(Mine tmine) : mine(tmine)
         if(mine.getID(tPoint.x - 1, tPoint.y) != -1)
         {
           tNode.connections.push_back(mine.getID(tPoint.x - 1, tPoint.y));
+          tNode.commands.push_back("L");
           nodes[mine.getID(tPoint.x - 1, tPoint.y)].connections.push_back(nodes.size());
-          nodes[mine.getID(tPoint.x - 1, tPoint.y)].commands.push_back(Commands::Left);
+          nodes[mine.getID(tPoint.x - 1, tPoint.y)].commands.push_back("R");
         }
         else
         {
@@ -41,8 +41,9 @@ NodeMap::NodeMap(Mine tmine) : mine(tmine)
         if(mine.getID(tPoint.x + 1, tPoint.y) != -1)
         {
           tNode.connections.push_back(mine.getID(tPoint.x + 1, tPoint.y));
+          tNode.commands.push_back("R");
           nodes[mine.getID(tPoint.x + 1, tPoint.y)].connections.push_back(nodes.size());
-          nodes[mine.getID(tPoint.x + 1, tPoint.y)].commands.push_back(Commands::Right);
+          nodes[mine.getID(tPoint.x + 1, tPoint.y)].commands.push_back("L");
         }
         else
         {
@@ -54,8 +55,9 @@ NodeMap::NodeMap(Mine tmine) : mine(tmine)
         if(mine.getID(tPoint.x, tPoint.y - 1) != -1)
         {
           tNode.connections.push_back(mine.getID(tPoint.x, tPoint.y - 1));
+          tNode.commands.push_back("U");
           nodes[mine.getID(tPoint.x, tPoint.y - 1)].connections.push_back(nodes.size());
-          nodes[mine.getID(tPoint.x, tPoint.y - 1)].commands.push_back(Commands::Up);
+          nodes[mine.getID(tPoint.x, tPoint.y - 1)].commands.push_back("D");
         }
         else
         {
@@ -67,8 +69,9 @@ NodeMap::NodeMap(Mine tmine) : mine(tmine)
         if(mine.getID(tPoint.x, tPoint.y + 1) != -1)
         {
           tNode.connections.push_back(mine.getID(tPoint.x, tPoint.y + 1));
+          tNode.commands.push_back("D");
           nodes[mine.getID(tPoint.x, tPoint.y + 1)].connections.push_back(nodes.size());
-          nodes[mine.getID(tPoint.x, tPoint.y + 1)].commands.push_back(Commands::Down);
+          nodes[mine.getID(tPoint.x, tPoint.y + 1)].commands.push_back("U");
         }
         else
         {

@@ -14,9 +14,9 @@ Mine::Mine(std::vector<std::string> rows)
     {
       idrow.push_back(-1);
       row.push_back(Tiles::wall);
-      mine.push_back(row);
-      ids.push_back(idrow);
     }
+    mine.push_back(row);
+    ids.push_back(idrow);
   }
 
   for(int i = 0; i < height; i++)
@@ -38,8 +38,6 @@ Mine::Mine(std::vector<std::string> rows)
       {
         case 'R':
           row.push_back(Tiles::robot);
-          rx = j;
-          ry = i;
           robot = {j, i};
           break;
         case '#':
@@ -76,38 +74,38 @@ Mine::Mine(std::vector<std::string> rows)
     {
       idrow.push_back(-1);
       row.push_back(Tiles::wall);
-      mine.push_back(row);
-      ids.push_back(idrow);
     }
+    mine.push_back(row);
+    ids.push_back(idrow);
   }
 }
 
 Tiles Mine::at(int x, int y)
 {
-  return mine[y][x];
+  return mine[y+1][x+1];
 }
 
 Tiles Mine::at(Point p)
 {
-  return mine[p.y][p.x];
+  return mine[p.y+1][p.x+1];
 }
 
 void Mine::setID(int x, int y, int id)
 {
-  ids[y][x] = id;
+  ids[y+1][x+1] = id;
 }
 
 void Mine::setID(Point p, int id)
 {
-  ids[p.y][p.x] = id;
+  ids[p.y+1][p.x+1] = id;
 }
 
 int Mine::getID(int x, int y)
 {
-  return ids[y][x];
+  return ids[y+1][x+1];
 }
 
 int Mine::getID(Point p)
 {
-  return ids[p.y][p.x];
+  return ids[p.y+1][p.x+1];
 }
