@@ -14,6 +14,7 @@ public class StepLogic {
         next.copyFrom(scratch);
         next.steps++;
         next.parent = current;
+        next.action = action;
         if (result != StepResult.Abort)
             applyWorldStep(scratch, next);
         if ((next.robotX == next.exitX) && (next.robotY == next.exitY))

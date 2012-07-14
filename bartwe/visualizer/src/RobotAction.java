@@ -6,7 +6,7 @@ public class RobotAction {
     public static final RobotAction Wait = new RobotAction('W', 0, 0);
     public static final RobotAction Abort = new RobotAction('A', 0, 0);
 
-    private char letter;
+    char letter;
     int dx;
     int dy;
 

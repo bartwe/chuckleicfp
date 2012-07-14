@@ -56,8 +56,10 @@ public class AStar {
                 openSet.clear();
                 break;
             }
-            if (node.gScore > horizon)
+            if (node.gScore > horizon) {
+                System.err.println("Horizoned.");
                 break;
+            }
 
             int count = controller.getAdjacent(node.state, adjacentsBuffer);
 

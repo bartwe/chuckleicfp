@@ -13,6 +13,7 @@ public abstract class WorldState {
 
     protected StepResult stepResult = StepResult.Ok;
     public WorldState parent;
+    public RobotAction action;
 
     public abstract byte get(int x, int y);
 
@@ -48,7 +49,7 @@ public abstract class WorldState {
         }
     }
 
-    private static WorldState readFromStream(InputStream stream) {
+    static WorldState readFromStream(InputStream stream) {
         int capacity = 16;
         ArrayList<byte[]> rows = new ArrayList<byte[]>();
         try {
