@@ -197,7 +197,7 @@ public class DualAStarApproach {
             }
             if (!active)
                 break;
-            if (adjacentsBuffer.length > 10)
+            if (results > 10)
                 break;
         }
 

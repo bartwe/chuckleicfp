@@ -1,13 +1,15 @@
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class PathingGUI implements KeyListener {
     DisplayWindow window;
     WorldState state;
     int[] raw;
-    private ArrayList<WorldState> path;
+    private ArrayList<WorldState> path = new ArrayList<WorldState>();
 
     public static void main(String[] args) {
         PathingGUI manual = new PathingGUI(WorldState.loadFromDisk(args[0]));
@@ -41,11 +43,19 @@ public class PathingGUI implements KeyListener {
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_SPACE:
+                path.clear();
                 DualAStarApproach dasa = new DualAStarApproach();
-                path = dasa.findPath(state);
-                if (path.size() > 0)
+                ArrayList<WorldState> highLevelPath = dasa.findPath(state);
+                if (highLevelPath.size() > 0) {
+                    WorldState cursor = highLevelPath.get(highLevelPath.size() - 1);
+
+                    while (cursor != null) {
+                        path.add(cursor);
+                        cursor = cursor.parent;
+                    }
+                    Collections.reverse(path);
                     state = path.remove(0);
-                else
+                } else
                     Toolkit.getDefaultToolkit().beep();
                 break;
             case KeyEvent.VK_ENTER:

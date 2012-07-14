@@ -13,6 +13,7 @@ public class StepLogic {
         StepResult result = applyRobotAction(current, scratch, action);
         next.copyFrom(scratch);
         next.steps++;
+        next.parent = current;
         if (result != StepResult.Abort)
             applyWorldStep(scratch, next);
         if ((next.robotX == next.exitX) && (next.robotY == next.exitY))

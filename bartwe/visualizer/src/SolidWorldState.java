@@ -8,6 +8,7 @@ public class SolidWorldState extends WorldState {
     int n, m;
     private WorldStateHash hash;
 
+
     public int getN() {
         return n;
     }

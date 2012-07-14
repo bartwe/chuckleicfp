@@ -12,6 +12,7 @@ public abstract class WorldState {
     protected int lambdaRemaining;
 
     protected StepResult stepResult = StepResult.Ok;
+    public WorldState parent;
 
     public abstract byte get(int x, int y);
 
