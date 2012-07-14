@@ -1,6 +1,7 @@
 #include "Mine.hpp"
 #include <iostream>
 #include <fstream>
+#include "Heuristic.hpp"
 
 extern "C" {
 
@@ -25,6 +26,13 @@ char* GetData(Mine* m, int* width, int* height)
 	*width = m->width;
 	*height = m->height;
 	return (char*)&m->content[0];
+}
+
+char* GetSafeZone(Mine* m)
+{
+	static SafeZone sz;
+	Heuristic::markSafeZone(*m, sz);
+	return &sz[0];
 }
 
 void DoMove(Mine* m, char move)
