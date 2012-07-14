@@ -1,3 +1,5 @@
 #!/bin/sh
 
-exec java -ea -cp out/production/visualizer DasaConsole
+cd $(dirname $0)
+
+exec java -cp out/production/visualizer DasaConsole
