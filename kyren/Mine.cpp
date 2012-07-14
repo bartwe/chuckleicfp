@@ -114,7 +114,7 @@ std::string Mine::commandName(RobotCommand command) {
   }
 }
 
-std::string Mine::commandString(std::vector<RobotCommand> commands) {
+std::string Mine::commandString(RobotCommands commands) {
   std::string str;
   for (auto c : commands)
     str.push_back(commandChar(c));
@@ -214,7 +214,7 @@ int Mine::score() {
   return s;
 }
 
-void Mine::evaluate(std::vector<RobotCommand> commandList) {
+void Mine::evaluate(RobotCommands commandList) {
   for (auto c : commandList) {
     pushMove(c);
     if (state != State::InProgress)
@@ -222,7 +222,7 @@ void Mine::evaluate(std::vector<RobotCommand> commandList) {
   }
 }
 
-void Mine::evaluateAndPrint(std::vector<RobotCommand> commandList) {
+void Mine::evaluateAndPrint(RobotCommands commandList) {
   print();
   for (auto c : commandList) {
     if (!pushMove(c))
@@ -384,7 +384,7 @@ int Mine::moveCount() const {
   return totalMoves;
 }
 
-std::vector<RobotCommand> const& Mine::commands() const {
+RobotCommands const& Mine::commands() const {
   return commandHistory;
 }
 

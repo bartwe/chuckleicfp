@@ -1,6 +1,8 @@
 #include "Heuristic.hpp"
 #include "Mine.hpp"
 #include <string.h>
+#include <deque>
+#include "Util.hpp"
 
 int Heuristic::bestCase(Mine& mine)
 {
@@ -28,9 +30,7 @@ Heuristic::Heuristic(Mine& mine)
 
 void Heuristic::markSafeZone(Mine& mine, SafeZone& o_safezone)
 {
-	o_safezone.resize(mine.height * mine.width);
-	o_safezone.nx = mine.width;
-	memset(&o_safezone[0], 0, o_safezone.size());
+	o_safezone.init(mine.width, mine.height, 0);
 
 	// note: we explore anything except the border, so that references are
 	// always okay
@@ -51,6 +51,55 @@ void Heuristic::markSafeZone(Mine& mine, SafeZone& o_safezone)
 				{
 					o_safezone.at(x, y) = 1;
 				}
+			}
+		}
+	}
+}
+
+void Heuristic::findPathToNearestLambda(Mine& mine, SafeZone& safezone, RobotCommands& o_commands)
+{
+	struct pathinfo
+	{
+		int dist;
+		int lastmove;
+	};
+	CellBasedData<pathinfo> shortest;
+	std::deque<Pos> todo;
+
+	shortest.init(mine.width, mine.height, {mine.width*mine.height, -1});
+
+	todo.push_back({mine.robotX, mine.robotY});
+	shortest.at(mine.robotX, mine.robotY) = {0, -1};
+
+	while (!todo.empty()) {
+		Pos cur = todo.front();
+		todo.pop_front();
+
+		pathinfo& thispathinfo = shortest.at(cur.x, cur.y);
+
+		for (Move& m : moves.m) {
+			Pos np = {cur.x + m.dx, cur.y + m.dy};
+			if ( !safezone.at(np.x, np.y) ) continue;
+
+#if 1 // if you want to short-circuit
+			if  ( mine.get(np.x, np.y) == MineContent::Lambda )
+			{
+				// Got it!
+				RobotCommands cmds;
+				while ( np.x != mine.robotX && np.y != mine.robotY ){
+					pathinfo& pi = shortest.at(np.x, np.y);
+					cmds.push_back( Mine::charToCommand(moves.mcommands[pi.lastmove]) );
+					np.x -= moves.m[pi.lastmove].dx;
+					np.y -= moves.m[pi.lastmove].dy;
+				}
+				std::copy_backward(cmds.begin(), cmds.end(), o_commands.end());
+			}
+#endif
+			if ( shortest.at(np.x, np.y).dist > thispathinfo.dist + 1 )
+			{
+				shortest.at(np.x, np.y).dist = thispathinfo.dist + 1;
+				shortest.at(np.x, np.y).lastmove = (&m) - &moves.m[0];
+				todo.push_back(np);
 			}
 		}
 	}

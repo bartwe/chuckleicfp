@@ -22,7 +22,7 @@ class Pathfinder
       std::string commandChain;
       int moveCost, cost;
       int x, y;
-      int target;
+      int target, targetLevel;
     };
 
     std::string findPath(Point start, Point end);

@@ -20,15 +20,22 @@ std::string Pathfinder::findPath(Point start, Point end)
 std::string Pathfinder::findPath(int start, int end)
 {
   updTargets();
+  int targetLevel = 0;
   openNodes.push_back(start);
   nodes[start].moveCost = 0;
   nodes[start].cost = manhattan(nodes[start].x, nodes[start].y, nodes[nodes[start].target].x, nodes[nodes[start].target].y);
+  nodes[start].targetLevel = targetLevel;
   while(openNodes.size() > 0)
   {
     int nodeIndex = getLowest(openNodes);
+    nodes[nodeIndex].target = getTarget(nodeIndex);
     if(nodeIndex == nodes[nodeIndex].target)
     {
-      if(nodeIndex == end) return nodes[nodeIndex].commandChain;
+      if(nodeIndex == end)
+      {
+        std::cout << "Score: " << 75 * targetLevel - (int)nodes[nodeIndex].commandChain.size() << std::endl;
+        return nodes[nodeIndex].commandChain;
+      }
       int toRemove = -1;
       for(int i = 0; i < (int)lambdas.size(); i++)
       {
@@ -36,14 +43,23 @@ std::string Pathfinder::findPath(int start, int end)
           toRemove = i;
       }
       lambdas.erase(lambdas.begin() + toRemove, lambdas.begin() + toRemove + 1);
+      std::cout << "target found. targets remaining: " << lambdas.size() << std::endl;
       updTargets();
       openNodes.push_back(nodeIndex);
       nodes[nodeIndex].moveCost = 0;
       nodes[nodeIndex].cost = manhattan(nodes[nodeIndex].x, nodes[nodeIndex].y, nodes[nodes[nodeIndex].target].x, nodes[nodes[nodeIndex].target].y);
+      targetLevel++;
     }
     for(int i = 0; i < (int)nodes[nodeIndex].connections.size(); i++)
     {
       int conn = nodes[nodeIndex].connections[i];
+      if(nodes[conn].targetLevel != targetLevel)
+      {
+        nodes[conn].moveCost = -1;
+        nodes[conn].cost = 0;
+        nodes[conn].targetLevel = targetLevel;
+        nodes[conn].target = getTarget(conn);
+      }
       if((nodes[conn].moveCost == -1 || nodes[conn].moveCost > nodes[nodeIndex].moveCost + 1) && !contains(closedNodes, conn))
       {
         nodes[conn].moveCost = nodes[nodeIndex].moveCost + 1;
@@ -144,12 +160,12 @@ int Pathfinder::getTarget(int node)
 
 void Pathfinder::updTargets()
 {
-  for(int i = 0; i < (int)nodes.size(); i++)
+  /*for(int i = 0; i < (int)nodes.size(); i++)
   {
     nodes[i].target = getTarget(i);
     nodes[i].cost = 0;
     nodes[i].moveCost = -1;
-  }
+  }*/
   openNodes.erase(openNodes.begin(), openNodes.end());
   closedNodes.erase(closedNodes.begin(), closedNodes.end());
 }
