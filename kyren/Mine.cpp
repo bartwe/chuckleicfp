@@ -292,19 +292,20 @@ int Mine::indexOfTrampTarget(MineContent c) const {
     return -1; //error
 }
 
-Coord Mine::getTargetForTramp(MineContent c) const {
+MineContent Mine::getTargetForTramp(MineContent c) const {
   for (auto i : trampMapping) {
     if (i.first == c) {
-      return targetLoc[indexOfTrampTarget(i.second)];
+      return i.second;
     }
   }
-  return {-1, -1}; //error
+  return MineContent::Empty;
 }
 
-std::vector<Coord> Mine::getTrampForTarget(MineContent c) const {
+std::vector<Coord> Mine::getTrampLocsForTarget(MineContent c) const {
   std::vector<Coord> res;
   for (auto i : trampMapping) {
     if (i.second == c) {
+    std::cout << "here" << std::endl;
       res.push_back(trampLoc[indexOfTrampTarget(i.first)]);
     }
   }
@@ -378,10 +379,11 @@ bool Mine::pushMove(RobotCommand command) {
       updateQueue.push_back({robotX - 2, robotY, MineContent::Rock});
       newRobotX = robotX - 1;
     } else if (c >= MineContent::TrampolineA && c <= MineContent::TrampolineI) {
-      Coord jumpTo = getTargetForTramp(c);
+      MineContent target = getTargetForTramp(c);
+      Coord jumpTo = targetLoc[indexOfTrampTarget(target)];
       newRobotX = jumpTo.x;
       newRobotY = jumpTo.y;
-      for (auto i : getTrampForTarget(c)) {
+      for (auto i : getTrampLocsForTarget(target)) {
         updateQueue.push_back({i.x, i.y, MineContent::Empty});
       }
     }
@@ -393,10 +395,11 @@ bool Mine::pushMove(RobotCommand command) {
       updateQueue.push_back({robotX + 2, robotY, MineContent::Rock});
       newRobotX = robotX + 1;
     } else if (c >= MineContent::TrampolineA && c <= MineContent::TrampolineI) {
-      Coord jumpTo = getTargetForTramp(c);
+      MineContent target = getTargetForTramp(c);
+      Coord jumpTo = targetLoc[indexOfTrampTarget(target)];
       newRobotX = jumpTo.x;
       newRobotY = jumpTo.y;
-      for (auto i : getTrampForTarget(c)) {
+      for (auto i : getTrampLocsForTarget(target)) {
         updateQueue.push_back({i.x, i.y, MineContent::Empty});
       }
     }
@@ -406,10 +409,11 @@ bool Mine::pushMove(RobotCommand command) {
     if (c == MineContent::Empty || c == MineContent::Earth || c == MineContent::Lambda || c == MineContent::OpenLift) {
       newRobotY = robotY + 1;
     } else if (c >= MineContent::TrampolineA && c <= MineContent::TrampolineI) {
-      Coord jumpTo = getTargetForTramp(c);
+      MineContent target = getTargetForTramp(c);
+      Coord jumpTo = targetLoc[indexOfTrampTarget(target)];
       newRobotX = jumpTo.x;
       newRobotY = jumpTo.y;
-      for (auto i : getTrampForTarget(c)) {
+      for (auto i : getTrampLocsForTarget(target)) {
         updateQueue.push_back({i.x, i.y, MineContent::Empty});
       }
     }
@@ -418,10 +422,11 @@ bool Mine::pushMove(RobotCommand command) {
     if (c == MineContent::Empty || c == MineContent::Earth || c == MineContent::Lambda || c == MineContent::OpenLift) {
       newRobotY = robotY - 1;
     } else if (c >= MineContent::TrampolineA && c <= MineContent::TrampolineI) {
-      Coord jumpTo = getTargetForTramp(c);
+      MineContent target = getTargetForTramp(c);
+      Coord jumpTo = targetLoc[indexOfTrampTarget(target)];
       newRobotX = jumpTo.x;
       newRobotY = jumpTo.y;
-      for (auto i : getTrampForTarget(c)) {
+      for (auto i : getTrampLocsForTarget(target)) {
         updateQueue.push_back({i.x, i.y, MineContent::Empty});
       }
     }

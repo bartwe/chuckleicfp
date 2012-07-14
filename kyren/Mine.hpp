@@ -96,8 +96,8 @@ public:
   std::string hashcode() const;
   int waterLevel(int turn) const;
   int indexOfTrampTarget(MineContent c) const;
-  Coord getTargetForTramp(MineContent c) const;
-  std::vector<Coord> getTrampForTarget(MineContent c) const;
+  MineContent getTargetForTramp(MineContent c) const;
+  std::vector<Coord> getTrampLocsForTarget(MineContent c) const;
 
 private:
   void set(int x, int y, MineContent c);
