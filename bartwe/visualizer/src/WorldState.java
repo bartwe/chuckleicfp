@@ -103,14 +103,14 @@ public abstract class WorldState {
           String line;
           while ((line = buf.readLine()) != null) {
             String[] para = line.split(" ");
-            if (para[0] == "Water") {
+            if (para[0].equals("Water")) {
               result.initWaterLevel = Integer.parseInt(para[1]);
               result.curWaterLevel = Integer.parseInt(para[1]);
             }
-            if (para[0] == "Flooding") {
+            if (para[0].equals("Flooding")) {
               result.floodingFreq = Integer.parseInt(para[1]);
             }
-            if (para[0] == "Waterproof") {
+            if (para[0].equals("Waterproof")) {
               result.waterproof = Integer.parseInt(para[1]);
             }
           }
