@@ -187,7 +187,6 @@ std::vector<Coord> Mine::getTrampLocsForTarget(MineContent c) const {
   std::vector<Coord> res;
   for (auto i : trampMapping) {
     if (i.second == c) {
-    std::cout << "here" << std::endl;
       res.push_back(trampLoc[indexOfTrampTarget(i.first)]);
     }
   }
