@@ -39,11 +39,17 @@ public: // members:
 		data.resize(xx*yy, initial);
 	}
 
-	inline posidx_t posidx(int x, int y)
+	inline posidx_t pos2idx(int x, int y)
 	{
 		REQUIRE( x >= 0 && x<xx );
 		REQUIRE( y >= 0 && y<yy );
 		return y*xx+x;
+	}
+	inline Position idx2pos(posidx_t idx)
+	{
+	  Position res = {(int)idx % xx, (int)idx/xx};
+	  REQUIRE( pos2idx(res.x, res.y) == idx /* +1 */);
+	  return res;
 	}
 	inline content_t& atidx(posidx_t pos)
 	{
@@ -52,7 +58,7 @@ public: // members:
 	}
 	inline content_t& at(int x, int y)
 	{
-		return atidx(posidx(x,y));
+		return atidx(pos2idx(x,y));
 	}
 	inline content_t& at(Position p)
 	{

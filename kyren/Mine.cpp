@@ -159,6 +159,20 @@ void Mine::read(std::istream& is) {
       set(j, i, c);
     }
   }
+
+  memset(initialTileHistogram, 0, sizeof initialTileHistogram);
+
+  for (int i=0; i<content.gridSize(); i++) {
+    Tile tile = content.atidx(i);
+    initialTileHistogram[charFromTile(tile)]++;
+
+    if (tile==Tile::Rock)
+      rockpositions.insert(i);
+  }
+  REQUIRE( initialTileHistogram[charFromTile(Tile::Robot)] == 1 );
+  REQUIRE( initialTileHistogram[charFromTile(Tile::ClosedLift)] == 1 );
+  REQUIRE( initialTileHistogram[charFromTile(Tile::OpenLift)] == 0 );
+  REQUIRE( initialTileHistogram[charFromTile(Tile::Lambda)] == numInitialLambdas );
 }
 
 int Mine::indexOfTrampTarget(MineContent c) const {
@@ -190,7 +204,6 @@ std::vector<Coord> Mine::getTrampLocsForTarget(MineContent c) const {
 }
 
 MineContent Mine::get(int x, int y) {
-  REQUIRE(! (x < 0 || x >= width || y < 0 || y >= width));
   return content.at(x,y);
 }
 
@@ -341,26 +354,24 @@ bool Mine::pushMove(RobotCommand command) {
   robotX = newRobotX;
   robotY = newRobotY;
 
-  bool allLambdasCollected = true;
-
-  for (int x = 0; x < width; ++x) {
-    for (int y = 0; y < height; ++y) {
-      if (get(x, y) == MineContent::Lambda) {
-        allLambdasCollected = false;
-      } else if (get(x, y) == MineContent::Rock && get(x, y - 1) == MineContent::Empty) {
+  for ( PosIdx rockpos : rockpositions ) {
+    Position rock = content.idx2pos(rockpos);
+    int x = rock.x;
+    int y = rock.y;
+    
+      if (get(x, y - 1) == MineContent::Empty) {
         updateQueue.push_back({x, y, MineContent::Empty});
         updateQueue.push_back({x, y - 1, MineContent::Rock});
-      } else if (get(x, y) == MineContent::Rock && get(x, y - 1) == MineContent::Rock && get(x + 1, y) == MineContent::Empty && get(x + 1, y - 1) == MineContent::Empty) {
+      } else if (get(x, y - 1) == MineContent::Rock && get(x + 1, y) == MineContent::Empty && get(x + 1, y - 1) == MineContent::Empty) {
         updateQueue.push_back({x, y, MineContent::Empty});
         updateQueue.push_back({x + 1, y - 1, MineContent::Rock});
-      } else if (get(x, y) == MineContent::Rock && get(x, y - 1) == MineContent::Rock && get(x - 1, y) == MineContent::Empty && get(x - 1, y - 1) == MineContent::Empty) {
+      } else if (get(x, y - 1) == MineContent::Rock && get(x - 1, y) == MineContent::Empty && get(x - 1, y - 1) == MineContent::Empty) {
         updateQueue.push_back({x, y, MineContent::Empty});
         updateQueue.push_back({x - 1, y - 1, MineContent::Rock});
-      } else if (get(x, y) == MineContent::Rock && get(x, y - 1) == MineContent::Lambda && get(x + 1, y) == MineContent::Empty && get(x + 1, y - 1) == MineContent::Empty) {
+      } else if (get(x, y - 1) == MineContent::Lambda && get(x + 1, y) == MineContent::Empty && get(x + 1, y - 1) == MineContent::Empty) {
         updateQueue.push_back({x, y, MineContent::Empty});
         updateQueue.push_back({x + 1, y - 1, MineContent::Rock});
       }
-    }
   }
 
   curWaterLevel = waterLevel(totalMoves + 1);
@@ -375,7 +386,7 @@ bool Mine::pushMove(RobotCommand command) {
     state = State::Lose;
   }
 
-  if (allLambdasCollected) {
+  if (collectedLambdas == numInitialLambdas) {
     for (auto lift : liftLoc) {
       updateQueue.push_back({lift.x, lift.y, MineContent::OpenLift});
     }
@@ -452,10 +463,14 @@ std::string Mine::hashcode() {
   return std::string((char const*)hash, 20);
 }
 
-void Mine::set(int x, int y, MineContent c) {
-  
-  REQUIRE(!((x < 0 || x >= width || y < 0 || y >= width)));
-  content.at(x,y) = c;
+void Mine::set(int x, int y, MineContent c)
+{
+  Tile& tile = content.at(x,y);
+  if ( tile == Tile::Rock )
+    rockpositions.erase(content.pos2idx(x,y));
+  tile = c;
+  if ( tile == Tile::Rock )
+    rockpositions.insert(content.pos2idx(x,y));
 }
 
 void Mine::updateMine() {

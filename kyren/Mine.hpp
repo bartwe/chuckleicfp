@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <vector>
+#include <set>
 #include <algorithm>
 #include <cstdint>
 #include <cstring>
@@ -97,6 +98,9 @@ private:
 public:
   Grid<Tile> content;
 private:
+  std::set<PosIdx> rockpositions;
+  int initialTileHistogram[128];
+
   std::vector<MineHistory> historyList;
   RobotCommands commandHistory;
 
