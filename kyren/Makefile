@@ -4,7 +4,7 @@ CXXFLAGS=-std=c++0x -O3
 all: main libkyren.so
 
 main: main.o Mine.o sha1.o Searcher.o Heuristic.o Util.o BestSoFar.o
-	$(CXX) $(CXXFLAGS) $^ -o main
+	$(CXX) $(CXXFLAGS) -static $^ -o main
 
 main.o: Searcher.hpp Mine.hpp
 Mine.o: Mine.hpp
