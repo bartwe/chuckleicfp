@@ -10,7 +10,7 @@ main.o: Searcher.hpp Mine.hpp
 Mine.o: Mine.hpp
 Searcher.o: Searcher.hpp Mine.hpp
 
-libkyren.so:
+libkyren.so: $(wildcard *.hpp) $(wildcard *.cpp)
 	g++ $(CXXFLAGS) -fPIC *.cpp -shared -o $@
 
 clean:
