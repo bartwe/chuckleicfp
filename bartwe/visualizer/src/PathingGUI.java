@@ -51,7 +51,7 @@ public class PathingGUI implements KeyListener {
                 if (highLevelPath.size() > 0) {
 //                    /*
                     WorldState cursor = highLevelPath.get(highLevelPath.size() - 1);
-                    System.err.println("Final state score: "+state.score() +"  Reason:"+state.stepResult.toString());
+                    System.err.println("Final state score: "+cursor.score() +"  Reason:"+cursor.stepResult.toString());
 
                     while (cursor != null) {
                         path.add(cursor);

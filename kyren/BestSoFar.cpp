@@ -4,12 +4,14 @@
 #include <stdio.h>
 #include <signal.h>
 
+static int BESTSCORE = -1000000000;
 static char* dabest;
 static char* alternate;
 static int MAXLEN = 0;
 
 static void ourhandler(int signum)
 {
+	printf("# score: %d\n", BESTSCORE);
 	printf("%s\n", Best::GetBest());
 	exit(0);
 }
@@ -25,8 +27,15 @@ void ReserveSpace(int maxcommandlength)
 	// Now register
 	signal(SIGINT, ourhandler);
 }
-void ImproveSolution(char* newsolution)
+bool IsImprovement(int score)
 {
+	return score > BESTSCORE;
+}
+void ImproveSolution(int score, const char* newsolution)
+{
+	if (!IsImprovement(score)) return;
+	BESTSCORE = score;
+
 	int cmdlen = strlen(newsolution);
 	if ( cmdlen > MAXLEN ) cmdlen = MAXLEN;
 
