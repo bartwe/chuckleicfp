@@ -18,10 +18,11 @@ class Pathfinder
     {
       Tiles type;
       std::vector< int > connections;
-      std::vector< Commands > commands;
+      std::vector< std::string > commands;
       std::string commandChain;
       int moveCost, cost;
       int x, y;
+      int target;
     };
 
     std::string findPath(Point start, Point end);
@@ -30,10 +31,14 @@ class Pathfinder
     int manhattan(int x1, int y1, int x2, int y2);
     PNode mToP(NodeMap::MNode m);
     bool contains(std::vector< int > list, int key);
+    int getTarget(int node);
+    void updTargets();
 
     Mine mine;
     Point robot;
     Point lift;
+    bool liftReachable;
+    int pushOpen(int node);
     std::vector< PNode > nodes;
     std::vector< Point > lambdas;
     std::vector< Point > badLambdas;
