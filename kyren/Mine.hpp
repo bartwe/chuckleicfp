@@ -35,8 +35,8 @@ enum class State : uint8_t {
 };
 
 struct Coord {
-  size_t x;
-  size_t y;
+  int x;
+  int y;
 };
 
 class Mine {
@@ -82,7 +82,7 @@ private:
   void updateMine();
 
   struct MineUpdate {
-    size_t x, y;
+    int x, y;
     MineContent c;
   };
 
