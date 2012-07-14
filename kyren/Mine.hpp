@@ -39,6 +39,8 @@ struct Coord {
   int y;
 };
 
+typedef std::vector<RobotCommand> RobotCommands;
+
 class Mine {
 public:
   static MineContent contentFromChar(char c);
@@ -47,7 +49,7 @@ public:
   static char commandChar(RobotCommand command);
   static RobotCommand charToCommand(char command);
   static std::string commandName(RobotCommand command);
-  static std::string commandString(std::vector<RobotCommand> commands);
+  static std::string commandString(RobotCommands commands);
 
   void read(std::istream& is);
 
@@ -58,9 +60,9 @@ public:
   int score();
 
   // Do a series of commands until state != InProgress
-  void evaluate(std::vector<RobotCommand> commandList);
+  void evaluate(RobotCommands commandList);
 
-  void evaluateAndPrint(std::vector<RobotCommand> commandList);
+  void evaluateAndPrint(RobotCommands commandList);
 
   // Returns false if illegal move (and does nothing)
   bool pushMove(RobotCommand command);
@@ -68,7 +70,7 @@ public:
   bool popMove();
 
   int moveCount() const;
-  std::vector<RobotCommand> const& commands() const;
+  RobotCommands const& commands() const;
 
   void print();
 
@@ -101,7 +103,7 @@ public:
   std::vector<MineContent> content;
 private:
   std::vector<MineHistory> historyList;
-  std::vector<RobotCommand> commandHistory;
+  RobotCommands commandHistory;
 
   // NOTE: there can be more than one lift, this is wrong!!! --Jeroen
   std::vector<Coord> liftLoc;

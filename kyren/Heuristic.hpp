@@ -1,19 +1,27 @@
 #include <vector>
-
-class Mine;
+#include "Mine.hpp"
 
 struct Pos { int x,y; };
 
-class SafeZone : public std::vector<char>
+template<typename what>
+class CellBasedData : public std::vector<what>
 {
 public:
-	inline char& at(int x, int y)
+	void init(int width, int height, what initialvalue)
+	{
+		nx = width;
+		this->clear();
+		this->resize(width*height, initialvalue);
+	}
+	inline what& at(int x, int y)
 	{
 		return (*this)[nx*y+x];
 	}
 
 	int nx;
 };
+
+typedef CellBasedData<char> SafeZone;
 
 class Heuristic
 {
@@ -22,6 +30,8 @@ public:
 
 	static void markSafeZone(Mine& mine, SafeZone& o_safezone);
 
+	// will append path
+	void findPathToNearestLambda(Mine& mine, SafeZone& safezone, RobotCommands& o_commands);
 
 	// If you construct a class like this, it will use the static mine
 	// data to make future calls faster... But we need to see in what way
