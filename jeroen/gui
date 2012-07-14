@@ -23,6 +23,8 @@ libicfp.GetData.argtypes = data_t, POINTER(c_int), POINTER(c_int)
 libicfp.GetData.restype = POINTER(c_char)
 libicfp.DoMove.argtypes = data_t, c_char
 libicfp.DoMove.restype = None
+libicfp.GetSafeZone.argtypes = data_t,
+libicfp.GetSafeZone.restype = POINTER(c_char)
 
 # begin wxGlade: extracode
 # end wxGlade
@@ -57,6 +59,8 @@ class Projection(wx.Control):
         self.x = xx.value
         self.y = yy.value
 
+        self.safezone = None
+
         print self.x, self.y
 
     def clean(self):
@@ -69,8 +73,13 @@ class Projection(wx.Control):
         BMS = 10
         for x in range(self.x):
             for y in range(self.y):
-                cell = self.maze[(self.y-y-1)*self.x + x]
+                cellidx = (self.y-y-1)*self.x + x
+                cell = self.maze[cellidx]
                 dc.DrawBitmap(self.bmp[cell], x*BMS, y*BMS)
+                if self.safezone is not None:
+                    if ord(self.safezone[cellidx]):
+                        dc.DrawBitmap(self.bmp['R'], x*BMS, y*BMS)
+
 
     def OnKey(self, e):
         kc = e.GetKeyCode()
@@ -86,6 +95,11 @@ class Projection(wx.Control):
 
         if kc in kc2char:
             libicfp.DoMove(self.data, kc2char[kc])
+        elif char.lower() == 's':
+            if self.safezone is None:
+                self.safezone = libicfp.GetSafeZone(self.data)
+            else:
+                self.safezone = None
         else:
             print 'Unknown key: %d (%r)' % (kc, char)
             e.Skip()

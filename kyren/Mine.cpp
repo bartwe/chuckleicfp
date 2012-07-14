@@ -127,7 +127,7 @@ void Mine::read(std::istream& is) {
   totalMoves = 0;
 
   std::vector<std::vector<MineContent>> readContent;
-  size_t maxRow = 0;
+  int maxRow = 0;
   while (!is.eof()) {
     char buf[4096];
     is.getline(buf, 4096);
@@ -140,7 +140,7 @@ void Mine::read(std::istream& is) {
     char* c = buf;
     while (*c)
       row.push_back(contentFromChar(*c++));
-    maxRow = std::max(maxRow, row.size());
+    maxRow = std::max<int>(maxRow, row.size());
 
     if (is.eof())
       break;
@@ -176,9 +176,9 @@ void Mine::read(std::istream& is) {
 
   numInitialLambdas = 0;
 
-  for (size_t i = 0; i < readContent.size(); ++i) {
+  for (int i = 0; i < readContent.size(); ++i) {
     auto const& row = readContent[i];
-    for (size_t j = 0; j < row.size(); ++j) {
+    for (int j = 0; j < row.size(); ++j) {
       auto c = row[j];
       if (c == MineContent::Robot) {
         robotX = j;
