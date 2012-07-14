@@ -51,9 +51,10 @@ public class AStar {
             if (node.fScore != nodePos.fScore)
                 continue;
             bestNode = node;
-            if (node.hScore < 1) {
+            if (controller.isEndPoint(node.state))
+            {
                 openSet.clear();
-                continue;
+                break;
             }
             if (node.gScore > horizon)
                 break;

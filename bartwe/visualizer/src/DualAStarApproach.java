@@ -162,7 +162,7 @@ public class DualAStarApproach {
                 }
 
                 public double edgeCost(WorldState from, WorldState to) {
-                    return -(to.score() - from.score());
+                    return 1; // its about shortest path, ignore score
                 }
 
                 public boolean isEndPoint(WorldState state) {
