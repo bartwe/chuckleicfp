@@ -1,5 +1,5 @@
-CXX=g++-4.7
-CXXFLAGS=-std=c++11 -O3
+CXX=g++
+CXXFLAGS=-std=c++0x -O3
 
 all: main libkyren.so
 
