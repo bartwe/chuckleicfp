@@ -74,7 +74,6 @@ class Projection(wx.Control):
                         dc.DrawBitmap(self.bmp['R'], x*BMS, STATUSLINE + y*BMS)
 
         dc.DrawLabel(info, (0, 0, 200, 30))
-        waterlevel = 1
         waterlevelpix = STATUSLINE + BMS * (self.y-waterlevel)
         dc.SetPen(wx.Pen('BLUE', 3))
         dc.DrawLine(0, waterlevelpix, self.x*BMS, waterlevelpix)
