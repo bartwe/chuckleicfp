@@ -100,9 +100,13 @@ void Mine::read(std::istream& is) {
     readContent.push_back(std::move(row));
   }
 
-  initWaterLevel = 0;
-  floodingFreq = 0;
-  waterproof = 10;
+  problem.water.initWaterLevel = 0;
+  problem.water.floodingFreq = 0;
+  problem.water.waterproof = 10;
+
+  problem.beard.growthrate = 25;
+  problem.beard.razors = 0;
+
   while (std::getline(is, line)) {
     char* cline = (char*)line.c_str();
     char* eocmd = strchr(cline, ' ');
@@ -113,16 +117,20 @@ void Mine::read(std::istream& is) {
     const char* parameter = eocmd + 1;
 
     if (strcmp(command, "Water") == 0) {
-      initWaterLevel = atoi(parameter);
+      problem.water.initWaterLevel = atoi(parameter);
     } else if (strcmp(command, "Flooding") == 0) {
-      floodingFreq = atoi(parameter);
+      problem.water.floodingFreq = atoi(parameter);
     } else if (strcmp(command, "Waterproof") == 0) {
-      waterproof = atoi(parameter);
+      problem.water.waterproof = atoi(parameter);
+    } else if (strcmp(command, "Growth") == 0) {
+      problem.beard.growthrate = atoi(parameter);
+    } else if (strcmp(command, "Razors") == 0) {
+      problem.beard.razors = atoi(parameter);
     } else if (strcmp(command, "Trampoline") == 0) {
       trampMapping.push_back({tileFromChar(parameter[0]), tileFromChar(parameter[strlen(parameter)-1])});
     }
   }
-  curWaterLevel = initWaterLevel;
+  curWaterLevel = problem.water.initWaterLevel;
 
   width = maxRow;
   height = readContent.size();
@@ -354,7 +362,7 @@ bool Mine::pushMove(RobotCommand command) {
     submergedSteps = 0;
   }
 
-  if (submergedSteps > waterproof) {
+  if (submergedSteps > problem.water.waterproof) {
     state = State::Lose;
   }
 
@@ -384,10 +392,10 @@ bool Mine::pushMove(RobotCommand command) {
 }
 
 int Mine::waterLevel(int turn) const {
-  if (floodingFreq == 0) {
-    return initWaterLevel;
+  if (problem.water.floodingFreq == 0) {
+    return problem.water.initWaterLevel;
   } else {
-    return turn / floodingFreq + initWaterLevel;
+    return turn / problem.water.floodingFreq + problem.water.initWaterLevel;
   }
 }
 
@@ -445,5 +453,8 @@ void Mine::set(int x, int y, MineContent c)
     rockpositions.insert(content.pos2idx(x,y));
 }
 
-void Mine::updateMine() {
+void Mine::checkConsistency() {
+	// TODO: check whether the collectedLambdas is correct
+	// TODO: check the rockindex
+	// etc
 }

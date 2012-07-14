@@ -77,7 +77,7 @@ public:
 private:
   void set(int x, int y, MineContent c);
 
-  void updateMine();
+  void checkConsistency();
 
   struct MineUpdate {
     int x, y;
@@ -120,11 +120,20 @@ public:
 
   int collectedLambdas;
   int numInitialLambdas;
-  int initWaterLevel;
   int curWaterLevel;
-  int floodingFreq;
-  int waterproof;
   int submergedSteps;
+
+  struct {
+	  struct {
+		  int initWaterLevel;
+		  int waterproof;
+		  int floodingFreq;
+	  } water;
+	  struct {
+		  int growthrate;
+		  int razors;
+	  } beard;
+  } problem;
 };
 
 #endif
