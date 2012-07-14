@@ -52,6 +52,7 @@ class Projection(wx.Control):
         self.y = yy.value
 
         self.safezone = None
+        self.command = ''
 
         print self.x, self.y
 
@@ -79,7 +80,8 @@ class Projection(wx.Control):
                     if ord(self.safezone[cellidx]):
                         dc.DrawBitmap(self.bmp['R'], x*BMS, STATUSLINE + y*BMS)
 
-        dc.DrawLabel(info, (0, 0, 200, 30))
+        dc.DrawLabel(info, (0, 0, 200, 15))
+        dc.DrawLabel(self.command, (0, 15, 200, 15))
         waterlevelpix = STATUSLINE + BMS * (self.y-waterlevel)
         dc.SetPen(wx.Pen('BLUE', 3))
         dc.DrawLine(0, waterlevelpix, self.x*BMS, waterlevelpix)
@@ -90,15 +92,21 @@ class Projection(wx.Control):
         char = unichr(kc)
         p = self.GetParent()
 
-        kc2char = {
+        kc2cmd = {
                 wx.WXK_UP: 'U',
                 wx.WXK_DOWN: 'D',
                 wx.WXK_LEFT: 'L',
                 wx.WXK_RIGHT: 'R',
                 }
 
-        if kc in kc2char:
-            libicfp.DoMove(self.data, kc2char[kc])
+        def do(c):
+            libicfp.DoMove(self.data, c)
+            self.command += c
+
+        if kc in kc2cmd:
+            do(kc2cmd[kc])
+        elif char.lower() in 'aw':
+            do(str(char.upper()))
         elif char.lower() == 's':
             if self.safezone is None:
                 self.safezone = libicfp.GetSafeZone(self.data)
