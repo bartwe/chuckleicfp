@@ -57,7 +57,6 @@ public class AStar {
                 break;
             }
             if (node.gScore > horizon) {
-                System.err.println("Horizoned.");
                 break;
             }
 

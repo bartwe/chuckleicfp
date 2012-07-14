@@ -9,3 +9,7 @@ javac -g -sourcepath src -d out/production/visualizer/ `find src -iname
 to run:
 
 java -ea -cp out/production/visualizer DisplayWorld ../../omni/contest10.map
+
+
+cat ../maps/contest1.map | java -ea -cp out/production/visualizer DasaConsole
+

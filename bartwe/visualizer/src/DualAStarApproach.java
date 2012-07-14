@@ -1,11 +1,10 @@
-import javax.sound.midi.ControllerEventListener;
-import java.awt.geom.Path2D;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 
 public class DualAStarApproach {
+    public static boolean stop;
 /*
 
     A: number of nodes in the top layer that a node may branch out to
@@ -27,6 +26,8 @@ public class DualAStarApproach {
         final int horizon = initialState.getM() * initialState.getN();
         AStar pathfinder = new AStar(new AStar.Controller() {
             public int getAdjacent(WorldState state, WorldState[] adjacentsBuffer) {
+                if (stop)
+                    return 0;
                 if (state.stepResult != StepResult.Ok)
                     return 0;
                 return findInnerPaths(state, adjacentsBuffer);
@@ -68,6 +69,10 @@ public class DualAStarApproach {
         return pathfinder.getResult();
     }
 
+    public void stop() {
+        stop = true;
+    }
+
     class LambdaGoal {
         public WorldState state;
         public int x;
@@ -90,9 +95,10 @@ public class DualAStarApproach {
         int n = state.getN();
         int m = state.getM();
         while (true) {
-
+            if (stop)
+                break;
             for (int y = -radius; y <= radius; y++) {
-                int y_ = y + state.robotY;
+               int y_ = y + state.robotY;
                 if ((y_ < 1) || (y_ > m))
                     continue;
                 for (int x = -radius; x <= radius; x++) {
@@ -136,6 +142,8 @@ public class DualAStarApproach {
             final LambdaGoal lg = goal;
             goal.pathfinder = new AStar(new AStar.Controller() {
                 public int getAdjacent(WorldState state, WorldState[] adjacentsBuffer) {
+                    if (stop)
+                        return 0;
                     if (state.stepResult != StepResult.Ok)
                         return 0;
                     int count = 0;
