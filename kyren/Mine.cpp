@@ -176,7 +176,7 @@ MineContent Mine::get(int x, int y) {
   if (x < 0 || x >= width || y < 0 || y >= width)
     return MineContent::Wall;
   else
-    return content[x * width + y];
+    return content[y * width + x];
 }
 
 State Mine::currentState() {
@@ -378,7 +378,7 @@ void Mine::set(int x, int y, MineContent c) {
   if (x < 0 || x >= width || y < 0 || y >= width)
     return;
   else
-    content[x * width + y] = c;
+    content[y * width + x] = c;
 }
 
 void Mine::updateMine() {
