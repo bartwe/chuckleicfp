@@ -24,6 +24,24 @@ enum class MineContent : uint8_t {
   ClosedLift,
   OpenLift,
   Earth,
+  TrampolineA,
+  TrampolineB,
+  TrampolineC,
+  TrampolineD,
+  TrampolineE,
+  TrampolineF,
+  TrampolineG,
+  TrampolineH,
+  TrampolineI,
+  Target1,
+  Target2,
+  Target3,
+  Target4,
+  Target5,
+  Target6,
+  Target7,
+  Target8,
+  Target9,
   Empty
 };
 
@@ -77,6 +95,9 @@ public:
   // Returns 20 char (binary) SHA-1 hash of map state.
   std::string hashcode() const;
   int waterLevel(int turn) const;
+  int indexOfTrampTarget(MineContent c) const;
+  Coord getTargetForTramp(MineContent c) const;
+  std::vector<Coord> getTrampForTarget(MineContent c) const;
 
 private:
   void set(int x, int y, MineContent c);
@@ -105,8 +126,10 @@ private:
   std::vector<MineHistory> historyList;
   RobotCommands commandHistory;
 
-  // NOTE: there can be more than one lift, this is wrong!!! --Jeroen
   std::vector<Coord> liftLoc;
+  std::vector<Coord> trampLoc;
+  std::vector<Coord> targetLoc;
+  std::vector<std::pair<MineContent, MineContent>> trampMapping;
 
 public:
   int totalMoves;

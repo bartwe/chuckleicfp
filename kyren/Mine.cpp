@@ -18,6 +18,42 @@ MineContent Mine::contentFromChar(char c) {
       return MineContent::OpenLift;
     case '.':
       return MineContent::Earth;
+    case 'A':
+      return MineContent::TrampolineA;
+    case 'B':
+      return MineContent::TrampolineB;
+    case 'C':
+      return MineContent::TrampolineC;
+    case 'D':
+      return MineContent::TrampolineD;
+    case 'E':
+      return MineContent::TrampolineE;
+    case 'F':
+      return MineContent::TrampolineF;
+    case 'G':
+      return MineContent::TrampolineG;
+    case 'H':
+      return MineContent::TrampolineH;
+    case 'I':
+      return MineContent::TrampolineI;
+    case '1':
+      return MineContent::Target1;
+    case '2':
+      return MineContent::Target2;
+    case '3':
+      return MineContent::Target3;
+    case '4':
+      return MineContent::Target4;
+    case '5':
+      return MineContent::Target5;
+    case '6':
+      return MineContent::Target6;
+    case '7':
+      return MineContent::Target7;
+    case '8':
+      return MineContent::Target8;
+    case '9':
+      return MineContent::Target9;
     case ' ':
       return MineContent::Empty;
     default:
@@ -41,6 +77,42 @@ char Mine::charFromContent(MineContent c) {
       return 'O';
     case MineContent::Earth:
       return '.';
+    case MineContent::TrampolineA:
+      return 'A';
+    case MineContent::TrampolineB:
+      return 'B';
+    case MineContent::TrampolineC:
+      return 'C';
+    case MineContent::TrampolineD:
+      return 'D';
+    case MineContent::TrampolineE:
+      return 'E';
+    case MineContent::TrampolineF:
+      return 'F';
+    case MineContent::TrampolineG:
+      return 'G';
+    case MineContent::TrampolineH:
+      return 'H';
+    case MineContent::TrampolineI:
+      return 'I';
+    case MineContent::Target1:
+      return '1';
+    case MineContent::Target2:
+      return '2';
+    case MineContent::Target3:
+      return '3';
+    case MineContent::Target4:
+      return '4';
+    case MineContent::Target5:
+      return '5';
+    case MineContent::Target6:
+      return '6';
+    case MineContent::Target7:
+      return '7';
+    case MineContent::Target8:
+      return '8';
+    case MineContent::Target9:
+      return '9';
     case MineContent::Empty:
       return ' ';
     default:
@@ -164,6 +236,8 @@ void Mine::read(std::istream& is) {
       floodingFreq = atoi(parameter);
     } else if (strcmp(command, "Waterproof") == 0) {
       waterproof = atoi(parameter);
+    } else if (strcmp(command, "Trampoline") == 0) {
+      trampMapping.push_back({contentFromChar(parameter[0]), contentFromChar(parameter[strlen(parameter)-1])});
     }
   }
   curWaterLevel = initWaterLevel;
@@ -190,11 +264,51 @@ void Mine::read(std::istream& is) {
         liftLoc.push_back({j, i});
       } else if (c == MineContent::Lambda) {
 	      numInitialLambdas++;
+      } else if (c >= MineContent::TrampolineA && c <= MineContent::TrampolineI) {
+        int index = indexOfTrampTarget(c);
+        if ((int)c >= trampLoc.size()) {
+          trampLoc.resize(index+1);
+        }
+        trampLoc[index] = {j, i};
+      } else if (c >= MineContent::Target1 && c <= MineContent::Target9) {
+        int index = indexOfTrampTarget(c);
+        if ((int)c >= targetLoc.size()) {
+          targetLoc.resize(index+1);
+        }
+        targetLoc[index] = {j, i};
       }
 
       set(j, i, c);
     }
   }
+}
+
+int Mine::indexOfTrampTarget(MineContent c) const {
+  if (c >= MineContent::TrampolineA && c <= MineContent::TrampolineI)
+    return (int)c - (int)MineContent::TrampolineA;
+  else if (c >= MineContent::Target1 && c <= MineContent::Target9)
+    return (int)c - (int)MineContent::Target1;
+  else
+    return -1; //error
+}
+
+Coord Mine::getTargetForTramp(MineContent c) const {
+  for (auto i : trampMapping) {
+    if (i.first == c) {
+      return targetLoc[indexOfTrampTarget(i.second)];
+    }
+  }
+  return {-1, -1}; //error
+}
+
+std::vector<Coord> Mine::getTrampForTarget(MineContent c) const {
+  std::vector<Coord> res;
+  for (auto i : trampMapping) {
+    if (i.second == c) {
+      res.push_back(trampLoc[indexOfTrampTarget(i.first)]);
+    }
+  }
+  return res;
 }
 
 MineContent Mine::get(int x, int y) {
@@ -263,6 +377,13 @@ bool Mine::pushMove(RobotCommand command) {
     } else if (c == MineContent::Rock && get(robotX - 2, robotY) == MineContent::Empty) {
       updateQueue.push_back({robotX - 2, robotY, MineContent::Rock});
       newRobotX = robotX - 1;
+    } else if (c >= MineContent::TrampolineA && c <= MineContent::TrampolineI) {
+      Coord jumpTo = getTargetForTramp(c);
+      newRobotX = jumpTo.x;
+      newRobotY = jumpTo.y;
+      for (auto i : getTrampForTarget(c)) {
+        updateQueue.push_back({i.x, i.y, MineContent::Empty});
+      }
     }
   } else if (command == RobotCommand::Right) {
     auto c = get(robotX + 1, robotY);
@@ -271,15 +392,39 @@ bool Mine::pushMove(RobotCommand command) {
     } else if (c == MineContent::Rock && get(robotX + 2, robotY) == MineContent::Empty) {
       updateQueue.push_back({robotX + 2, robotY, MineContent::Rock});
       newRobotX = robotX + 1;
+    } else if (c >= MineContent::TrampolineA && c <= MineContent::TrampolineI) {
+      Coord jumpTo = getTargetForTramp(c);
+      newRobotX = jumpTo.x;
+      newRobotY = jumpTo.y;
+      for (auto i : getTrampForTarget(c)) {
+        updateQueue.push_back({i.x, i.y, MineContent::Empty});
+      }
     }
+
   } else if (command == RobotCommand::Up) {
     auto c = get(robotX, robotY + 1);
-    if (c == MineContent::Empty || c == MineContent::Earth || c == MineContent::Lambda || c == MineContent::OpenLift)
+    if (c == MineContent::Empty || c == MineContent::Earth || c == MineContent::Lambda || c == MineContent::OpenLift) {
       newRobotY = robotY + 1;
+    } else if (c >= MineContent::TrampolineA && c <= MineContent::TrampolineI) {
+      Coord jumpTo = getTargetForTramp(c);
+      newRobotX = jumpTo.x;
+      newRobotY = jumpTo.y;
+      for (auto i : getTrampForTarget(c)) {
+        updateQueue.push_back({i.x, i.y, MineContent::Empty});
+      }
+    }
   } else if (command == RobotCommand::Down) {
     auto c = get(robotX, robotY - 1);
-    if (c == MineContent::Empty || c == MineContent::Earth || c == MineContent::Lambda || c == MineContent::OpenLift)
+    if (c == MineContent::Empty || c == MineContent::Earth || c == MineContent::Lambda || c == MineContent::OpenLift) {
       newRobotY = robotY - 1;
+    } else if (c >= MineContent::TrampolineA && c <= MineContent::TrampolineI) {
+      Coord jumpTo = getTargetForTramp(c);
+      newRobotX = jumpTo.x;
+      newRobotY = jumpTo.y;
+      for (auto i : getTrampForTarget(c)) {
+        updateQueue.push_back({i.x, i.y, MineContent::Empty});
+      }
+    }
   }
 
   // If we have been commanded to move, but haven't moved, command must not
