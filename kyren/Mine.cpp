@@ -38,6 +38,22 @@ char Mine::commandChar(RobotCommand command) {
   }
 }
 
+struct delta_t
+{
+  int dx, dy;
+};
+
+static delta_t BeardDirs[] = {
+    { 1, -1},
+    { 1,  0},
+    { 1,  1},
+    { 0,  1},
+    {-1,  1},
+    {-1,  0},
+    {-1, -1},
+    { 0, -1},
+  };
+
 RobotCommand Mine::charToCommand(char command)
 {
 	switch (command) {
@@ -178,8 +194,8 @@ void Mine::read(std::istream& is) {
     Tile tile = content.atidx(i);
     initialTileHistogram[charFromTile(tile)]++;
 
-    if (tile==Tile::Rock)
-      rockpositions.insert(i);
+    if (tile==Tile::Rock || tile==Tile::Beard)
+      rockbeardpositions.insert(i);
   }
   REQUIRE( initialTileHistogram[charFromTile(Tile::Robot)] == 1 );
   REQUIRE( initialTileHistogram[charFromTile(Tile::ClosedLift)] == 1 );
@@ -255,6 +271,7 @@ void Mine::evaluateAndPrint(RobotCommands commandList) {
 }
 
 bool Mine::pushMove(RobotCommand command) {
+  checkConsistency();
   if (state != State::InProgress)
     return false;
 
@@ -263,6 +280,7 @@ bool Mine::pushMove(RobotCommand command) {
     commandHistory.push_back(command);
     historyList.push_back({{}, var});
     ++totalMoves;
+    checkConsistency();
     return true;
   }
 
@@ -302,7 +320,10 @@ bool Mine::pushMove(RobotCommand command) {
     // If we have been commanded to move, but haven't moved, command must not
     // have been valid, do nothing.
     if (newRobotX == var.robotX && newRobotY == var.robotY)
+    {
+      checkConsistency();
       return false;
+    }
   }
 
   commandHistory.push_back(command);
@@ -330,11 +351,13 @@ bool Mine::pushMove(RobotCommand command) {
   var.robotX = newRobotX;
   var.robotY = newRobotY;
 
-  for ( PosIdx rockpos : rockpositions ) {
-    Position rock = content.idx2pos(rockpos);
-    int x = rock.x;
-    int y = rock.y;
+  bool beardGrowTime = (moveCount()+1) % problem.beard.growthrate == 0;
+  for ( PosIdx rockbeardpos : rockbeardpositions ) {
+    Position rockbeard = content.idx2pos(rockbeardpos);
+    int x = rockbeard.x;
+    int y = rockbeard.y;
     
+    if (content.atidx(rockbeardpos) == Tile::Rock) {
       if (get(x, y - 1) == MineContent::Empty) {
         updateQueue.push_back({x, y, MineContent::Empty});
         updateQueue.push_back({x, y - 1, MineContent::Rock});
@@ -348,6 +371,19 @@ bool Mine::pushMove(RobotCommand command) {
         updateQueue.push_back({x, y, MineContent::Empty});
         updateQueue.push_back({x + 1, y - 1, MineContent::Rock});
       }
+    } else {
+      REQUIRE( content.atidx(rockbeardpos) == Tile::Beard);
+      if ( beardGrowTime )
+      {
+	for ( auto dir : BeardDirs ) {
+	  int nx = x + dir.dx;
+	  int ny = y + dir.dy;
+	  if ( get(nx, ny) == Tile::Empty ) {
+	    updateQueue.push_back({nx, ny, MineContent::Beard});
+	  }
+	}
+      }
+    }
   }
 
   var.curWaterLevel = waterLevel(totalMoves + 1);
@@ -384,6 +420,7 @@ bool Mine::pushMove(RobotCommand command) {
   ++totalMoves;
     
 
+  checkConsistency();
   return true;
 }
 
@@ -439,15 +476,16 @@ std::string Mine::hashcode() {
 void Mine::set(int x, int y, MineContent c)
 {
   Tile& tile = content.at(x,y);
-  if ( tile == Tile::Rock )
-    rockpositions.erase(content.pos2idx(x,y));
+  if ( tile == Tile::Rock || tile == Tile::Beard )
+    rockbeardpositions.erase(content.pos2idx(x,y));
   tile = c;
-  if ( tile == Tile::Rock )
-    rockpositions.insert(content.pos2idx(x,y));
+  if ( tile == Tile::Rock || tile == Tile::Beard )
+    rockbeardpositions.insert(content.pos2idx(x,y));
 }
 
 void Mine::checkConsistency() {
 	// TODO: check whether the collectedLambdas is correct
 	// TODO: check the rockindex
 	// etc
+  REQUIRE( moveCount() == historyList.size() );
 }

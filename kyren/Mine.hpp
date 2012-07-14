@@ -103,7 +103,8 @@ private:
 public:
   Grid<Tile> content;
 private:
-  std::set<PosIdx> rockpositions;
+  // any tile type that can trigger an update
+  std::set<PosIdx> rockbeardpositions;
 
   std::vector<MineHistory> historyList;
   RobotCommands commandHistory;

@@ -10,6 +10,8 @@ enum class Tile : uint8_t {
   ClosedLift = 'L',
   OpenLift = 'O',
   Earth = '.',
+  Beard = 'W',
+  Razor = '!',
   TrampolineA = 'A',
   TrampolineB = 'B',
   TrampolineC = 'C',
