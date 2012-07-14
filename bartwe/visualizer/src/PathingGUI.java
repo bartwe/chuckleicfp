@@ -1,20 +1,20 @@
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
 
-public class Manual implements KeyListener {
+public class PathingGUI implements KeyListener {
     DisplayWindow window;
     WorldState state;
-    WorldState nextState;
     int[] raw;
+    private ArrayList<WorldState> path;
 
     public static void main(String[] args) {
         PathingGUI manual = new PathingGUI(WorldState.loadFromDisk(args[0]));
     }
 
-    public Manual(WorldState state) {
+    public PathingGUI(WorldState state) {
         this.state = state;
-        nextState = state.copy();
         window = new DisplayWindow(state.getN(), state.getM(), calcPixelShift(state.getN(), state.getM()));
         raw = new int[window.height * window.width];
         state.render(raw);
@@ -39,46 +39,26 @@ public class Manual implements KeyListener {
     }
 
     public void keyPressed(KeyEvent e) {
-        RobotAction action;
         switch (e.getKeyCode()) {
-            case KeyEvent.VK_W:
-            case KeyEvent.VK_UP:
-                action = RobotAction.Up;
-                break;
-            case KeyEvent.VK_S:
-            case KeyEvent.VK_DOWN:
-                action = RobotAction.Down;
-                break;
-            case KeyEvent.VK_A:
-            case KeyEvent.VK_LEFT:
-                action = RobotAction.Left;
-                break;
-            case KeyEvent.VK_D:
-            case KeyEvent.VK_RIGHT:
-                action = RobotAction.Right;
-                break;
             case KeyEvent.VK_SPACE:
-                action = RobotAction.Wait;
+                DualAStarApproach dasa = new DualAStarApproach();
+                path = dasa.findPath(state);
+                if (path.size() > 0)
+                    state = path.remove(0);
+                else
+                    Toolkit.getDefaultToolkit().beep();
                 break;
             case KeyEvent.VK_ENTER:
-                action = RobotAction.Abort;
+                if (path.size() > 0)
+                    state = path.remove(0);
+                else
+                    Toolkit.getDefaultToolkit().beep();
                 break;
             default:
                 Toolkit.getDefaultToolkit().beep();
                 return;
         }
 
-        StepLogic sl = new StepLogic();
-        sl.applyStep(state, nextState, action);
-        if (nextState.stepResult != StepResult.Ok) {
-           Toolkit.getDefaultToolkit().beep();
-        }
-        else
-        {
-            WorldState flip = state;
-            state = nextState;
-            nextState = flip;
-        }
         state.render(raw);
         window.draw(raw);
     }

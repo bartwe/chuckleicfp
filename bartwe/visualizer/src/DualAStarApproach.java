@@ -1,4 +1,9 @@
 import javax.sound.midi.ControllerEventListener;
+import java.awt.geom.Path2D;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 
 public class DualAStarApproach {
 /*
@@ -18,15 +23,17 @@ public class DualAStarApproach {
     The point of the open/closed keying is to detect multiple paths to a point, and pick the on with the least steps.
 */
 
-    void findPath(WorldState initialState) {
+    ArrayList<WorldState> findPath(WorldState initialState) {
         final int horizon = initialState.getM() * initialState.getN();
         AStar pathfinder = new AStar(new AStar.Controller() {
             public int getAdjacent(WorldState state, WorldState[] adjacentsBuffer) {
+                if (state.stepResult != StepResult.Ok)
+                    return 0;
                 return findInnerPaths(state, adjacentsBuffer);
             }
 
             public double goalHeuristic(WorldState state) {
-                return 0; // no know goal know, return something low
+                return (state.stepResult == StepResult.Win) ? 0 : 1; // no know goal know, return something low
             }
 
             public double edgeCost(WorldState from, WorldState to) {
@@ -34,7 +41,21 @@ public class DualAStarApproach {
             }
 
             public boolean isEndPoint(WorldState state) {
-                return state.stepResult != StepResult.Ok;
+                return state.stepResult == StepResult.Win;
+            }
+
+            public AStar.AStarNode findBest(AStar.AStarNode best, HashMap<WorldStateHash, AStar.AStarNode> nodes) {
+                if (best.state.stepResult == StepResult.Win)
+                    return best;
+                double bestScore = best.state.score();
+                for (AStar.AStarNode node : nodes.values()) {
+                    double score = node.state.score();
+                    if ((score > bestScore) || ((score == bestScore) && (node.gScore < best.gScore))) {
+                        bestScore = score;
+                        best = node;
+                    }
+                }
+                return best;
             }
 
             public double horizon() {
@@ -44,20 +65,73 @@ public class DualAStarApproach {
 
         while (!pathfinder.run()) {
         }
-        pathfinder.getResult();
+        return pathfinder.getResult();
+    }
 
+    class LambdaGoal {
+        public WorldState state;
+        public int x;
+        public int y;
+        public int radius;
+
+        public AStar pathfinder;
+        public boolean done;
+
+        public LambdaGoal(WorldState state, int x_, int y_, int radius) {
+            this.state = state;
+            this.x = x_;
+            this.y = y_;
+            this.radius = radius;
+        }
+    }
+
+    private void findLambdas(WorldState state, ArrayList<LambdaGoal> goals) {
+        int radius = 1;
+        int n = state.getN();
+        int m = state.getM();
+        while (true) {
+
+            for (int y = -radius; y <= radius; y++) {
+                int y_ = y + state.robotY;
+                if ((y_ < 1) || (y_ > m))
+                    continue;
+                for (int x = -radius; x <= radius; x++) {
+                    int x_ = x + state.robotX;
+                    if ((x_ < 1) || (x_ > n))
+                        continue;
+                    if (Math.abs(x_) + Math.abs(y) != radius)
+                        continue; // zomg, expensive
+                    if (state.get(x_, y_) == Cell.Lambda)
+                        goals.add(new LambdaGoal(state, x_, y_, radius));
+                }
+            }
+
+            if ((goals.size() >= 10) || (goals.size() == state.lambdaRemaining))
+                break;
+            if ((radius >= n) && (radius >= m))
+                break;
+            radius++;
+        }
+        Collections.sort(goals, new Comparator<LambdaGoal>() {
+            public int compare(LambdaGoal o1, LambdaGoal o2) {
+                return o1.radius - o2.radius;
+            }
+        });
     }
 
     private int findInnerPaths(WorldState initialState, WorldState[] adjacentsBuffer) {
+        int results = 0;
+        final int horizon = initialState.getM() * initialState.getN();
+        final StepLogic logic = new StepLogic();
+
+        ArrayList<LambdaGoal> goals = new ArrayList<LambdaGoal>();
+
+        findLambdas(initialState, goals);
 
         //find a number of lambdas to try and reach, path find them concurrently, stop looking if you find enough of them, abandon rest.
-        {
-
-            final int horizon = initialState.getM() * initialState.getN();
-            final StepLogic logic = new StepLogic();
-            final int goalX = -1;
-            final int goalY = -1;
-            AStar pathfinder = new AStar(new AStar.Controller() {
+        for (LambdaGoal goal : goals) {
+            final LambdaGoal lg = goal;
+            goal.pathfinder = new AStar(new AStar.Controller() {
                 public int getAdjacent(WorldState state, WorldState[] adjacentsBuffer) {
                     if (state.stepResult != StepResult.Ok)
                         return 0;
@@ -81,7 +155,7 @@ public class DualAStarApproach {
                 }
 
                 public double goalHeuristic(WorldState state) {
-                    return Math.abs(state.robotX - goalX) + Math.abs(state.robotY - goalY);
+                    return Math.abs(state.robotX - lg.x) + Math.abs(state.robotY - lg.y);
                 }
 
                 public double edgeCost(WorldState from, WorldState to) {
@@ -89,20 +163,45 @@ public class DualAStarApproach {
                 }
 
                 public boolean isEndPoint(WorldState state) {
-                    return Math.abs(state.robotX - goalX) + Math.abs(state.robotY - goalY) == 0;
+                    return Math.abs(state.robotX - lg.x) + Math.abs(state.robotY - lg.y) == 0;
+                }
+
+
+                public AStar.AStarNode findBest(AStar.AStarNode best, HashMap<WorldStateHash, AStar.AStarNode> nodes) {
+                    if (isEndPoint(best.state))
+                        return best;
+                    return null; // no runner up solutions, we just want to go to the specified lambdas
                 }
 
                 public double horizon() {
                     return horizon;
                 }
-            }, initialState);
-
-            while (!pathfinder.run()) {
-            }
-            pathfinder.getResult();
+            }, goal.state);
         }
 
-        return 0;
+        while (true) {
+            boolean active = false;
+            for (LambdaGoal goal : goals) {
+                if (goal.done)
+                    continue;
+                if (goal.pathfinder.run()) {
+                    goal.done = true;
+                    ArrayList<WorldState> path = goal.pathfinder.getResult();
+                    if ((path != null)&&(path.size()>1) && (results < adjacentsBuffer.length))
+                    {
+                        adjacentsBuffer[results] = path.get(path.size()-1);
+                        results++;
+                    }
+                } else
+                    active = true;
+            }
+            if (!active)
+                break;
+            if (adjacentsBuffer.length > 10)
+                break;
+        }
+
+        return results;
     }
 
 
