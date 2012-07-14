@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public abstract class WorldState {
+    protected int steps = 0;
 
     protected int robotX, robotY;
     protected int exitX, exitY;
     protected int lambdaCollected;
     protected int lambdaRemaining;
+
+    protected StepResult stepResult = StepResult.Ok;
 
     public abstract byte get(int x, int y);
 
@@ -113,10 +116,13 @@ public abstract class WorldState {
         exitY = current.exitY;
         lambdaCollected = current.lambdaCollected;
         lambdaRemaining = current.lambdaRemaining;
+        steps = current.steps;
     }
 
     public abstract WorldState copy();
 
     public abstract WorldStateHash getHash();
+
+    public abstract int score();
 }
 

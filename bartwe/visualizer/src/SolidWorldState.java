@@ -1,7 +1,7 @@
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+
 
 public class SolidWorldState extends WorldState {
     byte[][] data;
@@ -84,6 +84,7 @@ public class SolidWorldState extends WorldState {
         result.exitY = exitY;
         result.lambdaCollected = lambdaCollected;
         result.lambdaRemaining = lambdaRemaining;
+        result.steps = steps;
         return result;
     }
 
@@ -113,6 +114,11 @@ public class SolidWorldState extends WorldState {
         md.update(bb);
         for (int i = 0; i < data.length; ++i)
             md.update(data[i]);
-        return new WorldStateHash(md.digest());
+        hash = new WorldStateHash(md.digest());
+        return hash;
+    }
+
+    public int score() {
+        return lambdaCollected * 50 - steps;
     }
 }
