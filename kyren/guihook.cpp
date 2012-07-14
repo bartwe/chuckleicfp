@@ -28,6 +28,15 @@ char* GetData(Mine* m, int* width, int* height)
 	return (char*)&m->content[0];
 }
 
+void GetInfo(Mine* m, char* str, int buflen, int* waterlevel)
+{
+	snprintf(str, buflen-1, "SCORE=%d (state=%s, move %d, submerged for %d)",
+			m->score(), Mine::stateToString(m->state).c_str(),
+			m->totalMoves, m->submergedSteps);
+
+	*waterlevel = m->curWaterLevel;
+}
+
 char* GetSafeZone(Mine* m)
 {
 	static SafeZone sz;

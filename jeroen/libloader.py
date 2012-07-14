@@ -16,6 +16,8 @@ def LoadLibrary():
     libicfp.DoMove.argtypes = data_t, c_char
     libicfp.DoMove.restype = c_int
     if kyren:
+        libicfp.GetInfo.argtypes = data_t, POINTER(c_char), c_int, POINTER(c_int)
+        libicfp.GetInfo.restype = None
         libicfp.GetSafeZone.argtypes = data_t,
         libicfp.GetSafeZone.restype = POINTER(c_char)
 

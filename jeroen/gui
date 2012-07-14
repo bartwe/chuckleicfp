@@ -56,15 +56,28 @@ class Projection(wx.Control):
         dc = wx.PaintDC(self)
         p = self.GetParent()
 
+        buf = (c_char * 1024)()
+        waterlevel = c_int()
+        libicfp.GetInfo(self.data, buf, 1024, waterlevel)
+        waterlevel = waterlevel.value
+        info = buf.value
+
+        STATUSLINE = 30
         BMS = 10
         for x in range(self.x):
             for y in range(self.y):
                 cellidx = (self.y-y-1)*self.x + x
                 cell = self.maze[cellidx]
-                dc.DrawBitmap(self.bmp[cell], x*BMS, y*BMS)
+                dc.DrawBitmap(self.bmp[cell], x*BMS, STATUSLINE + y*BMS)
                 if self.safezone is not None:
                     if ord(self.safezone[cellidx]):
-                        dc.DrawBitmap(self.bmp['R'], x*BMS, y*BMS)
+                        dc.DrawBitmap(self.bmp['R'], x*BMS, STATUSLINE + y*BMS)
+
+        dc.DrawLabel(info, (0, 0, 200, 30))
+        waterlevel = 1
+        waterlevelpix = STATUSLINE + BMS * (self.y-waterlevel)
+        dc.SetPen(wx.Pen('BLUE', 3))
+        dc.DrawLine(0, waterlevelpix, self.x*BMS, waterlevelpix)
 
 
     def OnKey(self, e):

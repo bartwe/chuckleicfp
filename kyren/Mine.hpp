@@ -108,8 +108,8 @@ private:
   // NOTE: there can be more than one lift, this is wrong!!! --Jeroen
   std::vector<Coord> liftLoc;
 
-  int totalMoves;
 public:
+  int totalMoves;
   int width;
   int height;
 
