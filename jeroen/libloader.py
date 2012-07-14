@@ -4,7 +4,7 @@ import os
 def LoadLibrary():
     kyren = os.path.exists('libkyren.so')
     if kyren:
-        libicfp = CDLL('./libicfp.so')
+        libicfp = CDLL('./libkyren.so')
     else:
         libicfp = CDLL('./libicfp.so')
 
