@@ -9,18 +9,50 @@ public class DasaConsole {
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
-                dasa.stop();
+                DualAStarApproach.stop();
             }
         });
 
+        Thread oomWatcher = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    while (true) {
+                        long memInUse = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+                        if (memInUse > 600 * 1000 * 1000) {
+                            DualAStarApproach.stop();
+
+                            Runtime.getRuntime().gc();
+                            Runtime.getRuntime().gc();
+                            return;
+                        }
+                        Thread.sleep(100);
+                    }
+                } catch (InterruptedException e) {
+                }
+            }
+        });
+        oomWatcher.setDaemon(true);
+        oomWatcher.start();
+
         try {
-            WorldState initialState = WorldState.readFromStream(System.in);
+            String file = null;
+            for (String arg : args)
+                if (!arg.startsWith("-"))
+                    file = arg;
+
+            WorldState initialState;
+
+            if (file == null)
+                initialState = WorldState.readFromStream(System.in);
+            else
+                initialState = WorldState.loadFromDisk(file);
             dasa = new DualAStarApproach();
             ArrayList<WorldState> highLevelPath = dasa.findPath(initialState);
             printPath(highLevelPath);
-        } catch (Exception e) {
-            if (args.length > 0)
-                e.printStackTrace();
+        } catch (Throwable e) {
+            for (String arg : args)
+                if (arg.equals("-e"))
+                    e.printStackTrace();
             System.out.println("A");
         }
     }

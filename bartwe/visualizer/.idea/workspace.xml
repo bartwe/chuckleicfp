@@ -108,57 +108,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="PathingGUI.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/PathingGUI.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="64" column="0" selection-start="1344" selection-end="2288" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SolidWorldState.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/SolidWorldState.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="116" column="113" selection-start="3189" selection-end="3189" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DualAStarApproach.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/DualAStarApproach.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="42" column="32" selection-start="1815" selection-end="1815" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="AStar.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/AStar.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="59" column="46" selection-start="1956" selection-end="1956" vertical-scroll-proportion="-11.5">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="WorldState.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="WorldState.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/WorldState.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="14" column="25" selection-start="384" selection-end="384" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DasaConsole.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/DasaConsole.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="23" column="24" selection-start="925" selection-end="925" vertical-scroll-proportion="0.49756888">
+            <state line="109" column="63" selection-start="3537" selection-end="3537" vertical-scroll-proportion="0.30588236">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -166,10 +119,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="RobotAction.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/RobotAction.java">
+      <file leaf-file-name="readme.txt" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/readme.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="8" column="4" selection-start="460" selection-end="460" vertical-scroll-proportion="0.0">
+            <state line="25" column="14" selection-start="720" selection-end="720" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -178,7 +131,7 @@
       <file leaf-file-name="StepLogic.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/StepLogic.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="16" column="29" selection-start="589" selection-end="589" vertical-scroll-proportion="0.0">
+            <state line="18" column="44" selection-start="761" selection-end="761" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -199,22 +152,22 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="S:/icfpold/icfp08/src/Displayer.java" />
-        <option value="$PROJECT_DIR$/src/BitMap.java" />
-        <option value="$PROJECT_DIR$/src/DisplayWindow.java" />
         <option value="$PROJECT_DIR$/src/DisplayWorld.java" />
         <option value="$PROJECT_DIR$/src/Cell.java" />
         <option value="$PROJECT_DIR$/src/WorldStateHash.java" />
         <option value="$PROJECT_DIR$/src/Manual.java" />
         <option value="$PROJECT_DIR$/src/StepResult.java" />
         <option value="$PROJECT_DIR$/src/SolidWorldState.java" />
-        <option value="$PROJECT_DIR$/src/PathingGUI.java" />
-        <option value="$PROJECT_DIR$/src/DualAStarApproach.java" />
-        <option value="$PROJECT_DIR$/src/AStar.java" />
-        <option value="$PROJECT_DIR$/src/WorldState.java" />
-        <option value="$PROJECT_DIR$/src/StepLogic.java" />
         <option value="$PROJECT_DIR$/src/RobotAction.java" />
+        <option value="$PROJECT_DIR$/src/AStar.java" />
+        <option value="$PROJECT_DIR$/src/PathingGUI.java" />
+        <option value="$PROJECT_DIR$/src/StepLogic.java" />
+        <option value="$PROJECT_DIR$/readme.txt" />
+        <option value="$PROJECT_DIR$/lifter" />
+        <option value="$PROJECT_DIR$/Makefile" />
         <option value="$PROJECT_DIR$/src/DasaConsole.java" />
+        <option value="$PROJECT_DIR$/src/DualAStarApproach.java" />
+        <option value="$PROJECT_DIR$/src/WorldState.java" />
       </list>
     </option>
   </component>
@@ -307,7 +260,7 @@
       <recent name="" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.PathingGUI">
+  <component name="RunManager" selected="Application.DasaConsole">
     <configuration default="true" type="Remote" factoryName="Remote">
       <option name="USE_SOCKET_TRANSPORT" value="true" />
       <option name="SERVER_MODE" value="false" />
@@ -429,7 +382,7 @@
     <configuration default="false" name="PathingGUI" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="PathingGUI" />
       <option name="VM_PARAMETERS" value="-Xmx3g" />
-      <option name="PROGRAM_PARAMETERS" value="..\..\maps\contest8.map" />
+      <option name="PROGRAM_PARAMETERS" value="..\..\maps\huge1.map" />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" value="" />
@@ -448,10 +401,27 @@
       <ConfigurationWrapper RunnerId="Run" />
       <method />
     </configuration>
-    <list size="3">
+    <configuration default="false" name="DasaConsole" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="DasaConsole" />
+      <option name="VM_PARAMETERS" value="-Xmx1G" />
+      <option name="PROGRAM_PARAMETERS" value="..\..\maps\huge1.map -d" />
+      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" value="" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="visualizer" />
+      <envs />
+      <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Run" />
+      <method />
+    </configuration>
+    <list size="4">
       <item index="0" class="java.lang.String" itemvalue="Application.DisplayWorld" />
       <item index="1" class="java.lang.String" itemvalue="Application.Manual" />
       <item index="2" class="java.lang.String" itemvalue="Application.PathingGUI" />
+      <item index="3" class="java.lang.String" itemvalue="Application.DasaConsole" />
     </list>
     <configuration name="&lt;template&gt;" type="WebApp" default="true" selected="false">
       <Host>localhost</Host>
@@ -506,27 +476,27 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-1928" y="-8" width="1936" height="1096" extended-state="6" />
+    <frame x="-1928" y="-8" width="1936" height="1092" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32987553" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33125" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.29045644" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.28958333" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32987553" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32987553" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21764706" sideWeight="0.6701245" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.17323652" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.09144385" sideWeight="0.82708335" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32987553" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39937758" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.17291667" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="VcsManagerConfiguration">
@@ -576,106 +546,118 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/../../kyren/sha1.cpp">
+    <entry file="file://$PROJECT_DIR$/src/RobotAction.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="63" column="132" selection-start="2459" selection-end="2459" vertical-scroll-proportion="0.568984" />
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.6.0_23/src.zip!/java/security/MessageDigestSpi.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="91" column="47" selection-start="2689" selection-end="2689" vertical-scroll-proportion="0.4053476" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/WorldStateHash.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="4" column="20" selection-start="103" selection-end="103" vertical-scroll-proportion="0.07272727" />
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.6.0_23/src.zip!/java/security/MessageDigest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="291" column="16" selection-start="10094" selection-end="10094" vertical-scroll-proportion="0.47480917" />
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.6.0_23/src.zip!/java/util/Arrays.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="3533" column="83" selection-start="141523" selection-end="142323" vertical-scroll-proportion="0.47480917" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Manual.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="53" column="42" selection-start="0" selection-end="2480" vertical-scroll-proportion="0.58508915">
+        <state line="8" column="4" selection-start="460" selection-end="460" vertical-scroll-proportion="0.22042139">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://S:/LookingGlass/src/org/pluk_lang/lookingglass/robot/pathing/Pathing.java">
+    <entry file="file://$PROJECT_DIR$/src/AStar.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="569" column="51" selection-start="21231" selection-end="21231" vertical-scroll-proportion="0.8897893">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/StepResult.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="14" column="8" selection-start="505" selection-end="505" vertical-scroll-proportion="0.30989584">
+        <state line="59" column="0" selection-start="1910" selection-end="1910" vertical-scroll-proportion="0.33333334">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/SolidWorldState.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="116" column="113" selection-start="3189" selection-end="3189" vertical-scroll-proportion="0.0">
+        <state line="115" column="8" selection-start="3120" selection-end="3120" vertical-scroll-proportion="0.5591572">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/DualAStarApproach.java">
+    <entry file="file://$PROJECT_DIR$/src/Manual.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="42" column="32" selection-start="1815" selection-end="1815" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/AStar.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="59" column="46" selection-start="1956" selection-end="1956" vertical-scroll-proportion="-11.5">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/PathingGUI.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="64" column="0" selection-start="1344" selection-end="2288" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/WorldState.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="14" column="25" selection-start="384" selection-end="384" vertical-scroll-proportion="0.0">
+        <state line="15" column="96" selection-start="417" selection-end="417" vertical-scroll-proportion="0.35818475">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/StepLogic.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="16" column="29" selection-start="589" selection-end="589" vertical-scroll-proportion="0.0">
+        <state line="18" column="44" selection-start="761" selection-end="761" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/RobotAction.java">
+    <entry file="file://$PROJECT_DIR$/readme.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="8" column="4" selection-start="460" selection-end="460" vertical-scroll-proportion="0.0">
+        <state line="25" column="14" selection-start="720" selection-end="720" vertical-scroll-proportion="0.0">
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.6.0_23/src.zip!/java/lang/Error.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="27" column="36" selection-start="965" selection-end="974" vertical-scroll-proportion="0.33278957">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.6.0_23/src.zip!/java/lang/VirtualMachineError.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="19" column="36" selection-start="451" selection-end="451" vertical-scroll-proportion="0.3344209">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.6.0_23/src.zip!/java/lang/OutOfMemoryError.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="19" column="40" selection-start="479" selection-end="479" vertical-scroll-proportion="0.3344209">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Makefile">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="6" column="48" selection-start="175" selection-end="175" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lifter">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="3" column="29" selection-start="70" selection-end="70" vertical-scroll-proportion="0.07810107">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/DualAStarApproach.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="7" column="90" selection-start="181" selection-end="181" vertical-scroll-proportion="0.15555556">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/DasaConsole.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="23" column="24" selection-start="925" selection-end="925" vertical-scroll-proportion="0.49756888">
+        <state line="21" column="31" selection-start="699" selection-end="699" vertical-scroll-proportion="0.46666667">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.6.0_23/src.zip!/java/lang/Runtime.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="619" column="79" selection-start="25195" selection-end="25537" vertical-scroll-proportion="0.75555557">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/PathingGUI.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="3" column="0" selection-start="86" selection-end="86" vertical-scroll-proportion="0.06666667">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/WorldState.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="109" column="63" selection-start="3537" selection-end="3537" vertical-scroll-proportion="0.30588236">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

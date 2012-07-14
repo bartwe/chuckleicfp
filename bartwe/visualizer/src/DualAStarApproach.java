@@ -46,8 +46,6 @@ public class DualAStarApproach {
             }
 
             public AStar.AStarNode findBest(AStar.AStarNode best, boolean singleSolution, HashMap<WorldStateHash, AStar.AStarNode> nodes) {
-//                if (best.state.stepResult == StepResult.Win)
-//                    return best;
                 double bestScore = best.state.score();
                 for (AStar.AStarNode node : nodes.values()) {
                     double score = node.state.score();
@@ -69,7 +67,7 @@ public class DualAStarApproach {
         return pathfinder.getResult();
     }
 
-    public void stop() {
+    public static void stop() {
         stop = true;
     }
 

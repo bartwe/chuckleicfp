@@ -4,4 +4,4 @@ all:
 	javac -g -sourcepath src -d out/production/visualizer/ `find src -iname *.java`
 
 run:
-	java -ea -cp out/production/visualizer Manual ../../maps/contest10.map
+	cat  ../../maps/contest10.map | java -Xmx1G -cp out/production/visualizer DasaConsole
