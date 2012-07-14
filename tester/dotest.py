@@ -3,7 +3,7 @@
 import subprocess, time, os
 
 MAIN = '../kyren/main'
-MAIN = '../bartwe/visualizer/lifter'
+#MAIN = '../bartwe/visualizer/lifter'
 MAPDIR = '../maps'
 
 def DoTest(exe, mapfn):

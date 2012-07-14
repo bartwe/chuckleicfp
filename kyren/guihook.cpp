@@ -25,7 +25,8 @@ char* GetData(Mine* m, int* width, int* height)
 {
 	*width = m->width;
 	*height = m->height;
-	return (char*)&m->content[0];
+	Tile* grid = m->content.getGrid();
+	return (char*)grid;
 }
 
 void GetInfo(Mine* m, char* str, int buflen, int* waterlevel)

@@ -83,34 +83,30 @@ void Mine::read(std::istream& is) {
 
   std::vector<std::vector<MineContent>> readContent;
   int maxRow = 0;
-  while (!is.eof()) {
-    char buf[4096];
-    is.getline(buf, 4096);
-
-    if (buf[0] == '\0') { //blank line means weather params
-      break;
-    }
+  std::string line;
+  while (std::getline(is, line)) {
+    if (line.size() == 0) break;
 
     std::vector<MineContent> row;
-    char* c = buf;
-    while (*c)
-      row.push_back(tileFromChar(*c++));
+    row.resize(line.size());
+    memcpy(&row[0], &line[0], line.size());
+
     maxRow = std::max<int>(maxRow, row.size());
 
-    if (is.eof())
-      break;
-
-    readContent.push_back(row);
+    readContent.push_back(std::move(row));
   }
 
   initWaterLevel = 0;
   floodingFreq = 0;
   waterproof = 10;
-  while (!is.eof()) {
-    char command[4096];
-    char parameter[4096];
-    is.getline(command, 4096, ' ');
-    is.getline(parameter, 4096);
+  while (std::getline(is, line)) {
+    char* cline = (char*)line.c_str();
+    char* eocmd = strchr(cline, ' ');
+    if (!eocmd) continue;
+
+    const char* command = cline;
+    *eocmd = 0;
+    const char* parameter = eocmd + 1;
 
     if (strcmp(command, "Water") == 0) {
       initWaterLevel = atoi(parameter);
@@ -129,7 +125,7 @@ void Mine::read(std::istream& is) {
 
   Best::ReserveSpace(width * height);
 
-  content.resize(width * height, MineContent::Empty);
+  content.reset(width, height, Tile::Empty);
   // Turn upside down so (0, 0) is bottom left
   std::reverse(readContent.begin(), readContent.end());
 
@@ -195,10 +191,8 @@ std::vector<Coord> Mine::getTrampLocsForTarget(MineContent c) const {
 }
 
 MineContent Mine::get(int x, int y) {
-  if (x < 0 || x >= width || y < 0 || y >= width)
-    return MineContent::Wall;
-  else
-    return content[y * width + x];
+  REQUIRE(! (x < 0 || x >= width || y < 0 || y >= width));
+  return content.at(x,y);
 }
 
 State Mine::currentState() {
@@ -453,17 +447,16 @@ void Mine::print() {
   std::cout << std::endl;
 }
 
-std::string Mine::hashcode() const {
+std::string Mine::hashcode() {
   unsigned char hash[20];
-  sha1::calc(&content[0], content.size(), hash);
+  sha1::calc(content.getGrid(), content.gridSize(), hash);
   return std::string((char const*)hash, 20);
 }
 
 void Mine::set(int x, int y, MineContent c) {
-  if (x < 0 || x >= width || y < 0 || y >= width)
-    return;
-  else
-    content[y * width + x] = c;
+  
+  REQUIRE(!((x < 0 || x >= width || y < 0 || y >= width)));
+  content.at(x,y) = c;
 }
 
 void Mine::updateMine() {

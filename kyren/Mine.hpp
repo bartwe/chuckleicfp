@@ -8,6 +8,7 @@
 #include <cstring>
 
 #include "Tile.hpp"
+#include "Grid.hpp"
 
 enum class RobotCommand : uint8_t {
   Left,
@@ -66,7 +67,7 @@ public:
   void print();
 
   // Returns 20 char (binary) SHA-1 hash of map state.
-  std::string hashcode() const;
+  std::string hashcode();
   int waterLevel(int turn) const;
   int indexOfTrampTarget(MineContent c) const;
   MineContent getTargetForTramp(MineContent c) const;
@@ -94,7 +95,7 @@ private:
   };
 
 public:
-  std::vector<MineContent> content;
+  Grid<Tile> content;
 private:
   std::vector<MineHistory> historyList;
   RobotCommands commandHistory;
