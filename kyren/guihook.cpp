@@ -38,7 +38,7 @@ char* GetSafeZone(Mine* m)
 void DoMove(Mine* m, char move)
 {
 	m->pushMove(Mine::charToCommand(move));
-	printf("Score: %d\n", m->score());
+	printf("Score: %d, state=%s\n", m->score(), Mine::stateToString(m->state).c_str());
 }
 
 } // extern
