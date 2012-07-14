@@ -7,6 +7,8 @@
 #include <cstdint>
 #include <cstring>
 
+#include "Tile.hpp"
+
 enum class RobotCommand : uint8_t {
   Left,
   Right,
@@ -16,34 +18,7 @@ enum class RobotCommand : uint8_t {
   Abort
 };
 
-enum class MineContent : uint8_t {
-  Robot,
-  Wall,
-  Rock,
-  Lambda,
-  ClosedLift,
-  OpenLift,
-  Earth,
-  TrampolineA,
-  TrampolineB,
-  TrampolineC,
-  TrampolineD,
-  TrampolineE,
-  TrampolineF,
-  TrampolineG,
-  TrampolineH,
-  TrampolineI,
-  Target1,
-  Target2,
-  Target3,
-  Target4,
-  Target5,
-  Target6,
-  Target7,
-  Target8,
-  Target9,
-  Empty
-};
+typedef Tile MineContent;
 
 enum class State : uint8_t {
   InProgress,
@@ -61,8 +36,6 @@ typedef std::vector<RobotCommand> RobotCommands;
 
 class Mine {
 public:
-  static MineContent contentFromChar(char c);
-  static char charFromContent(MineContent c);
   static std::string stateToString(State s);
   static char commandChar(RobotCommand command);
   static RobotCommand charToCommand(char command);

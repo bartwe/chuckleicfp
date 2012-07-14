@@ -2,124 +2,6 @@
 #include "sha1.h"
 #include "BestSoFar.h"
 
-MineContent Mine::contentFromChar(char c) {
-  switch (c) {
-    case 'R':
-      return MineContent::Robot;
-    case '#':
-      return MineContent::Wall;
-    case '*':
-      return MineContent::Rock;
-    case '\\':
-      return MineContent::Lambda;
-    case 'L':
-      return MineContent::ClosedLift;
-    case 'O':
-      return MineContent::OpenLift;
-    case '.':
-      return MineContent::Earth;
-    case 'A':
-      return MineContent::TrampolineA;
-    case 'B':
-      return MineContent::TrampolineB;
-    case 'C':
-      return MineContent::TrampolineC;
-    case 'D':
-      return MineContent::TrampolineD;
-    case 'E':
-      return MineContent::TrampolineE;
-    case 'F':
-      return MineContent::TrampolineF;
-    case 'G':
-      return MineContent::TrampolineG;
-    case 'H':
-      return MineContent::TrampolineH;
-    case 'I':
-      return MineContent::TrampolineI;
-    case '1':
-      return MineContent::Target1;
-    case '2':
-      return MineContent::Target2;
-    case '3':
-      return MineContent::Target3;
-    case '4':
-      return MineContent::Target4;
-    case '5':
-      return MineContent::Target5;
-    case '6':
-      return MineContent::Target6;
-    case '7':
-      return MineContent::Target7;
-    case '8':
-      return MineContent::Target8;
-    case '9':
-      return MineContent::Target9;
-    case ' ':
-      return MineContent::Empty;
-    default:
-      return MineContent::Wall;
-  }
-}
-
-char Mine::charFromContent(MineContent c) {
-  switch (c) {
-    case MineContent::Robot:
-      return 'R';
-    case MineContent::Wall:
-      return '#';
-    case MineContent::Rock:
-      return '*';
-    case MineContent::Lambda:
-      return '\\';
-    case MineContent::ClosedLift:
-      return 'L';
-    case MineContent::OpenLift:
-      return 'O';
-    case MineContent::Earth:
-      return '.';
-    case MineContent::TrampolineA:
-      return 'A';
-    case MineContent::TrampolineB:
-      return 'B';
-    case MineContent::TrampolineC:
-      return 'C';
-    case MineContent::TrampolineD:
-      return 'D';
-    case MineContent::TrampolineE:
-      return 'E';
-    case MineContent::TrampolineF:
-      return 'F';
-    case MineContent::TrampolineG:
-      return 'G';
-    case MineContent::TrampolineH:
-      return 'H';
-    case MineContent::TrampolineI:
-      return 'I';
-    case MineContent::Target1:
-      return '1';
-    case MineContent::Target2:
-      return '2';
-    case MineContent::Target3:
-      return '3';
-    case MineContent::Target4:
-      return '4';
-    case MineContent::Target5:
-      return '5';
-    case MineContent::Target6:
-      return '6';
-    case MineContent::Target7:
-      return '7';
-    case MineContent::Target8:
-      return '8';
-    case MineContent::Target9:
-      return '9';
-    case MineContent::Empty:
-      return ' ';
-    default:
-      return '#';
-  }
-}
-
 std::string Mine::stateToString(State s) {
   switch (s) {
     case State::InProgress:
@@ -212,7 +94,7 @@ void Mine::read(std::istream& is) {
     std::vector<MineContent> row;
     char* c = buf;
     while (*c)
-      row.push_back(contentFromChar(*c++));
+      row.push_back(tileFromChar(*c++));
     maxRow = std::max<int>(maxRow, row.size());
 
     if (is.eof())
@@ -237,7 +119,7 @@ void Mine::read(std::istream& is) {
     } else if (strcmp(command, "Waterproof") == 0) {
       waterproof = atoi(parameter);
     } else if (strcmp(command, "Trampoline") == 0) {
-      trampMapping.push_back({contentFromChar(parameter[0]), contentFromChar(parameter[strlen(parameter)-1])});
+      trampMapping.push_back({tileFromChar(parameter[0]), tileFromChar(parameter[strlen(parameter)-1])});
     }
   }
   curWaterLevel = initWaterLevel;
@@ -565,7 +447,7 @@ bool Mine::popMove() {
 void Mine::print() {
   for (int y = height - 1; y >= 0; --y) {
     for (int x = 0; x < width; ++x)
-      std::cout << charFromContent(get(x, y));
+      std::cout << charFromTile(get(x, y));
     std::cout << std::endl;
   }
   std::cout << std::endl;
