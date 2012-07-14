@@ -8,23 +8,9 @@ from pprint import pprint
 
 from ctypes import *
 
-kyren = False
-try:
-    libicfp = CDLL('./libicfp.so')
-except:
-    libicfp = CDLL('./libkyren.so')
-    kyren = True
+import libloader
 
-data_t = POINTER(c_int)
-buf_t = POINTER(c_char)
-libicfp.Init.argtypes = (c_char_p,)
-libicfp.Init.restype = data_t
-libicfp.GetData.argtypes = data_t, POINTER(c_int), POINTER(c_int)
-libicfp.GetData.restype = POINTER(c_char)
-libicfp.DoMove.argtypes = data_t, c_char
-libicfp.DoMove.restype = None
-libicfp.GetSafeZone.argtypes = data_t,
-libicfp.GetSafeZone.restype = POINTER(c_char)
+libicfp = libloader.LoadLibrary()
 
 # begin wxGlade: extracode
 # end wxGlade
