@@ -4,17 +4,23 @@ public class StepLogic {
     WorldState scratch;
 
     public StepResult applyStep(WorldState current, WorldState next, RobotAction action) {
+        if (current.stepResult != StepResult.Ok)
+            throw new RuntimeException("Cannot move out of final step.");
         if (scratch == null)
             scratch = current.copy();
         else
             scratch.copyFrom(current);
         StepResult result = applyRobotAction(current, scratch, action);
         next.copyFrom(scratch);
-        applyWorldStep(scratch, next);
+        next.steps++;
+        if (result != StepResult.Abort)
+            applyWorldStep(scratch, next);
         if ((next.robotX == next.exitX) && (next.robotY == next.exitY))
-            return StepResult.Win;
+            result = StepResult.Win;
+        else
         if ((next.get(next.robotX, next.robotY + 1) == Cell.Rock) && (current.get(next.robotX, next.robotY + 1) != Cell.Rock))
-            return StepResult.Lose;
+           result = StepResult.Lose;
+        next.stepResult = result;
         return result;
     }
 

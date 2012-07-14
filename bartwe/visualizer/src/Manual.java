@@ -70,9 +70,15 @@ public class Manual implements KeyListener {
 
         StepLogic sl = new StepLogic();
         sl.applyStep(state, nextState, action);
-        WorldState flip = state;
-        state = nextState;
-        nextState = flip;
+        if (nextState.stepResult != StepResult.Ok) {
+           Toolkit.getDefaultToolkit().beep();
+        }
+        else
+        {
+            WorldState flip = state;
+            state = nextState;
+            nextState = flip;
+        }
         state.render(raw);
         window.draw(raw);
     }

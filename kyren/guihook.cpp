@@ -30,6 +30,7 @@ char* GetData(Mine* m, int* width, int* height)
 void DoMove(Mine* m, char move)
 {
 	m->pushMove(Mine::charToCommand(move));
+	printf("Score: %d\n", m->score());
 }
 
 } // extern
