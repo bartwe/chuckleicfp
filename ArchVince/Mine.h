@@ -16,16 +16,6 @@ enum class Tiles : char
   robot
 };
 
-enum class Commands : char
-{
-  Left = 'L',
-  Right = 'R',
-  Up = 'U',
-  Down = 'D',
-  Wait = 'W',
-  Abort = 'A'
-};
-
 struct Point
 {
   int x, y;
@@ -46,7 +36,6 @@ class Mine
     int getID(Point p);
 
     int width, height;
-    int rx, ry; //Robot x and y
 
     std::vector< Point > lambdas;
     Point lift;

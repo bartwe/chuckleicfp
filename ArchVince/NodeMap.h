@@ -11,7 +11,7 @@ class NodeMap
       Tiles type;
       std::vector< int > connections;
       int x, y;
-      std::vector< Commands > commands;
+      std::vector< std::string > commands;
     };
 
     NodeMap(Mine mine);
