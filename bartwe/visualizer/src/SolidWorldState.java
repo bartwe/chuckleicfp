@@ -85,6 +85,11 @@ public class SolidWorldState extends WorldState {
         result.exitY = exitY;
         result.lambdaCollected = lambdaCollected;
         result.lambdaRemaining = lambdaRemaining;
+        result.curWaterLevel = curWaterLevel;
+        result.initWaterLevel = initWaterLevel;
+        result.floodingFreq = floodingFreq;
+        result.submergedSteps = submergedSteps;
+        result.waterproof = waterproof;
         result.steps = steps;
         return result;
     }
@@ -104,13 +109,18 @@ public class SolidWorldState extends WorldState {
             }
         }
         md.reset();
-        ByteBuffer bb = ByteBuffer.allocate(6 * 4);
+        ByteBuffer bb = ByteBuffer.allocate(11 * 4);
         bb.putInt(robotX);
         bb.putInt(robotY);
         bb.putInt(exitX);
         bb.putInt(exitY);
         bb.putInt(lambdaCollected);
         bb.putInt(lambdaRemaining);
+        bb.putInt(curWaterLevel);
+        bb.putInt(initWaterLevel);
+        bb.putInt(floodingFreq);
+        bb.putInt(submergedSteps);
+        bb.putInt(waterproof);
         bb.flip();
         md.update(bb);
         for (int i = 0; i < data.length; ++i)

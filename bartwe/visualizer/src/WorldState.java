@@ -94,6 +94,8 @@ public abstract class WorldState {
         //warning rows is in inverted order of m
         int n = 0;
         int m = rows.size();
+        for (int i = 0; i < m; i++)
+            n = Math.max(n, rows.get(i).length);
         SolidWorldState result = new SolidWorldState(n, m);
         
         try {
@@ -116,8 +118,6 @@ public abstract class WorldState {
           throw new RuntimeException(e);
         }
 
-        for (int i = 0; i < m; i++)
-            n = Math.max(n, rows.get(i).length);
         for (int i = 0; i < m; i++) {
             byte[] row = rows.get(i);
             int y = m - i;
