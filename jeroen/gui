@@ -32,6 +32,8 @@ class Projection(wx.Control):
         self.bmp['.'] =  wx.Bitmap(imgdir + '/earth.png')
         self.bmp['\\'] = wx.Bitmap(imgdir + '/lambda.png')
         self.bmp['O'] =  wx.Bitmap(imgdir + '/lift-open.png')
+        self.bmp['W'] =  wx.Bitmap(imgdir + '/beard.png')
+        self.bmp['!'] =  wx.Bitmap(imgdir + '/razor.png')
         bittarget = wx.Bitmap(imgdir + '/target.png')
         for target in "123456789":
             self.bmp[target] = bittarget
