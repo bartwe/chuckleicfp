@@ -38,10 +38,10 @@ void GetInfo(Mine* m, char* str, int buflen, int* waterlevel)
 {
 	snprintf(str, buflen-1, "SCORE=%d (state=%s, move %d, L=%d/%d, submerged for %d)",
 			m->score(), Mine::stateToString(m->state).c_str(),
-			m->totalMoves, m->collectedLambdas, m->numInitialLambdas,
-			m->submergedSteps);
+			m->totalMoves, m->var.collectedLambdas, m->numInitialLambdas,
+			m->var.submergedSteps);
 
-	*waterlevel = m->curWaterLevel;
+	*waterlevel = m->var.curWaterLevel;
 }
 
 char* GetSafeZone(Mine* m)

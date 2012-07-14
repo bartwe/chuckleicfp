@@ -12,7 +12,7 @@ int Heuristic::bestCase(Mine& mine)
 	// Assuming we can reach the exit, we still need one step for each lambda to
 	// collect
 	return mine.score()
-		+ (mine.numInitialLambdas-mine.collectedLambdas)*24
+		+ (mine.numInitialLambdas-mine.var.collectedLambdas)*24
 		+ mine.numInitialLambdas * 50;
 }
 
@@ -68,8 +68,8 @@ void Heuristic::findPathToNearestLambda(Mine& mine, SafeZone& safezone, RobotCom
 
 	shortest.reset(mine.width, mine.height, {mine.width*mine.height, -1});
 
-	todo.push_back({mine.robotX, mine.robotY});
-	shortest.at(mine.robotX, mine.robotY) = {0, -1};
+	todo.push_back({mine.var.robotX, mine.var.robotY});
+	shortest.at(mine.var.robotX, mine.var.robotY) = {0, -1};
 
 	while (!todo.empty()) {
 		Position cur = todo.front();
@@ -86,7 +86,7 @@ void Heuristic::findPathToNearestLambda(Mine& mine, SafeZone& safezone, RobotCom
 			{
 				// Got it!
 				RobotCommands cmds;
-				while ( np.x != mine.robotX && np.y != mine.robotY ){
+				while ( np.x != mine.var.robotX && np.y != mine.var.robotY ){
 					pathinfo& pi = shortest.at(np.x, np.y);
 					cmds.push_back( Mine::charToCommand(moves.mcommands[pi.lastmove]) );
 					np.x -= moves.m[pi.lastmove].dx;

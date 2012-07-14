@@ -82,7 +82,7 @@ std::string Mine::commandString(RobotCommands commands) {
 
 void Mine::read(std::istream& is) {
   state = State::InProgress;
-  collectedLambdas = 0;
+  var.collectedLambdas = 0;
   totalMoves = 0;
 
   std::vector<std::vector<MineContent>> readContent;
@@ -130,7 +130,7 @@ void Mine::read(std::istream& is) {
       trampMapping.push_back({tileFromChar(parameter[0]), tileFromChar(parameter[strlen(parameter)-1])});
     }
   }
-  curWaterLevel = problem.water.initWaterLevel;
+  var.curWaterLevel = problem.water.initWaterLevel;
 
   width = maxRow;
   height = readContent.size();
@@ -148,8 +148,8 @@ void Mine::read(std::istream& is) {
     for (int j = 0; j < row.size(); ++j) {
       auto c = row[j];
       if (c == MineContent::Robot) {
-        robotX = j;
-        robotY = i;
+        var.robotX = j;
+        var.robotY = i;
       } else if (c == MineContent::ClosedLift) {
         liftLoc.push_back({j, i});
       } else if (c == MineContent::Lambda) {
@@ -224,11 +224,11 @@ State Mine::currentState() {
 }
 
 int Mine::score() {
-  int s = collectedLambdas * 25 - totalMoves;
+  int s = var.collectedLambdas * 25 - totalMoves;
   if (state == State::Aborted)
-    s += collectedLambdas * 25;
+    s += var.collectedLambdas * 25;
   else if (state == State::Win)
-    s += collectedLambdas * 50;
+    s += var.collectedLambdas * 50;
   return s;
 }
 
@@ -261,13 +261,13 @@ bool Mine::pushMove(RobotCommand command) {
   if (command == RobotCommand::Abort) {
     state = State::Aborted;
     commandHistory.push_back(command);
-    historyList.push_back({{}, robotX, robotY, collectedLambdas});
+    historyList.push_back({{}, var});
     ++totalMoves;
     return true;
   }
 
-  int newRobotX = robotX;
-  int newRobotY = robotY;
+  int newRobotX = var.robotX;
+  int newRobotY = var.robotY;
 
   std::vector<MineUpdate> updateQueue;
 
@@ -280,14 +280,14 @@ bool Mine::pushMove(RobotCommand command) {
 	  case RobotCommand::Down:  dy=-1; break;
   }
   if (dx != 0 || dy != 0) {
-    int nx = robotX + dx;
-    int ny = robotY + dy;
+    int nx = var.robotX + dx;
+    int ny = var.robotY + dy;
     auto c = get(nx, ny);
     if (c == MineContent::Empty || c == MineContent::Earth || c == MineContent::Lambda || c == MineContent::OpenLift) {
       newRobotX = nx;
       newRobotY = ny;
-    } else if (c == MineContent::Rock && dy == 0 && get(nx + dx, robotY) == MineContent::Empty) {
-      updateQueue.push_back({nx+dx, robotY, MineContent::Rock});
+    } else if (c == MineContent::Rock && dy == 0 && get(nx + dx, var.robotY) == MineContent::Empty) {
+      updateQueue.push_back({nx+dx, var.robotY, MineContent::Rock});
       newRobotX = nx;
     } else if (c >= MineContent::TrampolineA && c <= MineContent::TrampolineI) {
       MineContent target = getTargetForTramp(c);
@@ -301,26 +301,22 @@ bool Mine::pushMove(RobotCommand command) {
 
     // If we have been commanded to move, but haven't moved, command must not
     // have been valid, do nothing.
-    if (newRobotX == robotX && newRobotY == robotY)
+    if (newRobotX == var.robotX && newRobotY == var.robotY)
       return false;
   }
 
   commandHistory.push_back(command);
 
   // Record history for this state before updating.
-  MineHistory historyEntry;
-  historyEntry.collectedLambdas = collectedLambdas;
-  historyEntry.robotX = robotX;
-  historyEntry.robotY = robotY;
-  historyEntry.submergedSteps = submergedSteps;
+  MineHistory historyEntry = {{}, var};
 
   auto nr = get(newRobotX, newRobotY);
   if (nr == MineContent::Lambda)
-    ++collectedLambdas;
+    ++var.collectedLambdas;
   else if (nr == MineContent::OpenLift)
     state = State::Win;
 
-  updateQueue.push_back({robotX, robotY, MineContent::Empty});
+  updateQueue.push_back({var.robotX, var.robotY, MineContent::Empty});
   updateQueue.push_back({newRobotX, newRobotY, MineContent::Robot});
 
   // Apply all of the robot moves before computing the world update.
@@ -331,8 +327,8 @@ bool Mine::pushMove(RobotCommand command) {
   }
   updateQueue.clear();
 
-  robotX = newRobotX;
-  robotY = newRobotY;
+  var.robotX = newRobotX;
+  var.robotY = newRobotY;
 
   for ( PosIdx rockpos : rockpositions ) {
     Position rock = content.idx2pos(rockpos);
@@ -354,19 +350,19 @@ bool Mine::pushMove(RobotCommand command) {
       }
   }
 
-  curWaterLevel = waterLevel(totalMoves + 1);
+  var.curWaterLevel = waterLevel(totalMoves + 1);
 
-  if (curWaterLevel > robotY) {
-    submergedSteps += 1;
+  if (var.curWaterLevel > var.robotY) {
+    var.submergedSteps += 1;
   } else {
-    submergedSteps = 0;
+    var.submergedSteps = 0;
   }
 
-  if (submergedSteps > problem.water.waterproof) {
+  if (var.submergedSteps > problem.water.waterproof) {
     state = State::Lose;
   }
 
-  if (collectedLambdas == numInitialLambdas) {
+  if (var.collectedLambdas == numInitialLambdas) {
     for (auto lift : liftLoc) {
       updateQueue.push_back({lift.x, lift.y, MineContent::OpenLift});
     }
@@ -376,7 +372,7 @@ bool Mine::pushMove(RobotCommand command) {
     // Add the required update to go *backwards* onto the history entry.
     historyEntry.updates.push_back({update.x, update.y, get(update.x, update.y)});
 
-    if (update.c == MineContent::Rock && update.x == robotX && update.y == robotY + 1) {
+    if (update.c == MineContent::Rock && update.x == var.robotX && update.y == var.robotY + 1) {
       // Robot was hit on the head by rock
       state = State::Lose;
     }
@@ -412,17 +408,14 @@ bool Mine::popMove() {
     return false;
 
   auto const& history = historyList[historyList.size() - 1];
-  robotX = history.robotX;
-  robotY = history.robotY;
-  submergedSteps = history.submergedSteps;
-  collectedLambdas = history.collectedLambdas;
+  memcpy(&var, &history.prevvarstate, sizeof var);
   for (auto const& update : history.updates)
     set(update.x, update.y, update.c);
 
   historyList.pop_back();
   commandHistory.pop_back();
   
-  curWaterLevel = waterLevel(totalMoves - 1);
+  var.curWaterLevel = waterLevel(totalMoves - 1);
   state = State::InProgress;
   --totalMoves;
   return true;

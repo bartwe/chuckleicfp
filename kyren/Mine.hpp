@@ -84,45 +84,52 @@ private:
     MineContent c;
   };
 
+  // State that changes every move, and can be trivially copied
+  struct variadicstate {
+	  int robotX;
+	  int robotY;
+	  int collectedLambdas;
+	  int curWaterLevel;
+	  int submergedSteps;
+  };
+
   struct MineHistory {
     // The updates it takes to go back to the previous state.
     std::vector<MineUpdate> updates;
-    // Old robot position
-    int robotX;
-    int robotY;
-    // Old collectedLambdas
-    int collectedLambdas;
-    int submergedSteps;
+
+    struct variadicstate prevvarstate;
   };
 
 public:
   Grid<Tile> content;
 private:
   std::set<PosIdx> rockpositions;
-  int initialTileHistogram[128];
 
   std::vector<MineHistory> historyList;
   RobotCommands commandHistory;
 
+  // These are all problem-static fields -- they do not change anywhere except
+  // in read()
+  int initialTileHistogram[128];
   std::vector<Coord> liftLoc;
   std::vector<Coord> trampLoc;
   std::vector<Coord> targetLoc;
   std::vector<std::pair<MineContent, MineContent>> trampMapping;
 
 public:
+
   int totalMoves;
+  State state;
+
+
+  variadicstate var;
+
+
+  // These are all problem-static fields -- they do not change anywhere except
+  // in read()
   int width;
   int height;
-
-  State state;
-  int robotX;
-  int robotY;
-
-  int collectedLambdas;
   int numInitialLambdas;
-  int curWaterLevel;
-  int submergedSteps;
-
   struct {
 	  struct {
 		  int initWaterLevel;
