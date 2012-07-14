@@ -1,60 +1,38 @@
-#include <iostream>
-#include <vector>
-#include <string>
+#include "main.h"
+#include "timer.hpp"
 
-enum class TileTypes {
-  Empty,
-  Robot,
-  Wall,
-  Rock,
-  Lambda,
-  ClosedLL,
-  OpenLL,
-  Earth
-};
+int main(int argc, char** argv) {
+  if (argc != 3)
+    return -1;
 
-int main() {
-  std::vector<std::string> mapStrings;
-  std::vector<std::vector<TileTypes>> map;
-  std::string tmp;
+  std::string executable = argv[1];
+  std::string directory = argv[2];
 
-  while (std::getline(std::cin, tmp)) {
-    mapStrings.push_back(tmp);
+  auto maps = getMaps(directory);
+  
+  Timer timer;
+  for (auto map : maps) {
+    tm.start();
+
+    
+
+    tm.stop();
+    std::cout << map << " finished, time: " << tm.duration() << std::endl;
   }
+}
 
-  for (auto i : mapStrings) {
-    for (auto j : i) {
-      std::vector<TileTypes> row;
-      switch (j) {
-        case 'R':
-          row.push_back(TileTypes::Robot);
-          break;
-        case '#':
-          row.push_back(TileTypes::Wall);
-          break;
-        case '*':
-          row.push_back(TileTypes::Rock);
-          break;
-        case '\\':
-          row.push_back(TileTypes::Lambda);
-          break;
-        case 'L':
-          row.push_back(TileTypes::ClosedLL);
-          break;
-        case 'O':
-          row.push_back(TileTypes::OpenLL);
-          break;
-        case '.':
-          row.push_back(TileTypes::Earth);
-          break;
-        case ' ':
-          row.push_back(TileTypes::Empty);
-          break;
-        default:
-          throw -1;
-      }
-      map.push_back(row);
-    }
+std::vector<std::string> getMaps(std::string const& directory) {
+  DIR *dp;
+  struct dirent *dirp;
+  if (!(dp = opendir(directory.c_str()))) {
+    cout << "Error(" << errno << ") opening " << dir << endl;
+    return std::vector<std::string>();
   }
-  return 0;
+ 
+  std::vector<std::string> files;
+  while (dirp = readdir(dp)) {
+    files.push_back(string(dirp->d_name));
+  }
+  closedir(dp);
+  return files;
 }
