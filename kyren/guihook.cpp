@@ -1,7 +1,12 @@
+#ifdef GUI
+
 #include "Mine.hpp"
 #include <iostream>
 #include <fstream>
 #include "Heuristic.hpp"
+#include "Heuristic.hpp"
+#include "BestSoFar.h"
+#include "Searcher.hpp"
 
 extern "C" {
 
@@ -52,4 +57,31 @@ int DoMove(Mine* m, char move)
 	return m->score();
 }
 
+static void* docalc(void* arg)
+{
+        Mine* mine = (Mine*)arg;
+
+        // Copied from main... todo: share code
+        Searcher searcher(*mine);;
+        auto result = searcher.bruteForce(24);
+
+        return 0;
+}
+
+void GoForIt(Mine* m)
+{
+	Mine* workingcopy = new Mine(*m);
+	pthread_t thread;
+	pthread_create(&thread, 0, docalc, workingcopy);
+
+        // we leak the thread, whatever
+}
+
+char* GetBest()
+{
+  return Best::GetBest();
+}
+
 } // extern
+
+#endif

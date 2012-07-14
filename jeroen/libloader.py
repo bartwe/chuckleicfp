@@ -20,6 +20,10 @@ def LoadLibrary():
         libicfp.GetInfo.restype = None
         libicfp.GetSafeZone.argtypes = data_t,
         libicfp.GetSafeZone.restype = POINTER(c_char)
+        libicfp.GoForIt.argtypes = data_t,
+        libicfp.GoForIt.restype = None
+        libicfp.GetBest.argtypes = ()
+        libicfp.GetBest.restype = c_char_p
 
     return libicfp
 

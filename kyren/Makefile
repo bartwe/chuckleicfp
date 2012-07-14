@@ -13,7 +13,7 @@ main: $(OFILES)
 $(OFILES): $(HFILES)
 
 libkyren.so: $(HFILES) $(CPPFILES)
-	g++ $(CXXFLAGS) -fPIC $(CPPFILES) -shared -o $@
+	g++ -DGUI $(CXXFLAGS) -fPIC $(CPPFILES) -shared -o $@
 
 clean:
 	rm -f *.o *.so main

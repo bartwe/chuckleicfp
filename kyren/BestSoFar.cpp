@@ -19,6 +19,9 @@ static void ourhandler(int signum)
 namespace Best {
 void ReserveSpace(int maxcommandlength)
 {
+	// Only init just once
+	if ( MAXLEN != 0 ) return;
+
 	MAXLEN = maxcommandlength;
 	dabest = (char*)malloc(MAXLEN+1);
 	alternate = (char*)malloc(MAXLEN+1);
