@@ -42,7 +42,7 @@ char* GetSafeZone(Mine* m)
 {
 	static SafeZone sz;
 	Heuristic::markSafeZone(*m, sz);
-	return &sz[0];
+	return sz.getGrid();
 }
 
 int DoMove(Mine* m, char move)

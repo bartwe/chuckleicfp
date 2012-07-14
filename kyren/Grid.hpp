@@ -10,9 +10,11 @@ struct Position
 	int x, y;
 };
 
+typedef uint32_t PosIdx;
+
 // posidx_t = uint16_t -> up to 64k tiles (e.g. 256x256)
 // posidx_t = uint32_t -> up to 4G tiles
-template<typename content_t, typename posidx_t=uint32_t>
+template<typename content_t, typename posidx_t=PosIdx>
 class Grid
 {
 public: // members:

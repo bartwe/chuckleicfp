@@ -30,7 +30,7 @@ Heuristic::Heuristic(Mine& mine)
 
 void Heuristic::markSafeZone(Mine& mine, SafeZone& o_safezone)
 {
-	o_safezone.init(mine.width, mine.height, 0);
+	o_safezone.reset(mine.width, mine.height, 0);
 
 	// note: we explore anything except the border, so that references are
 	// always okay
@@ -63,22 +63,22 @@ void Heuristic::findPathToNearestLambda(Mine& mine, SafeZone& safezone, RobotCom
 		int dist;
 		int lastmove;
 	};
-	CellBasedData<pathinfo> shortest;
-	std::deque<Pos> todo;
+	Grid<pathinfo> shortest;
+	std::deque<Position> todo;
 
-	shortest.init(mine.width, mine.height, {mine.width*mine.height, -1});
+	shortest.reset(mine.width, mine.height, {mine.width*mine.height, -1});
 
 	todo.push_back({mine.robotX, mine.robotY});
 	shortest.at(mine.robotX, mine.robotY) = {0, -1};
 
 	while (!todo.empty()) {
-		Pos cur = todo.front();
+		Position cur = todo.front();
 		todo.pop_front();
 
 		pathinfo& thispathinfo = shortest.at(cur.x, cur.y);
 
 		for (Move& m : moves.m) {
-			Pos np = {cur.x + m.dx, cur.y + m.dy};
+			Position np = {cur.x + m.dx, cur.y + m.dy};
 			if ( !safezone.at(np.x, np.y) ) continue;
 
 #if 1 // if you want to short-circuit
