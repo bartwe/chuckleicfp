@@ -36,9 +36,10 @@ char* GetData(Mine* m, int* width, int* height)
 
 void GetInfo(Mine* m, char* str, int buflen, int* waterlevel)
 {
-	snprintf(str, buflen-1, "SCORE=%d (state=%s, move %d, submerged for %d)",
+	snprintf(str, buflen-1, "SCORE=%d (state=%s, move %d, L=%d/%d, submerged for %d)",
 			m->score(), Mine::stateToString(m->state).c_str(),
-			m->totalMoves, m->submergedSteps);
+			m->totalMoves, m->collectedLambdas, m->numInitialLambdas,
+			m->submergedSteps);
 
 	*waterlevel = m->curWaterLevel;
 }
