@@ -60,6 +60,7 @@ public class DasaConsole {
     static void printPath(ArrayList<WorldState> rawPath) {
         if (rawPath.size() > 0) {
             WorldState cursor = rawPath.get(rawPath.size() - 1);
+			System.out.println("# score: " + cursor.score());
             ArrayList<WorldState> path = new ArrayList<WorldState>();
             while (cursor != null) {
                 path.add(cursor);

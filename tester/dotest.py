@@ -3,6 +3,7 @@
 import subprocess, time, os
 
 MAIN = '../kyren/main'
+MAIN = '../bartwe/visualizer/lifter'
 MAPDIR = '../maps'
 
 def DoTest(exe, mapfn):
@@ -10,10 +11,8 @@ def DoTest(exe, mapfn):
     with open(mapfn, 'r') as fd:
         mapdata = fd.read()
     s = time.time()
-    p = subprocess.Popen((exe,), stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-    killer = subprocess.Popen("sleep 150; echo killing; kill -INT %d; echo killed" % p.pid, shell=True)
-    p.stdin.write(mapdata)
-    p.stdin.close()
+    p = subprocess.Popen((exe,), stdin=open(mapfn), stdout=subprocess.PIPE)
+    killer = subprocess.Popen("sleep 150; kill -INT %d" % p.pid, shell=True)
     out = ""
     while True:
         r = p.stdout.read()
@@ -22,7 +21,7 @@ def DoTest(exe, mapfn):
     p.wait()
     e = time.time()
 
-    score = None
+    score = -99999
     for line in out.split('\n'):
         if 'score' in line:
             score = int(line.strip().split()[-1])

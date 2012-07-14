@@ -1,3 +1,5 @@
 #!/bin/sh
 
+cd $(dirname $0)
+
 exec java -Xmx1G -cp out/production/visualizer DasaConsole

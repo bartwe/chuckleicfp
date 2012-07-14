@@ -25,10 +25,12 @@ char* GetData(Map* m, int* width, int* height)
 	return &m->data.front();
 }
 
-void DoMove(Map* m, char move)
+int DoMove(Map* m, char move)
 {
 	m->domove(move);
 	m->update();
+
+	return 0;
 }
 
 } // extern
