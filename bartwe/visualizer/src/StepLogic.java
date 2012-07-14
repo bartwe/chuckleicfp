@@ -72,6 +72,21 @@ public class StepLogic {
     private void applyWorldStep(WorldState current, WorldState next) {
         int width = current.getN() + 2;
         int height = current.getM() + 2;
+        
+        if (next.floodingFreq != 0 && (next.steps) % next.floodingFreq == 0) {
+          next.curWaterLevel++;
+        }
+
+        if (next.curWaterLevel >= next.robotY) {
+          next.submergedSteps++;
+        } else {
+          next.submergedSteps = 0;
+        }
+
+        if (next.submergedSteps > next.waterproof) {
+          next.stepResult = StepResult.Lose;
+        }
+
         for (int y = 0; y < height; ++y) {
             for (int x = 0; x < width; ++x) {
                 if (current.get(x, y) == Cell.Rock && current.get(x, y - 1) == Cell.Empty) {
