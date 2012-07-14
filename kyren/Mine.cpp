@@ -132,6 +132,10 @@ void Mine::read(std::istream& is) {
     char buf[4096];
     is.getline(buf, 4096);
 
+    if (buf[0] == '\0') { //blank line means weather params
+      break;
+    }
+
     std::vector<MineContent> row;
     char* c = buf;
     while (*c)
@@ -143,6 +147,25 @@ void Mine::read(std::istream& is) {
 
     readContent.push_back(row);
   }
+
+  initWaterLevel = 0;
+  floodingFreq = 0;
+  waterproof = 10;
+  while (!is.eof()) {
+    char command[4096];
+    char parameter[4096];
+    is.getline(command, 4096, ' ');
+    is.getline(parameter, 4096);
+
+    if (strcmp(command, "Water") == 0) {
+      initWaterLevel = atoi(parameter);
+    } else if (strcmp(command, "Flooding") == 0) {
+      floodingFreq = atoi(parameter);
+    } else if (strcmp(command, "Waterproof") == 0) {
+      waterproof = atoi(parameter);
+    }
+  }
+  curWaterLevel = initWaterLevel;
 
   width = maxRow;
   height = readContent.size();
@@ -161,8 +184,7 @@ void Mine::read(std::istream& is) {
         robotX = j;
         robotY = i;
       } else if (c == MineContent::ClosedLift) {
-        liftX = j;
-        liftY = i;
+        liftLoc.push_back({j, i});
       } else if (c == MineContent::Lambda) {
 	      numInitialLambdas++;
       }
@@ -269,6 +291,7 @@ bool Mine::pushMove(RobotCommand command) {
   historyEntry.collectedLambdas = collectedLambdas;
   historyEntry.robotX = robotX;
   historyEntry.robotY = robotY;
+  historyEntry.submergedSteps = submergedSteps;
 
   auto nr = get(newRobotX, newRobotY);
   if (nr == MineContent::Lambda)
@@ -312,8 +335,23 @@ bool Mine::pushMove(RobotCommand command) {
     }
   }
 
-  if (allLambdasCollected)
-    updateQueue.push_back({liftX, liftY, MineContent::OpenLift});
+  curWaterLevel = waterLevel(totalMoves + 1);
+
+  if (curWaterLevel >= robotY) {
+    submergedSteps += 1;
+  } else {
+    submergedSteps = 0;
+  }
+
+  if (submergedSteps > waterproof) {
+    state = State::Lose;
+  }
+
+  if (allLambdasCollected) {
+    for (auto lift : liftLoc) {
+      updateQueue.push_back({lift.x, lift.y, MineContent::OpenLift});
+    }
+  }
 
   for (auto update : updateQueue) {
     // Add the required update to go *backwards* onto the history entry.
@@ -329,8 +367,17 @@ bool Mine::pushMove(RobotCommand command) {
   historyList.push_back(historyEntry);
 
   ++totalMoves;
+    
 
   return true;
+}
+
+int Mine::waterLevel(int turn) const {
+  if (floodingFreq == 0) {
+    return initWaterLevel;
+  } else {
+    return turn / floodingFreq + initWaterLevel;
+  }
 }
 
 int Mine::moveCount() const {
@@ -348,12 +395,15 @@ bool Mine::popMove() {
   auto const& history = historyList[historyList.size() - 1];
   robotX = history.robotX;
   robotY = history.robotY;
+  submergedSteps = history.submergedSteps;
   collectedLambdas = history.collectedLambdas;
   for (auto const& update : history.updates)
     set(update.x, update.y, update.c);
 
   historyList.pop_back();
   commandHistory.pop_back();
+  
+  curWaterLevel = waterLevel(totalMoves - 1);
   state = State::InProgress;
   --totalMoves;
   return true;
@@ -361,7 +411,7 @@ bool Mine::popMove() {
 
 void Mine::print() {
   for (int y = height - 1; y >= 0; --y) {
-    for (int x = 0; x < height; ++x)
+    for (int x = 0; x < width; ++x)
       std::cout << charFromContent(get(x, y));
     std::cout << std::endl;
   }

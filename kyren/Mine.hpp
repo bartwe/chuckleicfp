@@ -5,6 +5,7 @@
 #include <vector>
 #include <algorithm>
 #include <cstdint>
+#include <cstring>
 
 enum class RobotCommand : uint8_t {
   Left,
@@ -31,6 +32,11 @@ enum class State : uint8_t {
   Win,
   Lose,
   Aborted
+};
+
+struct Coord {
+  size_t x;
+  size_t y;
 };
 
 class Mine {
@@ -68,6 +74,7 @@ public:
 
   // Returns 20 char (binary) SHA-1 hash of map state.
   std::string hashcode() const;
+  int waterLevel(int turn) const;
 
 private:
   void set(int x, int y, MineContent c);
@@ -75,7 +82,7 @@ private:
   void updateMine();
 
   struct MineUpdate {
-    int x, y;
+    size_t x, y;
     MineContent c;
   };
 
@@ -87,6 +94,7 @@ private:
     int robotY;
     // Old collectedLambdas
     int collectedLambdas;
+    int submergedSteps;
   };
 
 public:
@@ -96,8 +104,7 @@ private:
   std::vector<RobotCommand> commandHistory;
 
   // NOTE: there can be more than one lift, this is wrong!!! --Jeroen
-  int liftX;
-  int liftY;
+  std::vector<Coord> liftLoc;
 
   int totalMoves;
 public:
@@ -110,6 +117,11 @@ public:
 
   int collectedLambdas;
   int numInitialLambdas;
+  int initWaterLevel;
+  int curWaterLevel;
+  int floodingFreq;
+  int waterproof;
+  int submergedSteps;
 };
 
 #endif
