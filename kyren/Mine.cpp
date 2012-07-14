@@ -340,7 +340,7 @@ bool Mine::pushMove(RobotCommand command) {
 
   curWaterLevel = waterLevel(totalMoves + 1);
 
-  if (curWaterLevel >= robotY) {
+  if (curWaterLevel > robotY) {
     submergedSteps += 1;
   } else {
     submergedSteps = 0;
