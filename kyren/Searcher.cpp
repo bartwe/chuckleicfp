@@ -1,4 +1,5 @@
 #include "Searcher.hpp"
+#include "BestSoFar.h"
 
 Searcher::Searcher(Mine const& mine) {
   mineInitialState = mine;
@@ -21,7 +22,11 @@ Searcher::Result Searcher::bruteForceSearch(int maxLength, Mine& mine) {
       return {{}, 0};
   }
 
-  visited[hashcode] = mine.score();
+  int s = mine.score();
+  visited[hashcode] = s;
+  if (Best::IsImprovement(s)) {
+	  Best::ImproveSolution(s, Mine::commandString(mine.commands()).c_str());
+  }
   results.push_back({mine.commands(), mine.score()});
 
   if (mine.moveCount() >= maxLength)

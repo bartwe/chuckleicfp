@@ -2,7 +2,8 @@
 
 namespace Best {
 void ReserveSpace(int maxcommandlength);
-void ImproveSolution(char* newsolution);
+bool IsImprovement(int score);
+void ImproveSolution(int newscore, const char* newsolution);
 char* GetBest();
 
 void GiveUp();
