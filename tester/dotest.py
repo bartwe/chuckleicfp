@@ -34,7 +34,12 @@ def DoTest(exe, mapfn):
 
     os.kill(killer.pid, 9)
 
-maps = os.listdir(MAPDIR)
-print 'MAPNAME SCORE RUNTIME EXITCODE SOLUTION'
-for map in sorted(maps):
-    DoTest(MAIN, os.path.join(MAPDIR, map))
+def main():
+    maps = os.listdir(MAPDIR)
+    print 'MAPNAME SCORE RUNTIME EXITCODE SOLUTION'
+    for map in sorted(maps):
+        DoTest(MAIN, os.path.join(MAPDIR, map))
+
+if __name__ == '__main__':
+    main()
+
