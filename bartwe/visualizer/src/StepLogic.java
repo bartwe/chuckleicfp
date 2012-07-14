@@ -75,7 +75,7 @@ public class StepLogic {
           next.curWaterLevel++;
         }
 
-        if (next.curWaterLevel >= next.robotY) {
+        if (next.curWaterLevel > next.robotY) {
           next.submergedSteps++;
         } else {
           next.submergedSteps = 0;
