@@ -1,5 +1,6 @@
 #include "Mine.hpp"
 #include "sha1.h"
+#include "BestSoFar.h"
 
 MineContent Mine::contentFromChar(char c) {
   switch (c) {
@@ -169,6 +170,8 @@ void Mine::read(std::istream& is) {
 
   width = maxRow;
   height = readContent.size();
+
+  Best::ReserveSpace(width * height);
 
   content.resize(width * height, MineContent::Empty);
   // Turn upside down so (0, 0) is bottom left
