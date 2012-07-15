@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <cstdlib>
+#include <map>
 
 #include "Solvers.hpp"
 
@@ -162,4 +163,64 @@ void RoundSolver::doRound() {
   std::sort(currentSolutions.begin(), currentSolutions.end());
   if (currentSolutions.size() > maxTotalBranches)
     currentSolutions.erase(currentSolutions.begin(), currentSolutions.begin() + currentSolutions.size() - maxTotalBranches);
+}
+
+bool reachable(Mine const& mine, Position const& destination) { //start is assumed to be robot location
+  std::vector<Position> toVisit;
+  std::vector<bool> visited;
+  const int mineWidth = mine.getProblem()->width;
+  const int mineHeight = mine.getProblem()->height;
+  visited.resize(mineWidth * mineHeight, false);
+  toVisit.push_back({mine.currentVariadicState().robotX, mine.currentVariadicState().robotY});
+  Position consider;
+
+  const Position LookDirs[] = {
+    { 1,  0},
+    { 0,  1},
+    {-1,  0},
+    { 0, -1},
+  };
+
+  auto addToVisited = [&](Position toAdd) {
+    visited[mineWidth * toAdd.y + toAdd.x] = true;
+  };
+
+  auto hasVisited = [&](Position toCheck)->bool {
+    return visited[mineWidth * toCheck.y + toCheck.x];
+  };
+
+  while (toVisit.size() > 0) {
+    consider = toVisit.back();
+    if (hasVisited(consider)) {
+      continue;
+    }
+    toVisit.pop_back();
+    addToVisited(consider);
+    if (consider == destination) {
+      return true;
+    }
+    
+    for (auto i : LookDirs) {
+      auto dest = mine.get(i + consider);
+      if (dest == Tile::Empty || 
+          dest == Tile::Lambda || 
+          dest == Tile::Earth ||
+          dest == Tile::Razor ||
+          dest == Tile::OpenLift ||
+          dest == Tile::Beard) {
+        toVisit.push_back(i + consider);
+      } else if (dest == Tile::Rock || dest == Tile::HigherOrderRock) {
+        Position delta = {i.x, 0};
+        if (i.y == 0 && mine.get(i + consider + delta) == Tile::Empty) { //if I can push it, assume that it's not blocking me
+          toVisit.push_back(i + consider);
+        }
+      } else if (dest >= Tile::TrampolineA && dest <= Tile::TrampolineI) {
+        Tile target = mine.getProblem()->getTargetForTramp(dest);
+        Position jumpTo = mine.getProblem()->targetLoc[mine.getProblem()->indexOfTrampTarget(target)];
+        toVisit.push_back(jumpTo);
+      }
+    }
+
+    return false;
+  }
 }
