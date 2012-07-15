@@ -31,6 +31,7 @@ public class AStar {
         closedSet = new HashSet<WorldStateHash>();
         openSet = new PriorityQueue<AStarEvent>();
         nodes = new HashMap<WorldStateHash, AStarNode>();
+        start.trampolined = false;
         bestNode = new AStarNode(null, controller.goalHeuristic(start), 0, start);
         nodes.put(bestNode.state.getHash(), bestNode);
         openSet.add(new AStarEvent(bestNode.state, bestNode.fScore, sequence++));
@@ -67,7 +68,7 @@ public class AStar {
                 if (closedSet.contains(t.getHash()))
                     continue;
                 double hScore = controller.goalHeuristic(t);
-                double gScore = node.gScore + controller.edgeCost(t, node.state);
+                double gScore = node.gScore + controller.edgeCost(node.state, t);
                 if ((hScore >= Double.MAX_VALUE) || (gScore >= Double.MAX_VALUE))
                     continue;
                 AStarNode slot = nodes.get(t.getHash());
