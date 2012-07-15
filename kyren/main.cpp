@@ -9,7 +9,7 @@ static void sighandler(int signum) {
   auto solution = m_best.solution();
 	printf("# score: %d\n", solution.score);
 	printf("%s\n", commandString(solution.commands).c_str());
-	exit(0);
+	abort();
 }
 
 int main(int argc, char** argv) {
