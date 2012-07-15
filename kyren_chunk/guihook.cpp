@@ -5,7 +5,7 @@
 #include <fstream>
 #include "Problem.hpp"
 #include "Best.hpp"
-#include "Searcher.hpp"
+#include "Solver.hpp"
 
 Best g_best;
 Grid<Tile> g_grid;

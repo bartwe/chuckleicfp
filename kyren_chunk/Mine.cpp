@@ -322,8 +322,29 @@ int Mine::moveCount() const {
   return totalMoves;
 }
 
+int Mine::remainingLambdas() const {
+  return problem->numInitialLambdas - var.collectedLambdas;
+}
+
+bool Mine::dead() const {
+  if (state != State::InProgress)
+    return true;
+
+  if (canMove(1, 0) || canMove(-1, 0) || canMove(0, 1) || canMove(0, -1))
+    return false;
+
+  if (problem->getTileCount(Tile::Beard) != 0 && var.curRazors != 0)
+    return false;
+
+  return true;
+}
+
 RobotCommands const& Mine::commands() const {
   return commandHistory;
+}
+
+Solution Mine::solution() const {
+  return {commandHistory, score()};
 }
 
 void Mine::print() const {
@@ -360,4 +381,26 @@ void Mine::Chunk::computeHash() {
   sha1::calc(tiles.getGrid(), tiles.gridSize(), hash);
   hashCode = std::string((char const*)hash, 20);
   hashDirty = false;
+}
+
+bool Mine::canMove(int dx, int dy) const {
+  if (dx == 0 && dy == 0)
+    return true;
+
+  int nx = var.robotX + dx;
+  int ny = var.robotY + dy;
+  auto c = get(nx, ny);
+  if (c == Tile::Empty || 
+      c == Tile::Earth || 
+      c == Tile::Lambda || 
+      c == Tile::OpenLift || 
+      c == Tile::Razor) {
+    return true;
+  } else if (rockType(c) && dy == 0 && get(nx + dx, var.robotY) == Tile::Empty) {
+    return true;
+  } else if (c >= Tile::TrampolineA && c <= Tile::TrampolineI) {
+    return true;
+  } else {
+    return false;
+  }
 }

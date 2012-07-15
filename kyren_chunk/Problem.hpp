@@ -18,6 +18,7 @@ struct Problem {
   int indexOfTrampTarget(Tile c) const;
   Tile getTargetForTramp(Tile c) const;
   std::vector<Position> getTrampLocsForTarget(Tile c) const;
+  int getTileCount(Tile c) const;
 
   int initialTileHistogram[128];
   std::vector<Position> liftLoc;

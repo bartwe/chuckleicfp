@@ -7,11 +7,6 @@
 // Utility class to (in an atomic / thread safe way) update a best solution and score.
 class Best {
 public:
-  struct Solution {
-    RobotCommands commands;
-    int score;
-  };
-
   Best();
 
   bool isImprovement(int score);

@@ -1,4 +1,4 @@
-#include "Searcher.hpp"
+#include "Solver.hpp"
 #include "Best.hpp"
 
 #include <signal.h>
@@ -17,13 +17,10 @@ int main(int argc, char** argv) {
 	signal(SIGINT, sighandler);
 
   auto problem = Problem::read(std::cin);
+  RoundSolver solver(m_best, problem, {BDFSSearcher(20, 20)}, 20);
 
-  Mine mine(problem);
-
-  Searcher searcher;
-  searcher.bruteForce(m_best, mine, 24);
-
-  sighandler(SIGINT);
+  while (true)
+    solver.doRound();
 
   return 0;
 }

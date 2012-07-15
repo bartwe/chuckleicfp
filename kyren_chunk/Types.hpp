@@ -56,6 +56,16 @@ enum class State : uint8_t {
   Aborted
 };
 
+struct Solution {
+  RobotCommands commands;
+  int score;
+
+  bool operator<(Solution const& solution) const {
+    return score < solution.score;
+  }
+};
+typedef std::vector<Solution> Solutions;
+
 inline Tile tileFromChar(char c) {
 	return (Tile)c;
 }

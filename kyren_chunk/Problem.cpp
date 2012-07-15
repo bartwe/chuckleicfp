@@ -94,12 +94,16 @@ std::shared_ptr<Problem> Problem::read(std::istream& is) {
     }
   }
 
-  assert(problem->initialTileHistogram[charFromTile(Tile::Robot)] == 1);
-  assert(problem->initialTileHistogram[charFromTile(Tile::ClosedLift)] == 1);
-  assert(problem->initialTileHistogram[charFromTile(Tile::OpenLift)] == 0);
-  assert(problem->initialTileHistogram[charFromTile(Tile::Lambda)] == problem->numInitialLambdas);
+  assert(problem->getTileCount(Tile::Robot) == 1);
+  assert(problem->getTileCount(Tile::ClosedLift) == 1);
+  assert(problem->getTileCount(Tile::OpenLift) == 0);
+  assert(problem->getTileCount(Tile::Lambda) == problem->numInitialLambdas);
 
   return problem;
+}
+
+int Problem::getTileCount(Tile c) const {
+  return initialTileHistogram[charFromTile(c)];
 }
 
 int Problem::indexOfTrampTarget(Tile c) const {

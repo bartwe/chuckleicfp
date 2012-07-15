@@ -21,6 +21,6 @@ void Best::improveSolution(Solution solution) {
 	__asm__ __volatile__ ("" ::: "memory");
 }
 
-Best::Solution Best::solution() const {
+Solution Best::solution() const {
   return *dabest;
 }

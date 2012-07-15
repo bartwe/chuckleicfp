@@ -38,8 +38,15 @@ public:
   // Returns false if illegal command (and does nothing)
   bool doCommand(RobotCommand command);
 
-  RobotCommands const& commands() const;
   int moveCount() const;
+  int remainingLambdas() const;
+
+  // Are we in a non in progress state, *or* there no moves left that have any
+  // positive effect?
+  bool dead() const;
+
+  RobotCommands const& commands() const;
+  Solution solution() const;
 
   void print() const;
 
@@ -63,6 +70,8 @@ private:
     int x, y;
     Tile c;
   };
+  
+  bool canMove(int dx, int dy) const;
 
   std::shared_ptr<Problem> problem;
   Grid<std::shared_ptr<Chunk>> chunks;
