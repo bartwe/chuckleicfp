@@ -62,25 +62,25 @@ Tile Mine::get(int x, int y) const {
   int xc = x / ChunkSize;
   int yc = y / ChunkSize;
 
-  x -= xc * ChunkSize;
-  y -= yc * ChunkSize;
+  int xi = x - xc * ChunkSize;
+  int yi = y - yc * ChunkSize;
 
   auto const& chunk = chunks.at(xc, yc);
-  return chunk->tiles.at(x, y);
+  return chunk->tiles.at(xi, yi);
 }
 
 void Mine::set(int x, int y, Tile c) {
   int xc = x / ChunkSize;
   int yc = y / ChunkSize;
 
-  x -= xc * ChunkSize;
-  y -= yc * ChunkSize;
+  int xi = x - xc * ChunkSize;
+  int yi = y - yc * ChunkSize;
 
   auto& chunk = chunks.at(xc, yc);
   if (!chunk.unique())
     chunk = std::make_shared<Chunk>(*chunk);
 
-  Tile& tile = chunk->tiles.at(x,y);
+  Tile& tile = chunk->tiles.at(xi,yi);
   if (tile != c)
     chunk->hashDirty = true;
 
