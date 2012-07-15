@@ -97,7 +97,7 @@ std::shared_ptr<Problem> Problem::read(std::istream& is) {
   assert(problem->initialTileHistogram[charFromTile(Tile::Robot)] == 1);
   assert(problem->initialTileHistogram[charFromTile(Tile::ClosedLift)] == 1);
   assert(problem->initialTileHistogram[charFromTile(Tile::OpenLift)] == 0);
-  assert(problem->initialTileHistogram[charFromTile(Tile::Lambda)] == problem->numInitialLambdas);
+  assert(problem->initialTileHistogram[charFromTile(Tile::Lambda)] + problem->initialTileHistogram[charFromTile(Tile::HigherOrderRock)] == problem->numInitialLambdas);
 
   return problem;
 }
