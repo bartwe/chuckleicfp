@@ -3,11 +3,12 @@
 
 #include <signal.h>
 
-Best m_best(4 * 1024 * 1024);
+Best m_best;
 
 static void sighandler(int signum) {
-	printf("# score: %d\n", m_best.getBestScore());
-	printf("%s\n", m_best.getBest());
+  auto solution = m_best.solution();
+	printf("# score: %d\n", solution.score);
+	printf("%s\n", commandString(solution.commands).c_str());
 	exit(0);
 }
 

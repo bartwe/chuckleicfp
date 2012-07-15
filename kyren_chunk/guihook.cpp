@@ -9,6 +9,7 @@
 
 Best g_best;
 Grid<Tile> g_grid;
+std::string g_bestCommands;
 
 extern "C" {
 
@@ -59,9 +60,10 @@ int DoMove(Mine* m, char move)
 	return m->score();
 }
 
-char* GetBest()
+char const* GetBest()
 {
-  return g_best.getBest();
+  g_bestCommands = commandString(g_best.solution().commands);
+  return g_bestCommands.c_str();
 }
 
 } // extern

@@ -124,11 +124,8 @@ int Mine::score() const {
 }
 
 void Mine::evaluate(RobotCommands commandList) {
-  for (auto c : commandList) {
+  for (auto c : commandList)
     doCommand(c);
-    if (state != State::InProgress)
-      return;
-  }
 }
 
 void Mine::evaluateAndPrint(RobotCommands commandList) {

@@ -16,7 +16,7 @@ void Searcher::bruteForceSearch(Best& best, Mine mine, RobotCommand command, int
     return;
 
   if (best.isImprovement(mine.score()))
-    best.improveSolution(mine.score(), commandString(mine.commands()).c_str());
+    best.improveSolution({mine.commands(), mine.score()});
 
   if (mine.moveCount() >= maxLength || mine.ended())
     return;
