@@ -11,7 +11,7 @@
 #include "Grid.hpp"
 
 struct Problem {
-  typedef uint32_t PosIdx;
+  typedef Grid<Tile, uint32_t> TileGrid;
 
   static std::shared_ptr<Problem> read(std::istream& is);
 
@@ -25,7 +25,7 @@ struct Problem {
   std::vector<Position> targetLoc;
 
   std::vector<std::pair<Tile, Tile>> trampMapping;
-  std::set<PosIdx> rockbeardpositions;
+  std::set<Position> rockBeardPositions;
 
   int width;
   int height;
@@ -44,5 +44,5 @@ struct Problem {
     int initRazors;
   } beard;
 
-  Grid<Tile, PosIdx> tiles;
+  TileGrid tiles;
 };

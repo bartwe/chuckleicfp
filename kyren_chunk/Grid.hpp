@@ -6,6 +6,14 @@
 
 struct Position {
 	int x, y;
+  bool operator<(Position const& p) const {
+    if (x < p.x)
+      return true;
+    else if (p.x < x)
+      return false;
+    else
+      return p.y < y;
+  }
 };
 
 // posidx_t = uint16_t -> up to 64k tiles (e.g. 256x256)

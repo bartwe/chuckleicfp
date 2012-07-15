@@ -21,8 +21,7 @@ Mine::Mine(std::shared_ptr<Problem> p) {
   content = p->tiles;
   state = State::InProgress;
   totalMoves = 0;
-  rockbeardpositions = problem->rockbeardpositions;
-
+  rockBeardPositions = problem->rockBeardPositions;
 
   var.collectedLambdas = 0;
   var.curWaterLevel = problem->water.initWaterLevel;
@@ -173,12 +172,11 @@ bool Mine::doCommand(RobotCommand command) {
   var.robotY = newRobotY;
 
   bool beardGrowTime = (moveCount()+1) % problem->beard.growthrate == 0;
-  for (Problem::PosIdx rockbeardpos : rockbeardpositions) {
-    Position rockbeard = content.idx2pos(rockbeardpos);
+  for (auto const& rockbeard : rockBeardPositions) {
     int x = rockbeard.x;
     int y = rockbeard.y;
 
-    if (content.atidx(rockbeardpos) == Tile::Rock) {
+    if (content.at(rockbeard) == Tile::Rock) {
       if (get(x, y - 1) == Tile::Empty) {
         updateQueue.push_back({x, y, Tile::Empty});
         updateQueue.push_back({x, y - 1, Tile::Rock});
@@ -193,7 +191,7 @@ bool Mine::doCommand(RobotCommand command) {
         updateQueue.push_back({x + 1, y - 1, Tile::Rock});
       }
     } else {
-      assert(content.atidx(rockbeardpos) == Tile::Beard);
+      assert(content.at(rockbeard) == Tile::Beard);
       if (beardGrowTime) {
         for ( auto dir : BeardDirs ) {
           int nx = x + dir.dx;
@@ -267,12 +265,11 @@ std::string Mine::hashcode() const {
   return std::string((char const*)hash, 20);
 }
 
-void Mine::set(int x, int y, Tile c)
-{
+void Mine::set(int x, int y, Tile c) {
   Tile& tile = content.at(x,y);
-  if ( tile == Tile::Rock || tile == Tile::Beard )
-    rockbeardpositions.erase(content.pos2idx(x,y));
+  if (tile == Tile::Rock || tile == Tile::Beard)
+    rockBeardPositions.erase({x, y});
   tile = c;
-  if ( tile == Tile::Rock || tile == Tile::Beard )
-    rockbeardpositions.insert(content.pos2idx(x,y));
+  if (tile == Tile::Rock || tile == Tile::Beard)
+    rockBeardPositions.insert({x, y});
 }

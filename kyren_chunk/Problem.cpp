@@ -58,6 +58,8 @@ std::shared_ptr<Problem> Problem::read(std::istream& is) {
 
   problem->numInitialLambdas = 0;
 
+  memset(problem->initialTileHistogram, 0, sizeof problem->initialTileHistogram);
+
   for (int i = 0; i < readContent.size(); ++i) {
     auto const& row = readContent[i];
     for (int j = 0; j < row.size(); ++j) {
@@ -84,22 +86,18 @@ std::shared_ptr<Problem> Problem::read(std::istream& is) {
       }
 
       problem->tiles.at(j, i) = c;
+
+      if (c == Tile::Rock || c == Tile::Beard)
+        problem->rockBeardPositions.insert({j, i});
+
+      problem->initialTileHistogram[charFromTile(c)]++;
     }
   }
 
-  memset(problem->initialTileHistogram, 0, sizeof problem->initialTileHistogram);
-
-  for (int i=0; i<problem->tiles.gridSize(); i++) {
-    Tile tile = problem->tiles.atidx(i);
-    problem->initialTileHistogram[charFromTile(tile)]++;
-
-    if (tile==Tile::Rock || tile==Tile::Beard)
-      problem->rockbeardpositions.insert(i);
-  }
-  assert( problem->initialTileHistogram[charFromTile(Tile::Robot)] == 1 );
-  assert( problem->initialTileHistogram[charFromTile(Tile::ClosedLift)] == 1 );
-  assert( problem->initialTileHistogram[charFromTile(Tile::OpenLift)] == 0 );
-  assert( problem->initialTileHistogram[charFromTile(Tile::Lambda)] == problem->numInitialLambdas );
+  assert(problem->initialTileHistogram[charFromTile(Tile::Robot)] == 1);
+  assert(problem->initialTileHistogram[charFromTile(Tile::ClosedLift)] == 1);
+  assert(problem->initialTileHistogram[charFromTile(Tile::OpenLift)] == 0);
+  assert(problem->initialTileHistogram[charFromTile(Tile::Lambda)] == problem->numInitialLambdas);
 
   return problem;
 }

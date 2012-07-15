@@ -20,6 +20,7 @@ public:
   std::shared_ptr<Problem> getProblem() const;
 
   Tile get(int x, int y) const;
+  void set(int x, int y, Tile c);
 
   bool ended() const;
   State currentState() const;
@@ -53,13 +54,11 @@ private:
     Tile c;
   };
 
-  void set(int x, int y, Tile c);
-
   std::shared_ptr<Problem> problem;
-  Grid<Tile, Problem::PosIdx> content;
+  Problem::TileGrid content;
 
   // any tile type that can trigger an update
-  std::set<Problem::PosIdx> rockbeardpositions;
+  std::set<Position> rockBeardPositions;
 
   RobotCommands commandHistory;
 
