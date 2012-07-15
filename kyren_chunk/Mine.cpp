@@ -16,142 +16,24 @@ static delta_t BeardDirs[] = {
     { 0, -1},
   };
 
-void Mine::read(std::istream& is) {
+Mine::Mine(std::shared_ptr<Problem> p) {
+  problem = p;
+  content = p->tiles;
   state = State::InProgress;
-  var.collectedLambdas = 0;
   totalMoves = 0;
+  rockbeardpositions = problem->rockbeardpositions;
 
-  std::vector<std::vector<Tile>> readContent;
-  int maxRow = 0;
-  std::string line;
-  while (std::getline(is, line)) {
-    if (line.size() == 0) break;
 
-    std::vector<Tile> row;
-    row.resize(line.size());
-    memcpy(&row[0], &line[0], line.size());
+  var.collectedLambdas = 0;
+  var.curWaterLevel = problem->water.initWaterLevel;
+  var.curRazors = problem->beard.initRazors;
+  var.robotX = problem->robotX;
+  var.robotY = problem->robotY;
 
-    maxRow = std::max<int>(maxRow, row.size());
-
-    readContent.push_back(std::move(row));
-  }
-
-  problem.water.initWaterLevel = 0;
-  problem.water.floodingFreq = 0;
-  problem.water.waterproof = 10;
-
-  problem.beard.growthrate = 25;
-  problem.beard.initRazors = 0;
-
-  while (std::getline(is, line)) {
-    char* cline = (char*)line.c_str();
-    char* eocmd = strchr(cline, ' ');
-    if (!eocmd) continue;
-
-    const char* command = cline;
-    *eocmd = 0;
-    const char* parameter = eocmd + 1;
-
-    if (strcmp(command, "Water") == 0) {
-      problem.water.initWaterLevel = atoi(parameter);
-    } else if (strcmp(command, "Flooding") == 0) {
-      problem.water.floodingFreq = atoi(parameter);
-    } else if (strcmp(command, "Waterproof") == 0) {
-      problem.water.waterproof = atoi(parameter);
-    } else if (strcmp(command, "Growth") == 0) {
-      problem.beard.growthrate = atoi(parameter);
-    } else if (strcmp(command, "Razors") == 0) {
-      problem.beard.initRazors = atoi(parameter);
-    } else if (strcmp(command, "Trampoline") == 0) {
-      problem.trampMapping.push_back({tileFromChar(parameter[0]), tileFromChar(parameter[strlen(parameter)-1])});
-    }
-  }
-  var.curWaterLevel = problem.water.initWaterLevel;
-  var.curRazors = problem.beard.initRazors;
-
-  problem.width = maxRow;
-  problem.height = readContent.size();
-
-  content.reset(problem.width, problem.height, Tile::Empty);
-  // Turn upside down so (0, 0) is bottom left
-  std::reverse(readContent.begin(), readContent.end());
-
-  problem.numInitialLambdas = 0;
-
-  for (int i = 0; i < readContent.size(); ++i) {
-    auto const& row = readContent[i];
-    for (int j = 0; j < row.size(); ++j) {
-      auto c = row[j];
-      if (c == Tile::Robot) {
-        var.robotX = j;
-        var.robotY = i;
-      } else if (c == Tile::ClosedLift) {
-        problem.liftLoc.push_back({j, i});
-      } else if (c == Tile::Lambda) {
-	      problem.numInitialLambdas++;
-      } else if (c >= Tile::TrampolineA && c <= Tile::TrampolineI) {
-        int index = indexOfTrampTarget(c);
-        if ((int)c >= problem.trampLoc.size()) {
-          problem.trampLoc.resize(index+1);
-        }
-        problem.trampLoc[index] = {j, i};
-      } else if (c >= Tile::Target1 && c <= Tile::Target9) {
-        int index = indexOfTrampTarget(c);
-        if ((int)c >= problem.targetLoc.size()) {
-          problem.targetLoc.resize(index+1);
-        }
-        problem.targetLoc[index] = {j, i};
-      }
-
-      set(j, i, c);
-    }
-  }
-
-  memset(problem.initialTileHistogram, 0, sizeof problem.initialTileHistogram);
-
-  for (int i=0; i<content.gridSize(); i++) {
-    Tile tile = content.atidx(i);
-    problem.initialTileHistogram[charFromTile(tile)]++;
-
-    if (tile==Tile::Rock || tile==Tile::Beard)
-      rockbeardpositions.insert(i);
-  }
-  assert( problem.initialTileHistogram[charFromTile(Tile::Robot)] == 1 );
-  assert( problem.initialTileHistogram[charFromTile(Tile::ClosedLift)] == 1 );
-  assert( problem.initialTileHistogram[charFromTile(Tile::OpenLift)] == 0 );
-  assert( problem.initialTileHistogram[charFromTile(Tile::Lambda)] == problem.numInitialLambdas );
 }
 
-Problem const& Mine::getProblem() const {
+std::shared_ptr<Problem> Mine::getProblem() const {
   return problem;
-}
-
-int Mine::indexOfTrampTarget(Tile c) const {
-  if (c >= Tile::TrampolineA && c <= Tile::TrampolineI)
-    return (int)c - (int)Tile::TrampolineA;
-  else if (c >= Tile::Target1 && c <= Tile::Target9)
-    return (int)c - (int)Tile::Target1;
-  else
-    return -1; //error
-}
-
-Tile Mine::getTargetForTramp(Tile c) const {
-  for (auto i : problem.trampMapping) {
-    if (i.first == c) {
-      return i.second;
-    }
-  }
-  return Tile::Empty;
-}
-
-std::vector<Position> Mine::getTrampLocsForTarget(Tile c) const {
-  std::vector<Position> res;
-  for (auto i : problem.trampMapping) {
-    if (i.second == c) {
-      res.push_back(problem.trampLoc[indexOfTrampTarget(i.first)]);
-    }
-  }
-  return res;
 }
 
 Tile Mine::get(int x, int y) const {
@@ -241,11 +123,11 @@ bool Mine::doCommand(RobotCommand command) {
       updateQueue.push_back({nx+dx, var.robotY, Tile::Rock});
       newRobotX = nx;
     } else if (c >= Tile::TrampolineA && c <= Tile::TrampolineI) {
-      Tile target = getTargetForTramp(c);
-      Position jumpTo = problem.targetLoc[indexOfTrampTarget(target)];
+      Tile target = problem->getTargetForTramp(c);
+      Position jumpTo = problem->targetLoc[problem->indexOfTrampTarget(target)];
       newRobotX = jumpTo.x;
       newRobotY = jumpTo.y;
-      for (auto i : getTrampLocsForTarget(target)) {
+      for (auto i : problem->getTrampLocsForTarget(target)) {
         updateQueue.push_back({i.x, i.y, Tile::Empty});
       }
     } 
@@ -290,8 +172,8 @@ bool Mine::doCommand(RobotCommand command) {
   var.robotX = newRobotX;
   var.robotY = newRobotY;
 
-  bool beardGrowTime = (moveCount()+1) % problem.beard.growthrate == 0;
-  for (PosIdx rockbeardpos : rockbeardpositions) {
+  bool beardGrowTime = (moveCount()+1) % problem->beard.growthrate == 0;
+  for (Problem::PosIdx rockbeardpos : rockbeardpositions) {
     Position rockbeard = content.idx2pos(rockbeardpos);
     int x = rockbeard.x;
     int y = rockbeard.y;
@@ -332,12 +214,12 @@ bool Mine::doCommand(RobotCommand command) {
     var.submergedSteps = 0;
   }
 
-  if (var.submergedSteps > problem.water.waterproof) {
+  if (var.submergedSteps > problem->water.waterproof) {
     state = State::Lose;
   }
 
-  if (var.collectedLambdas == problem.numInitialLambdas) {
-    for (auto lift : problem.liftLoc)
+  if (var.collectedLambdas == problem->numInitialLambdas) {
+    for (auto lift : problem->liftLoc)
       updateQueue.push_back({lift.x, lift.y, Tile::OpenLift});
   }
 
@@ -355,10 +237,10 @@ bool Mine::doCommand(RobotCommand command) {
 }
 
 int Mine::waterLevel(int turn) const {
-  if (problem.water.floodingFreq == 0) {
-    return problem.water.initWaterLevel;
+  if (problem->water.floodingFreq == 0) {
+    return problem->water.initWaterLevel;
   } else {
-    return turn / problem.water.floodingFreq + problem.water.initWaterLevel;
+    return turn / problem->water.floodingFreq + problem->water.initWaterLevel;
   }
 }
 
@@ -371,8 +253,8 @@ RobotCommands const& Mine::commands() const {
 }
 
 void Mine::print() const {
-  for (int y = problem.height - 1; y >= 0; --y) {
-    for (int x = 0; x < problem.width; ++x)
+  for (int y = problem->height - 1; y >= 0; --y) {
+    for (int x = 0; x < problem->width; ++x)
       std::cout << charFromTile(get(x, y));
     std::cout << std::endl;
   }
