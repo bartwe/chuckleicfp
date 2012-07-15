@@ -1,6 +1,74 @@
 #include <algorithm>
+#include <cstdlib>
 
-#include "Solver.hpp"
+#include "Solvers.hpp"
+
+RandomDijkstraSolver::RandomDijkstraSolver(Best& best, int maxOpenSet, int sortNumber, int sortBuff) :
+  best(best), maxOpenSet(maxOpenSet), sortNumber(sortNumber), sortBuff(sortBuff) {}
+
+void RandomDijkstraSolver::run(Mine mine) {
+  for (auto command : AllRobotCommands) {
+    Mine m(mine);
+    if (performCommand(m, command))
+      openSet.push_back(m);
+  }
+
+  int numSets = 0;
+  while (!openSet.empty()) {
+    std::deque<Mine> newOpenSet;
+    for (auto const& mine : openSet) {
+      for (auto command : AllRobotCommands) {
+        Mine m(mine);
+        if (!performCommand(m, command))
+          continue;
+
+        if (newOpenSet.size() < maxOpenSet + sortBuff) {
+          newOpenSet.push_back(m);
+        } else {
+          newOpenSet[rand() % newOpenSet.size()] = m;
+        }
+        ++numSets;
+        if (numSets >= sortNumber && newOpenSet.size() > maxOpenSet) {
+          numSets = 0;
+          std::sort(newOpenSet.begin(), newOpenSet.end(), [](Mine const& m1, Mine const& m2) {
+              return m1.score() < m2.score();
+            });
+          newOpenSet.erase(newOpenSet.begin(), newOpenSet.begin() + newOpenSet.size() - maxOpenSet);
+        }
+      }
+    }
+
+    openSet = newOpenSet;
+  }
+}
+
+bool RandomDijkstraSolver::performCommand(Mine& mine, RobotCommand command) {
+  if (!mine.doCommand(command))
+    return false;
+
+  int score = mine.score();
+  if (best.isImprovement(score))
+    best.improveSolution(mine.solution());
+
+  if (mine.dead())
+    return false;
+
+  if (!checkHashCode(mine.hashcode(), score))
+    return false;
+
+  return true;
+}
+
+bool RandomDijkstraSolver::checkHashCode(std::string const& hash, int score) {
+  // Skip if we have visited this mine state before with a better score.
+  auto vi = visited.find(hash);
+  if (vi != visited.end()) {
+    if (score < vi->second)
+      return false;
+  }
+  visited[hash] = score;
+  return true;
+}
 
 BDFSSearcher::BDFSSearcher(int maxDepth, int maxSolutions) : maxDepth(maxDepth), maxSolutions(maxSolutions) {}
 
@@ -12,6 +80,7 @@ Solutions BDFSSearcher::operator()(Best& best, Mine mine) {
   bruteForceSearch(best, mine, RobotCommand::Left);
   bruteForceSearch(best, mine, RobotCommand::Up);
   bruteForceSearch(best, mine, RobotCommand::Down);
+  bruteForceSearch(best, mine, RobotCommand::Slice);
   bruteForceSearch(best, mine, RobotCommand::Wait);
   bruteForceSearch(best, mine, RobotCommand::Abort);
 
