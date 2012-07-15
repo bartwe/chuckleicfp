@@ -2,7 +2,9 @@
 
 import subprocess, time, os, sys
 
-PACKAGES = [ ['../bartwe/visualizer/', 'lifter', 'dasa', 'cd ../bartwe/visualizer; make'], ['../lightning/', 'lifter', 'lightning', 'cd ../lightning; ./install'], ['../kyren/', 'main', 'brute', 'cd ../kyren/; make'] ]
+PACKAGES = [ ['../bartwe/visualizer/', 'lifter', 'dasa', 'cd ../bartwe/visualizer; make'], ['../kyren/', 'main', 'kyren', 'cd ../kyren/; make'] ]
+
+# ['../lightning/', 'lifter', 'lightning', 'cd ../lightning; ./install'], 
 # , ['../kyren_chunk/', 'main', 'chunk', 'cd ../kyren_chunk/; make'] ]
 MAPDIR = '../maps'
 
@@ -18,7 +20,7 @@ def DoTest(cwdpath, exe, shortname, mapfn):
     fullcwdpath = os.path.abspath(cwdpath)
     print >> sys.stderr, 'Running ' + exepath + ' map ' + mapfn
     p = subprocess.Popen((exepath,), cwd=fullcwdpath, stdin=open(mapfn), stdout=subprocess.PIPE)
-    killer = subprocess.Popen("sleep 10; kill -INT %d; sleep 10; kill -9 %d" % (p.pid, p.pid), shell=True)
+    killer = subprocess.Popen("sleep 45; kill -INT %d; sleep 10; kill -9 %d" % (p.pid, p.pid), shell=True)
     out = ""
     while True:
         r = p.stdout.read()

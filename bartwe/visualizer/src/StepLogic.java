@@ -29,12 +29,20 @@ public class StepLogic {
         if (action == RobotAction.Abort)
             return StepResult.Abort;
         byte target = current.get(current.robotX + action.dx, current.robotY + action.dy);
-        if (Cell.isEmptyEarthLambdaLift(target)) {
+        if (Cell.isEmptyEarthLambdaLiftTransporter(target)) {
             if (Cell.isLambda(target)) {
                 next.lambdaCollected++;
                 next.lambdaRemaining--;
             } else if (target == Cell.ClosedLambdaLift && next.lambdaRemaining != 0)
                 return StepResult.MoveFail;
+            else if (Cell.isTransporter(target))
+            {
+                byte sourceTransporter = target;
+                byte targetTransporter = current.map.getTargetTransporter(sourceTransporter);
+                next.set(current.robotX, current.robotY, Cell.Empty);
+                next.doTransporter(sourceTransporter, targetTransporter);
+                return StepResult.Ok;
+            }
             next.set(current.robotX, current.robotY, Cell.Empty);
             next.robotX += action.dx;
             next.robotY += action.dy;

@@ -2,7 +2,6 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.security.MessageDigest;
 
-
 public class SolidWorldState extends WorldState {
     byte[][] data;
     final int n;
@@ -44,6 +43,8 @@ public class SolidWorldState extends WorldState {
 
     public void set(int x, int y, byte state) {
         assert Cell.validState(state);
+        if (get(x, y) == 11 && state != 11)
+            data[y][x] = state;
         data[y][x] = state;
     }
 
@@ -92,6 +93,7 @@ public class SolidWorldState extends WorldState {
         result.submergedSteps = submergedSteps;
         result.waterproof = waterproof;
         result.steps = steps;
+        result.map = map;
         return result;
     }
 
