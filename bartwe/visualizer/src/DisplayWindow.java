@@ -7,10 +7,10 @@ import java.awt.image.*;
 public class DisplayWindow {
     static final long serialVersionUID = 1;
 
-    DisplayFrame frame;
+    final DisplayFrame frame;
 
-    public int width;
-    public int height;
+    public final int width;
+    public final int height;
 
     public DisplayWindow(int width, int height, int scaleShift) {
         this.width = width;
@@ -29,10 +29,10 @@ public class DisplayWindow {
     private class DisplayFrame extends JFrame implements KeyListener {
         static final long serialVersionUID = 1;
 
-        private BufferedImage shownImage;
-        private int width;
-        private int height;
-        private int scaleShift;
+        private final BufferedImage shownImage;
+        private final int width;
+        private final int height;
+        private final int scaleShift;
         KeyListener keyListener;
 
 

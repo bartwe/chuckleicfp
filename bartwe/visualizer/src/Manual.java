@@ -3,10 +3,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 public class Manual implements KeyListener {
-    DisplayWindow window;
+    final DisplayWindow window;
     WorldState state;
     WorldState nextState;
-    int[] raw;
+    final int[] raw;
 
     public static void main(String[] args) {
         PathingGUI manual = new PathingGUI(WorldState.loadFromDisk(args[0]));

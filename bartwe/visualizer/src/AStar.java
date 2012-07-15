@@ -10,18 +10,18 @@ public class AStar {
         double horizon();
     }
 
-    Controller controller;
+    final Controller controller;
     int sequence;
 
-    HashSet<WorldStateHash> closedSet;
-    PriorityQueue<AStarEvent> openSet;
-    HashMap<WorldStateHash, AStarNode> nodes;
+    final HashSet<WorldStateHash> closedSet;
+    final PriorityQueue<AStarEvent> openSet;
+    final HashMap<WorldStateHash, AStarNode> nodes;
     AStarNode bestNode;
 
     int limit = 1000;
-    double horizon;
+    final double horizon;
 
-    WorldState[] adjacentsBuffer;
+    final WorldState[] adjacentsBuffer;
     boolean completed;
 
     public AStar(Controller controller, WorldState start) {
@@ -155,12 +155,12 @@ public class AStar {
 
         @Override
         public int hashCode() {
-            return state.hashCode();    //To change body of overridden methods use File | Settings | File Templates.
+            return state.hashCode();
         }
 
         @Override
         public boolean equals(Object obj) {
-            return state.equals(obj);    //To change body of overridden methods use File | Settings | File Templates.
+            return state.equals(obj);
         }
     }
 }

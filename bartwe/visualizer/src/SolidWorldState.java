@@ -5,7 +5,8 @@ import java.security.MessageDigest;
 
 public class SolidWorldState extends WorldState {
     byte[][] data;
-    int n, m;
+    final int n;
+    final int m;
     private WorldStateHash hash;
 
 
@@ -123,8 +124,8 @@ public class SolidWorldState extends WorldState {
         bb.putInt(waterproof);
         bb.flip();
         md.update(bb);
-        for (int i = 0; i < data.length; ++i)
-            md.update(data[i]);
+        for (byte[] row : data)
+            md.update(row);
         hash = new WorldStateHash(md.digest());
         return hash;
     }

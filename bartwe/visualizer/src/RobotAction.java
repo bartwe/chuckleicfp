@@ -6,9 +6,9 @@ public class RobotAction {
     public static final RobotAction Wait = new RobotAction('W', 0, 0);
     public static final RobotAction Abort = new RobotAction('A', 0, 0);
 
-    char letter;
-    int dx;
-    int dy;
+    final char letter;
+    final int dx;
+    final int dy;
 
     private RobotAction(char letter, int dx, int dy) {
         this.letter = letter;

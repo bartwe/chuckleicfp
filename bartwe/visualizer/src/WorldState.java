@@ -94,8 +94,8 @@ public abstract class WorldState {
         //warning rows is in inverted order of m
         int n = 0;
         int m = rows.size();
-        for (int i = 0; i < m; i++)
-            n = Math.max(n, rows.get(i).length);
+        for (byte[] row : rows)
+            n = Math.max(n, row.length);
         SolidWorldState result = new SolidWorldState(n, m);
         
         try {
