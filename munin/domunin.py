@@ -39,6 +39,8 @@ def DoTest(cwdpath, exe, shortname, mapfn):
     print '%s-%s.value %d' % (mapname(mapfn), shortname, score)
 
     os.kill(killer.pid, 9)
+    if score < 0:
+        score = 0;
     return score
 
 def gitpull():
