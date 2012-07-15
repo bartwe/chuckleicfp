@@ -32,6 +32,8 @@ char Mine::commandChar(RobotCommand command) {
       return 'W';
     case RobotCommand::Abort:
       return 'A';
+    case RobotCommand::Slice:
+      return 'S';
     default:
       REQUIRE( !"Unknown command" );
       return ' ';
@@ -63,6 +65,7 @@ RobotCommand Mine::charToCommand(char command)
 		case 'D': return RobotCommand::Down;
 		case 'W': return RobotCommand::Wait;
 		case 'A': return RobotCommand::Abort;
+    case 'S': return RobotCommand::Slice;
 		default: // eh
 			  REQUIRE( !"Unknown command" );
 			return RobotCommand::Wait;
@@ -83,6 +86,8 @@ std::string Mine::commandName(RobotCommand command) {
       return "Wait";
     case RobotCommand::Abort:
       return "Abort";
+    case RobotCommand::Slice:
+      return "Slice";
     default:
       REQUIRE( !"Unknown command" );
       return "";
@@ -121,7 +126,7 @@ void Mine::read(std::istream& is) {
   problem.water.waterproof = 10;
 
   problem.beard.growthrate = 25;
-  problem.beard.razors = 0;
+  problem.beard.initRazors = 0;
 
   while (std::getline(is, line)) {
     char* cline = (char*)line.c_str();
@@ -141,12 +146,13 @@ void Mine::read(std::istream& is) {
     } else if (strcmp(command, "Growth") == 0) {
       problem.beard.growthrate = atoi(parameter);
     } else if (strcmp(command, "Razors") == 0) {
-      problem.beard.razors = atoi(parameter);
+      problem.beard.initRazors = atoi(parameter);
     } else if (strcmp(command, "Trampoline") == 0) {
       trampMapping.push_back({tileFromChar(parameter[0]), tileFromChar(parameter[strlen(parameter)-1])});
     }
   }
   var.curWaterLevel = problem.water.initWaterLevel;
+  var.curRazors = problem.beard.initRazors;
 
   width = maxRow;
   height = readContent.size();
@@ -301,7 +307,11 @@ bool Mine::pushMove(RobotCommand command) {
     int nx = var.robotX + dx;
     int ny = var.robotY + dy;
     auto c = get(nx, ny);
-    if (c == MineContent::Empty || c == MineContent::Earth || c == MineContent::Lambda || c == MineContent::OpenLift) {
+    if (c == MineContent::Empty || 
+        c == MineContent::Earth || 
+        c == MineContent::Lambda || 
+        c == MineContent::OpenLift || 
+        c == MineContent::Razor) {
       newRobotX = nx;
       newRobotY = ny;
     } else if (c == MineContent::Rock && dy == 0 && get(nx + dx, var.robotY) == MineContent::Empty) {
@@ -315,7 +325,7 @@ bool Mine::pushMove(RobotCommand command) {
       for (auto i : getTrampLocsForTarget(target)) {
         updateQueue.push_back({i.x, i.y, MineContent::Empty});
       }
-    }
+    } 
 
     // If we have been commanded to move, but haven't moved, command must not
     // have been valid, do nothing.
@@ -323,6 +333,15 @@ bool Mine::pushMove(RobotCommand command) {
     {
       checkConsistency();
       return false;
+    }
+  }
+
+  if (command == RobotCommand::Slice) {
+    var.curRazors--;
+    for (auto i : BeardDirs) {
+      if (get(var.robotX + i.dx, var.robotY + i.dy) == MineContent::Beard) {
+        updateQueue.push_back({var.robotX + i.dx, var.robotY + i.dy, MineContent::Empty});
+      }
     }
   }
 
@@ -334,6 +353,8 @@ bool Mine::pushMove(RobotCommand command) {
   auto nr = get(newRobotX, newRobotY);
   if (nr == MineContent::Lambda)
     ++var.collectedLambdas;
+  else if (nr == MineContent::Razor)
+    ++var.curRazors;
   else if (nr == MineContent::OpenLift)
     state = State::Win;
 

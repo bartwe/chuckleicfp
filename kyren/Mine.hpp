@@ -17,7 +17,8 @@ enum class RobotCommand : uint8_t {
   Up,
   Down,
   Wait,
-  Abort
+  Abort,
+  Slice
 };
 
 typedef Tile MineContent;
@@ -91,6 +92,7 @@ private:
 	  int collectedLambdas;
 	  int curWaterLevel;
 	  int submergedSteps;
+    int curRazors;
   };
 
   struct MineHistory {
@@ -139,7 +141,7 @@ public:
 	  } water;
 	  struct {
 		  int growthrate;
-		  int razors;
+		  int initRazors;
 	  } beard;
   } problem;
 };

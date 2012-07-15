@@ -1,5 +1,0 @@
-- add currentrazorcount to variadic_state:
-  - intialize it from the program value
-- Implement the command (much like the beard grow code)
-  - I think just like pushing rocks, the updates apply immediately
-- Implement eating razors
