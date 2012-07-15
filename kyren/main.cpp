@@ -17,7 +17,7 @@ int main(int argc, char** argv) {
 	signal(SIGINT, sighandler);
 
   auto problem = Problem::read(std::cin);
-  RoundSolver solver(m_best, problem, {BDFSSearcher(20, 20)}, 20);
+  RoundSolver solver(m_best, problem, {BDFSSearcher(24, 20)}, 20);
 
   while (true)
     solver.doRound();

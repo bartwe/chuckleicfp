@@ -5,6 +5,7 @@ import subprocess, time, os
 MAIN = '../kyren/main'
 #MAIN = '../bartwe/visualizer/lifter'
 MAPDIR = '../maps'
+TIME = 20
 
 def DoTest(exe, mapfn):
     #print 'Testing with map %s' % mapfn
@@ -12,7 +13,7 @@ def DoTest(exe, mapfn):
         mapdata = fd.read()
     s = time.time()
     p = subprocess.Popen((exe,), stdin=open(mapfn), stdout=subprocess.PIPE)
-    killer = subprocess.Popen("sleep 150; kill -INT %d" % p.pid, shell=True)
+    killer = subprocess.Popen("sleep %d; kill -INT %d" % (TIME, p.pid), shell=True)
     out = ""
     while True:
         r = p.stdout.read()
