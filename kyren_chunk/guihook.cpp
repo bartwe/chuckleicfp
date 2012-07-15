@@ -8,6 +8,7 @@
 #include "Searcher.hpp"
 
 Best g_best;
+Grid<Tile> g_grid;
 
 extern "C" {
 
@@ -33,8 +34,12 @@ uint32_t* GetData(Mine* m, int* width, int* height)
 {
 	*width = m->getProblem()->width;
 	*height = m->getProblem()->height;
-	Tile* grid = m->getContent()->getGrid();
-	return (uint32_t*)grid;
+  g_grid.reset(*width, *height, Tile::Wall);
+  for (int y = 0; y < *height; ++y)
+    for (int x = 0; x < *width; ++x)
+      g_grid.at(x, y) = m->get(x, y);
+
+	return (uint32_t*)g_grid.getGrid();
 }
 
 void GetInfo(Mine* m, char* str, int buflen, int* waterlevel)

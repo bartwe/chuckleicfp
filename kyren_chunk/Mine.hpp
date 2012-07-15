@@ -48,8 +48,6 @@ public:
 
   int waterLevel(int turn) const;
 
-  Grid<Tile, Problem::PosIdx>* getContent();
-
 private:
   static int const ChunkSize = 64;
   struct Chunk {
