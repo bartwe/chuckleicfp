@@ -27,6 +27,7 @@ class Projection(wx.Control):
         self.bmp[' '] =  wx.Bitmap(imgdir + '/empty.png')
         self.bmp['#'] =  wx.Bitmap(imgdir + '/wall.png')
         self.bmp['*'] =  wx.Bitmap(imgdir + '/rock.png')
+        self.bmp['@'] =  wx.Bitmap(imgdir + '/higherorderrock.png')
         self.bmp['R'] =  wx.Bitmap(imgdir + '/robot.png')
         self.bmp['L'] =  wx.Bitmap(imgdir + '/lift.png')
         self.bmp['.'] =  wx.Bitmap(imgdir + '/earth.png')
