@@ -4,5 +4,11 @@ fi
 cd ~/git/chuckleicfp
 git pull
 cd munin
-./domunin.py config > /tmp/icfpmuninpconfig
-./domunin.py > /tmp/icfpmunin
+./domunin.py config > /tmp/icfpmuninconfig.tmp
+./domunin.py > /tmp/icfpmunin.tmp
+mv /tmp/icfpmuninconfig /tmp/icfpmuninconfig.delme
+mv /tmp/icfpmuninconfig.tmp /tmp/icfpmuninconfig
+rm -f /tmp/icfpmuninconfig.delme
+mv /tmp/icfpmunin /tmp/icfpmunin.delme
+mv /tmp/icfpmunin.tmp /tmp/icfpmunin
+rm -f /tmp/icfpmunin.delme
