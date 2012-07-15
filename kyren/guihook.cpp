@@ -5,8 +5,10 @@
 #include <fstream>
 #include "Heuristic.hpp"
 #include "Heuristic.hpp"
-#include "BestSoFar.hpp"
+#include "Best.hpp"
 #include "Searcher.hpp"
+
+Best g_best;
 
 extern "C" {
 
@@ -71,10 +73,7 @@ static void* docalc(void* arg)
 
         // Copied from main... todo: share code
         Searcher searcher;
-        searcher.bruteForce(*mine, 24, [](RobotCommands const& commands, int score) {
-            if (Best::isImprovement(score))
-              Best::improveSolution(score, commandString(commands).c_str());
-            });
+        searcher.bruteForce(*mine, g_best, 24);
 
         return 0;
 }
@@ -90,7 +89,7 @@ void GoForIt(Mine* m)
 
 char* GetBest()
 {
-  return Best::getBest();
+  return g_best.getBest();
 }
 
 } // extern
