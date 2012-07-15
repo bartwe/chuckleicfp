@@ -28,7 +28,6 @@ int main()
         mapList.push_back(line);
       }
       mineFile.close();
-      mapList.pop_back();
 
       Mine mine (mapList);
       Pathfinder pathfinder(mine);

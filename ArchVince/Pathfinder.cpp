@@ -12,6 +12,23 @@ Pathfinder::Pathfinder(Mine tmine) : mine(tmine)
   water = nodeMap.water;
   waterproof = nodeMap.waterproof;
   flooding = nodeMap.flooding;
+  for(int i = 0; i < 9; i++)
+  {
+    targets[i] = mine.targets[i];
+    if(mine.targetsPos[i].x != -1)
+    {
+      targetsIDs[i] = (mine.getID(mine.targetsPos[i]));
+    }
+    else
+      targetsIDs[i] = (-1);
+
+    if(mine.tramps[i].x != -1)
+    {
+      tramps[i] = (mine.getID(mine.tramps[i]));
+    }
+    else
+      tramps[i] = (-1);
+  }
 }
 
 std::string Pathfinder::findPath(Point start, Point end)
@@ -116,6 +133,10 @@ std::string Pathfinder::findPath(int start, int end)
           step1.type = Tiles::empty;
           connSS.steps = applyUpd(connSS.steps, connSS, step1);
         }
+        else if(isTramp(getType(ss, conn)))
+        {
+          connSS = jump(connSS);
+        }
         connSS.steps = stepUpdMap(connSS);
         for(int j = 0; j < (int)connSS.steps.size(); j++)
         {
@@ -180,6 +201,34 @@ bool Pathfinder::isFlooded(searchState ss)
     if(submerged > waterproof) return true;
   }
   return false;
+}
+
+Pathfinder::searchState Pathfinder::jump(searchState ss)
+{
+  int num = -1;
+  if(getType(ss, ss.id, false) == Tiles::a) num = 0;
+  if(getType(ss, ss.id, false) == Tiles::b) num = 1;
+  if(getType(ss, ss.id, false) == Tiles::c) num = 2;
+  if(getType(ss, ss.id, false) == Tiles::d) num = 3;
+  if(getType(ss, ss.id, false) == Tiles::e) num = 4;
+  if(getType(ss, ss.id, false) == Tiles::f) num = 5;
+  if(getType(ss, ss.id, false) == Tiles::g) num = 6;
+  if(getType(ss, ss.id, false) == Tiles::h) num = 7;
+  if(getType(ss, ss.id, false) == Tiles::i) num = 8;
+  if(num != -1)
+  {
+    ss.steps = applyUpd(ss.steps, ss, {ss.id, Tiles::empty});
+    ss.id = targetsIDs[targets[num]];
+    ss.steps = applyUpd(ss.steps, ss, {ss.id, Tiles::empty});
+    for(int i = 0; i < 9; i++)
+    {
+      if(i != num && targets[i] == targets[num])
+      {
+        ss.steps = applyUpd(ss.steps, ss, {tramps[i], Tiles::empty});
+      }
+    }
+  }
+  return ss;
 }
 
 Pathfinder::searchState Pathfinder::stateFromSimilar(searchState ss, similarState sim)
@@ -377,6 +426,13 @@ int Pathfinder::pushOpen(searchState ss)
 
 int Pathfinder::getTarget(searchState ss, int id)
 {
+  bool check[9];
+  for(int i = 0; i < 9; i++) check[i] = false;
+  return getTarget(ss, id, check);
+}
+
+int Pathfinder::getTarget(searchState ss, int id, bool checkTargets[9])
+{
   if(liftStatus(ss))
   {
     if(liftReachable) return mine.getID(lift);
@@ -393,7 +449,35 @@ int Pathfinder::getTarget(searchState ss, int id)
       lowestIndex = i;
     }
   }
-  return ss.lambdas[lowestIndex];
+
+  bool lambda = true;
+  for(int i = 0; i < 9; i++)
+  {
+    if(tramps[i] != -1)
+    {
+      if(!checkTargets[targets[i]] && isTramp(getType(ss, tramps[i])))
+      {
+        checkTargets[targets[i]] = true;
+        int dist = manhattan(nodes[tramps[i]].x, nodes[tramps[i]].y, nodes[id].x, nodes[id].y);
+        int target = getTarget(ss, targetsIDs[targets[i]], checkTargets);
+        dist += manhattan(nodes[targetsIDs[targets[i]]].x, nodes[targetsIDs[targets[i]]].y, nodes[target].x, nodes[target].y);
+        checkTargets[targets[i]] = false;
+        if(dist < lowestDist)
+        {
+          lowestDist = dist;
+          lambda = false;
+          lowestIndex = i;
+        }
+      }
+    }
+  }
+  if(lambda) return ss.lambdas[lowestIndex];
+  return tramps[lowestIndex];
+}
+
+bool Pathfinder::isTramp(Tiles type)
+{
+  return (type == Tiles::a || type == Tiles::b || type == Tiles::c || type == Tiles::d || type == Tiles::e || type == Tiles::f || type == Tiles::g || type == Tiles::h || type == Tiles::i);
 }
 
 void Pathfinder::clearStoredNodes()
@@ -473,9 +557,9 @@ std::vector< Pathfinder::updStep > Pathfinder::stepUpdMap(searchState ss)
   return steps;
 }
 
-Tiles Pathfinder::getType(searchState ss, int id)
+Tiles Pathfinder::getType(searchState ss, int id, bool r)
 {
-  if(id == ss.id) return Tiles::robot;
+  if(r && id == ss.id) return Tiles::robot;
   for(int i = 0; i < (int) ss.steps.size(); i++)
   {
     if(ss.steps[i].id == id)
@@ -505,6 +589,42 @@ bool Pathfinder::isLegal(searchState ss, int cid)
         return getType(ss, mine.getID(nodes[cid].x + 1, nodes[cid].y)) == Tiles::empty;
       if(nodes[cid].x < nodes[ss.id].x)
         return getType(ss, mine.getID(nodes[cid].x - 1, nodes[cid].y)) == Tiles::empty;
+      return false;
+    case Tiles::a:
+      return true;
+    case Tiles::b:
+      return true;
+    case Tiles::c:
+      return true;
+    case Tiles::d:
+      return true;
+    case Tiles::e:
+      return true;
+    case Tiles::f:
+      return true;
+    case Tiles::g:
+      return true;
+    case Tiles::h:
+      return true;
+    case Tiles::i:
+      return true;
+    case Tiles::t1:
+      return false;
+    case Tiles::t2:
+      return false;
+    case Tiles::t3:
+      return false;
+    case Tiles::t4:
+      return false;
+    case Tiles::t5:
+      return false;
+    case Tiles::t6:
+      return false;
+    case Tiles::t7:
+      return false;
+    case Tiles::t8:
+      return false;
+    case Tiles::t9:
       return false;
     default:
       return false;

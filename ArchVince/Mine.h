@@ -14,7 +14,25 @@ enum class Tiles : char
   wall,
   lift,
   lambda,
-  robot
+  robot,
+  a,
+  b,
+  c,
+  d,
+  e,
+  f,
+  g,
+  h,
+  i,
+  t1,
+  t2,
+  t3,
+  t4,
+  t5,
+  t6,
+  t7,
+  t8,
+  t9
 };
 
 struct Point
@@ -42,6 +60,9 @@ class Mine
     Point lift;
     Point robot;
     int water, flooding, waterproof;
+    int targets[9];
+    Point targetsPos[9];
+    Point tramps[9];
 
   private:
     std::vector< std::vector< Tiles > > mine;

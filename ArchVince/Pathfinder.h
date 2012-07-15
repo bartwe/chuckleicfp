@@ -46,10 +46,11 @@ class Pathfinder
     int manhattan(Point p1, Point p2);
     int contains(std::vector< searchState > list, searchState key);
     int getTarget(searchState ss, int id);
+    int getTarget(searchState ss, int id, bool checkTargets[9]);
     void clearStoredNodes();
     std::vector< updStep > stepUpdMap(searchState ss);
     int pushOpen(searchState ss);
-    Tiles getType(searchState ss, int id);
+    Tiles getType(searchState ss, int id, bool r = true);
     bool vectorMatch(std::vector< int > v, std::vector< int > w);
     bool liftStatus(searchState ss);
     bool isLegal(searchState ss, int cid);
@@ -59,6 +60,8 @@ class Pathfinder
     std::vector< updStep > fixMismatch(searchState s, searchState o);
     searchState stateFromSimilar(searchState ss, similarState sim);
     bool isFlooded(searchState ss);
+    searchState jump(searchState ss);
+    bool isTramp(Tiles type);
 
     Mine mine;
     Point robot;
@@ -70,6 +73,9 @@ class Pathfinder
     std::vector< searchState > openNodes;
     std::vector< searchState > closedNodes;
     int water, waterproof, flooding;
+    int targets[9];
+    int targetsIDs[9];
+    int tramps[9];
 };
 
 #endif // PATHFINDER_H

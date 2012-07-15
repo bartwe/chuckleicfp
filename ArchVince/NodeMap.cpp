@@ -20,6 +20,17 @@ NodeMap::NodeMap(Mine tmine) : mine(tmine)
     if(mine.getID(tPoint) == -1)
     {
       tNode.type = mine.at(tPoint);
+      int num = -1;
+      if(tNode.type == Tiles::a) num = 0;
+      else if(tNode.type == Tiles::b) num = 1;
+      else if(tNode.type == Tiles::c) num = 2;
+      else if(tNode.type == Tiles::d) num = 3;
+      else if(tNode.type == Tiles::e) num = 4;
+      else if(tNode.type == Tiles::f) num = 5;
+      else if(tNode.type == Tiles::g) num = 6;
+      else if(tNode.type == Tiles::h) num = 7;
+      else if(tNode.type == Tiles::i) num = 8;
+      if(num != -1) expand.push_back(mine.targetsPos[mine.targets[num]]);
       if(tNode.type == Tiles::lift)
       {
         liftReachable = true;

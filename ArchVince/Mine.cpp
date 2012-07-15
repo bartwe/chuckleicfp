@@ -7,6 +7,12 @@ Mine::Mine(std::vector<std::string> rows)
   water = 0;
   flooding = 0;
   waterproof = 0;
+  for(int i = 0; i < 9; i++)
+  {
+    targets[i] = -1;
+    tramps[i] = {-1, -1};
+    targetsPos[i] = {-1, -1};
+  }
   while(height <= (int)rows.size() && rows[height-1] != "")
   {
     height++;
@@ -22,8 +28,31 @@ Mine::Mine(std::vector<std::string> rows)
         water = atoi(rows[i].substr(9).c_str());
       else if(rows[i].substr(0, 11).compare("Waterproof ") == 0)
         water = atoi(rows[i].substr(11).c_str());
+      else if(rows[i].substr(0, 11).compare("Trampoline ") == 0)
+      {
+        if(rows[i].at(11) == 'A') targets[0] = atoi(rows[i].substr(22).c_str());
+        else if(rows[i].at(11) == 'B') targets[1] = atoi(rows[i].substr(22).c_str());
+        else if(rows[i].at(11) == 'C') targets[2] = atoi(rows[i].substr(22).c_str());
+        else if(rows[i].at(11) == 'D') targets[3] = atoi(rows[i].substr(22).c_str());
+        else if(rows[i].at(11) == 'E') targets[4] = atoi(rows[i].substr(22).c_str());
+        else if(rows[i].at(11) == 'F') targets[5] = atoi(rows[i].substr(22).c_str());
+        else if(rows[i].at(11) == 'G') targets[6] = atoi(rows[i].substr(22).c_str());
+        else if(rows[i].at(11) == 'H') targets[7] = atoi(rows[i].substr(22).c_str());
+        else if(rows[i].at(11) == 'I') targets[8] = atoi(rows[i].substr(22).c_str());
+      }
     }
   }
+  Tiles trampolines[9];
+  trampolines[0] = Tiles::a;
+  trampolines[1] = Tiles::b;
+  trampolines[2] = Tiles::c;
+  trampolines[3] = Tiles::d;
+  trampolines[4] = Tiles::e;
+  trampolines[5] = Tiles::f;
+  trampolines[6] = Tiles::g;
+  trampolines[7] = Tiles::h;
+  trampolines[8] = Tiles::i;
+
   for(int i = 0; i < height; i++)
     width = std::max(width, (int)rows[i].length());
 
@@ -76,6 +105,60 @@ Mine::Mine(std::vector<std::string> rows)
           row.push_back(Tiles::earth); break;
         case ' ':
           row.push_back(Tiles::empty); break;
+        case 'A':
+          tramps[0] = {j, i};
+          row.push_back(Tiles::a); break;
+        case 'B':
+          tramps[1] = {j, i};
+          row.push_back(trampolines[1]); break;
+        case 'C':
+          tramps[2] = {j, i};
+          row.push_back(trampolines[2]); break;
+        case 'D':
+          tramps[3] = {j, i};
+          row.push_back(trampolines[3]); break;
+        case 'E':
+          tramps[4] = {j, i};
+          row.push_back(trampolines[4]); break;
+        case 'F':
+          tramps[5] = {j, i};
+          row.push_back(trampolines[5]); break;
+        case 'G':
+          tramps[6] = {j, i};
+          row.push_back(trampolines[6]); break;
+        case 'H':
+          tramps[7] = {j, i};
+          row.push_back(trampolines[7]); break;
+        case 'I':
+          tramps[8] = {j, i};
+          row.push_back(trampolines[8]); break;
+        case '1':
+          targetsPos[0] = {j, i};
+          row.push_back(Tiles::t1); break;
+        case '2':
+          targetsPos[1] = {j, i};
+          row.push_back(Tiles::t2); break;
+        case '3':
+          targetsPos[2] = {j, i};
+          row.push_back(Tiles::t3); break;
+        case '4':
+          targetsPos[3] = {j, i};
+          row.push_back(Tiles::t4); break;
+        case '5':
+          targetsPos[4] = {j, i};
+          row.push_back(Tiles::t5); break;
+        case '6':
+          targetsPos[5] = {j, i};
+          row.push_back(Tiles::t6); break;
+        case '7':
+          targetsPos[6] = {j, i};
+          row.push_back(Tiles::t7); break;
+        case '8':
+          targetsPos[7] = {j, i};
+          row.push_back(Tiles::t8); break;
+        case '9':
+          targetsPos[8] = {j, i};
+          row.push_back(Tiles::t9); break;
         default:
           std::cout << "Invalid character found in map" << std::endl;
           break;
