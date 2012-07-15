@@ -2,7 +2,7 @@
 
 import subprocess, time, os, sys
 
-PACKAGES = [ ['../bartwe/visualizer/lifter', 'dasa', 'cd ../bartwe/visualizer; make'], ['../kyren/main', 'brute', ''] ]
+PACKAGES = [ ['../bartwe/visualizer/lifter', 'dasa', 'cd ../bartwe/visualizer; make'], ['../lightning/lifter', 'lightning', 'cd ../lightning; ./install'], ['../kyren/main', 'brute', 'cd ../kyren/; make'], ['../kyren_chunk/main', 'chunk', 'cd ../kyren_chunk/; make'] ]
 MAPDIR = '../maps'
 
 def mapname(map):
@@ -27,6 +27,8 @@ def DoTest(exe, shortname, mapfn):
     for line in out.split('\n'):
         if 'score' in line:
             score = int(line.strip().split()[-1])
+    if score < 0:
+        score = -1
     solution =  ""
     for c in out:
         if c in "LRUDAW":
@@ -45,6 +47,7 @@ def main():
 #    gitpull();
     maps = os.listdir(MAPDIR)
     config = 'config' in sys.argv
+    test = 'test' in sys.argv
     if config:
         print 'graph_title Progress'
         print 'graph_vlabel score'
@@ -54,7 +57,11 @@ def main():
             p = subprocess.Popen(main[2], shell=True, stdout=open('/dev/null', 'w'), stderr=subprocess.STDOUT)
             p.wait();
         sum = 0;
+        first = True;
         for map in sorted(maps):
+            if test and not first:
+                break
+            first = False
             if config:
                 print '%s-%s.label %s %s' % (mapname(map), main[1], mapname(map), main[1])
             else:
