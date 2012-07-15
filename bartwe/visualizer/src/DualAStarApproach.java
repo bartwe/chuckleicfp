@@ -222,6 +222,7 @@ public class DualAStarApproach {
                     count = addToBuffer(state, count, adjacentsBuffer, RobotAction.Up);
                     count = addToBuffer(state, count, adjacentsBuffer, RobotAction.Down);
                     count = addToBuffer(state, count, adjacentsBuffer, RobotAction.Wait);
+                    count = addToBuffer(state, count, adjacentsBuffer, RobotAction.Shave);
                     return count;
                 }
 

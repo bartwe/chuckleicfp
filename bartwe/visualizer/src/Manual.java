@@ -60,6 +60,9 @@ public class Manual implements KeyListener {
             case KeyEvent.VK_SPACE:
                 action = RobotAction.Wait;
                 break;
+            case KeyEvent.VK_TAB:
+                action = RobotAction.Shave;
+                break;
             case KeyEvent.VK_ENTER:
                 action = RobotAction.Abort;
                 break;

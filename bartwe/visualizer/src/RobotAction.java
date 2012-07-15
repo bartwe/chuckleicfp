@@ -5,6 +5,7 @@ public class RobotAction {
     public static final RobotAction Down = new RobotAction('D', 0, -1);
     public static final RobotAction Wait = new RobotAction('W', 0, 0);
     public static final RobotAction Abort = new RobotAction('A', 0, 0);
+    public static final RobotAction Shave = new RobotAction('S', 0, 0);
 
     final char letter;
     final int dx;

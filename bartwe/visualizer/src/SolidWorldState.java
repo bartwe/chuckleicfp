@@ -98,6 +98,8 @@ public class SolidWorldState extends WorldState {
         result.steps = steps;
         result.map = map;
         result.trampolined = false; //is carried over manually
+        result.razors = razors;
+        result.growth = growth;
         return result;
     }
 
@@ -116,9 +118,10 @@ public class SolidWorldState extends WorldState {
             }
         }
         md.reset();
-        ByteBuffer bb = ByteBuffer.allocate(2 * 4);
+        ByteBuffer bb = ByteBuffer.allocate(3 * 4);
         bb.putInt(curWaterLevel);
         bb.putInt(submergedSteps);
+        bb.putInt(razors);
         bb.flip();
         md.update(bb);
         for (byte[] row : data)

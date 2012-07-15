@@ -47,7 +47,7 @@ public class PathingGUI implements KeyListener {
                 Thread stopper = new Thread(new Runnable() {
                     public void run() {
                         try {
-                            Thread.sleep(200000);
+                            Thread.sleep(10000);
                         } catch (InterruptedException e1) {
                         }
                         DualAStarApproach.stop = true;

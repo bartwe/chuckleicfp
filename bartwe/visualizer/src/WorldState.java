@@ -22,6 +22,8 @@ public abstract class WorldState {
     public TransporterMap map;
     boolean trampolined;
     public int numberOfTransporters;
+    public int razors;
+    public int growth = 25;
 
     public abstract byte get(int x, int y);
 
@@ -126,6 +128,12 @@ public abstract class WorldState {
                     byte target = Cell.charToState(para[3].charAt(0));
                     result.map.addMapping(source, target);
                 }
+                if (para[0].equals("Razors")){
+                    result.razors = Integer.parseInt(para[1]);
+                }
+                if (para[0].equals("Growth")){
+                    result.growth = Integer.parseInt(para[1]);
+                }
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -171,6 +179,8 @@ public abstract class WorldState {
         steps = current.steps;
         map = current.map;
         trampolined = false;
+        razors = current.razors;
+        growth = current.growth;
     }
 
     public abstract WorldState copy();

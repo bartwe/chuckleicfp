@@ -7,6 +7,8 @@ public class Cell {
     public static final byte ClosedLambdaLift = 5;
     public static final byte Earth = 6;
     public static final byte RobotLocation = 7;
+    public static final byte Beard = 8;
+    public static final byte Razor = 9;
 
     public static final byte TrampolineTarget1 = 11;
     public static final byte TrampolineTarget2 = 12;
@@ -71,6 +73,10 @@ public class Cell {
             case Cell.TrampolineTarget8:
             case Cell.TrampolineTarget9:
                 return 0x8000ff;
+            case Cell.Razor:
+                return 0x00ff80;
+            case Cell.Beard:
+                return 0x80ff00;
             default:
                 assert false;
                 return 0x808080;
@@ -134,6 +140,11 @@ public class Cell {
             case 73: // I
                 return Cell.TrampolineSource9;
 
+            case 87: // W
+                return Cell.Beard;
+            case 33: // !
+                return Cell.Razor;
+
             case 13:
                 return Cell.Invalid;
             default:
@@ -142,7 +153,7 @@ public class Cell {
         }
     }
 
-    public static boolean isEmptyEarthLambdaLiftTransporter(byte cell) {
+    public static boolean isEmptyEarthLambdaLiftTransporterRazor(byte cell) {
         switch (cell) {
             case Cell.Empty:
                 return true;
@@ -169,6 +180,8 @@ public class Cell {
             case Cell.TrampolineSource8:
                 return true;
             case Cell.TrampolineSource9:
+                return true;
+            case Cell.Razor:
                 return true;
             default:
                 return false;

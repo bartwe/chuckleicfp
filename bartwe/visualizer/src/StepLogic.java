@@ -21,8 +21,7 @@ public class StepLogic {
                 result = StepResult.Win;
             else if ((next.get(next.robotX, next.robotY + 1) == Cell.Rock) && (current.get(next.robotX, next.robotY + 1) != Cell.Rock))
                 result = StepResult.Lose;
-        }
-        else
+        } else
             next.stepResult = result;
         next.stepResult = result;
     }
@@ -32,9 +31,27 @@ public class StepLogic {
             return StepResult.Ok;
         if (action == RobotAction.Abort)
             return StepResult.Abort;
+        if (action == RobotAction.Shave) {
+            if (next.razors == 0)
+                return StepResult.MoveFail;
+            boolean beard = false;
+            for (int y = -1; y <= 1; y++)
+                for (int x = -1; x <= 1; x++) {
+                    byte cell = current.get(current.robotX + x, current.robotY + y);
+                    if (cell == Cell.Beard) {
+                        beard = true;
+                        next.set(current.robotX + x, current.robotY + y, Cell.Empty);
+                    }
+                }
+            if (!beard)
+                return StepResult.MoveFail;
+            return StepResult.Ok;
+        }
         byte target = current.get(current.robotX + action.dx, current.robotY + action.dy);
-        if (Cell.isEmptyEarthLambdaLiftTransporter(target)) {
-            if (Cell.isLambda(target)) {
+        if (Cell.isEmptyEarthLambdaLiftTransporterRazor(target)) {
+            if (target == Cell.Razor) {
+                next.razors++;
+            } else if (Cell.isLambda(target)) {
                 next.lambdaCollected++;
                 next.lambdaRemaining--;
             } else if (target == Cell.ClosedLambdaLift && next.lambdaRemaining != 0)
@@ -77,8 +94,8 @@ public class StepLogic {
     }
 
     private StepResult applyWorldStep(StepResult result, WorldState current, WorldState next) {
-        int width = current.getN() + 2;
-        int height = current.getM() + 2;
+        int n = current.getN();
+        int m = current.getM();
 
         if (next.curWaterLevel >= next.robotY) {
             next.submergedSteps++;
@@ -94,20 +111,34 @@ public class StepLogic {
             result = StepResult.Lose;
         }
 
-        for (int y = 0; y < height; ++y) {
-            for (int x = 0; x < width; ++x) {
-                if (current.get(x, y) == Cell.Rock && current.get(x, y - 1) == Cell.Empty) {
-                    next.set(x, y, Cell.Empty);
-                    next.set(x, y - 1, Cell.Rock);
-                } else if (current.get(x, y) == Cell.Rock && current.get(x, y - 1) == Cell.Rock && current.get(x + 1, y) == Cell.Empty && current.get(x + 1, y - 1) == Cell.Empty) {
-                    next.set(x, y, Cell.Empty);
-                    next.set(x + 1, y - 1, Cell.Rock);
-                } else if (current.get(x, y) == Cell.Rock && current.get(x, y - 1) == Cell.Rock && current.get(x - 1, y) == Cell.Empty && current.get(x - 1, y - 1) == Cell.Empty) {
-                    next.set(x, y, Cell.Empty);
-                    next.set(x - 1, y - 1, Cell.Rock);
-                } else if (current.get(x, y) == Cell.Rock && current.get(x, y - 1) == Cell.Lambda && current.get(x + 1, y) == Cell.Empty && current.get(x + 1, y - 1) == Cell.Empty) {
-                    next.set(x, y, Cell.Empty);
-                    next.set(x + 1, y - 1, Cell.Rock);
+        boolean beardy = next.steps % next.growth == 0;
+
+        for (int y = 1; y <= m; ++y) {
+            for (int x = 1; x <= n; ++x) {
+                byte c = current.get(x, y);
+                if (c == Cell.Rock) {
+                    if (current.get(x, y - 1) == Cell.Empty) {
+                        next.set(x, y, Cell.Empty);
+                        next.set(x, y - 1, Cell.Rock);
+                    } else if (current.get(x, y - 1) == Cell.Rock && current.get(x + 1, y) == Cell.Empty && current.get(x + 1, y - 1) == Cell.Empty) {
+                        next.set(x, y, Cell.Empty);
+                        next.set(x + 1, y - 1, Cell.Rock);
+                    } else if (current.get(x, y - 1) == Cell.Rock && current.get(x - 1, y) == Cell.Empty && current.get(x - 1, y - 1) == Cell.Empty) {
+                        next.set(x, y, Cell.Empty);
+                        next.set(x - 1, y - 1, Cell.Rock);
+                    } else if (current.get(x, y - 1) == Cell.Lambda && current.get(x + 1, y) == Cell.Empty && current.get(x + 1, y - 1) == Cell.Empty) {
+                        next.set(x, y, Cell.Empty);
+                        next.set(x + 1, y - 1, Cell.Rock);
+                    }
+                }
+                if (beardy && c == Cell.Beard) {
+                    for (int y_ = -1; y_ <= 1; y_++)
+                        for (int x_ = -1; x_ <= 1; x_++) {
+                            byte cell = current.get(x + x_, y + y_);
+                            if (cell == Cell.Empty) {
+                                next.set(x + x_, y + y_, Cell.Beard);
+                            }
+                        }
                 }
             }
         }
