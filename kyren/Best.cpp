@@ -1,36 +1,28 @@
-#include "BestSoFar.hpp"
+#include "Best.hpp"
 
 #include <cstring>
 #include <cstdlib>
 #include <cstdio>
 
-static int BESTSCORE = -1000000000;
-static char* dabest;
-static char* alternate;
-static int MAXLEN = 0;
+Best::Best(int maxcommandlength) {
+  MAXLEN = maxcommandlength;
+  BESTSCORE = -1000000000;
 
-namespace Best {
-
-void reserveSpace(int maxcommandlength) {
-	// Only init just once
-	if ( MAXLEN != 0 ) return;
-
-	MAXLEN = maxcommandlength;
 	dabest = (char*)malloc(MAXLEN+1);
 	alternate = (char*)malloc(MAXLEN+1);
 	memcpy(dabest, "A", 2);
 }
 
-bool isImprovement(int score) {
+bool Best::isImprovement(int score) {
 	return score > BESTSCORE;
 }
 
-void improveSolution(int score, const char* newsolution) {
+void Best::improveSolution(int score, const char* newsolution) {
 	if (!isImprovement(score)) return;
 	BESTSCORE = score;
 
 	int cmdlen = strlen(newsolution);
-	if ( cmdlen > MAXLEN ) cmdlen = MAXLEN;
+	if (cmdlen > MAXLEN) cmdlen = MAXLEN;
 
 	memcpy(alternate, newsolution, cmdlen);
 	alternate[cmdlen] = 0;
@@ -42,12 +34,10 @@ void improveSolution(int score, const char* newsolution) {
 	__asm__ __volatile__ ("" ::: "memory");
 }
 
-char* getBest() {
+char* Best::getBest() {
 	return dabest;
 }
 
-int getBestScore() {
+int Best::getBestScore() {
   return BESTSCORE;
-}
-
 }

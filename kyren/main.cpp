@@ -1,11 +1,13 @@
 #include "Searcher.hpp"
-#include "BestSoFar.hpp"
+#include "Best.hpp"
 
 #include <signal.h>
 
+Best m_best(4 * 1024 * 1024);
+
 static void sighandler(int signum) {
-	printf("# score: %d\n", Best::getBestScore());
-	printf("%s\n", Best::getBest());
+	printf("# score: %d\n", m_best.getBestScore());
+	printf("%s\n", m_best.getBest());
 	exit(0);
 }
 
@@ -16,13 +18,8 @@ int main(int argc, char** argv) {
   Mine mine;
   mine.read(std::cin);
 
-  Best::reserveSpace(4 * 1024 * 1024);
-
   Searcher searcher;
-  searcher.bruteForce(mine, 24, [](RobotCommands const& commands, int score) {
-      if (Best::isImprovement(score))
-        Best::improveSolution(score, commandString(commands).c_str());
-    });
+  searcher.bruteForce(mine, m_best, 24);
 
   sighandler(SIGINT);
 

@@ -33,7 +33,6 @@ struct Problem {
   } beard;
 };
 
-
 class Mine {
 public:
   // State that changes every move, and can be trivially copied
@@ -61,7 +60,6 @@ public:
 
   // Do a series of commands until state != InProgress
   void evaluate(RobotCommands commandList);
-
   void evaluateAndPrint(RobotCommands commandList);
 
   // Returns false if illegal move (and does nothing)

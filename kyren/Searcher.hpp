@@ -5,15 +5,14 @@
 #include <functional>
 
 #include "Mine.hpp"
+#include "Best.hpp"
 
 class Searcher {
 public:
-  typedef std::function<void (RobotCommands const& commands, int score)> SolutionCallback;
-
-  void bruteForce(Mine mine, int maxLength, SolutionCallback callback);
+  void bruteForce(Mine mine, Best& best, int maxLength);
 
 private:
-  void bruteForceSearch(Mine& mine, int maxLength, SolutionCallback callback);
+  void bruteForceSearch(Mine& mine, Best& best, int maxLength);
 
   std::unordered_map<std::string, int> visited;
 };
