@@ -19,7 +19,7 @@ int main(int argc, char** argv) {
   mine.read(std::cin);
 
   Searcher searcher;
-  searcher.bruteForce(mine, m_best, 24);
+  searcher.bruteForce(m_best, mine, 24);
 
   sighandler(SIGINT);
 

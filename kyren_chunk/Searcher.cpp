@@ -1,60 +1,44 @@
 #include "Searcher.hpp"
 
-void Searcher::bruteForce(Mine mine, Best& best, int maxLength) {
+void Searcher::bruteForce(Best& best, Mine mine, int maxLength) {
   visited.clear();
-  return bruteForceSearch(mine, best, maxLength);
+
+  bruteForceSearch(best, mine, RobotCommand::Right, maxLength);
+  bruteForceSearch(best, mine, RobotCommand::Left, maxLength);
+  bruteForceSearch(best, mine, RobotCommand::Up, maxLength);
+  bruteForceSearch(best, mine, RobotCommand::Down, maxLength);
+  bruteForceSearch(best, mine, RobotCommand::Wait, maxLength);
+  bruteForceSearch(best, mine, RobotCommand::Abort, maxLength);
 }
 
-void Searcher::bruteForceSearch(Mine& mine, Best& best, int maxLength) {
-  // If we haven't won, need to abort before determining the moves / score we are considering.
-  if (mine.currentState() == State::InProgress)
-    mine.pushMove(RobotCommand::Abort);
+void Searcher::bruteForceSearch(Best& best, Mine mine, RobotCommand command, int maxLength) {
+  if (!mine.doCommand(command))
+    return;
 
-  int score = mine.score();
-  auto commands = mine.commands();
+  if (best.isImprovement(mine.score()))
+    best.improveSolution(mine.score(), commandString(mine.commands()).c_str());
+
+  if (mine.moveCount() >= maxLength || mine.ended())
+    return;
+
+  // We should only update the visited set if the game is not in an ending
+  // state.
   auto hashcode = mine.hashcode();
-
-  if (mine.currentState() == State::Aborted)
-    mine.popMove();
-
-  // Skip if we have visited this mine state before with a better score
+  auto score = mine.score();
+  // Skip if we have visited this mine state before with a better score.
   auto vi = visited.find(hashcode);
   if (vi != visited.end()) {
-    if (score < vi->second)
+    if (mine.score() < vi->second)
       return;
   }
-  visited[hashcode] = score;
-
-  if (best.isImprovement(score))
-    best.improveSolution(score, commandString(commands).c_str());
+  visited[hashcode] = mine.score();
 
   // Now proceed down the tree in DFS
 
-  if (mine.moveCount() >= maxLength)
-    return;
-
-  if (mine.pushMove(RobotCommand::Right)) {
-    bruteForceSearch(mine, best, maxLength);
-    mine.popMove();
-  }
-
-  if (mine.pushMove(RobotCommand::Left)) {
-    bruteForceSearch(mine, best, maxLength);
-    mine.popMove();
-  }
-
-  if (mine.pushMove(RobotCommand::Up)) {
-    bruteForceSearch(mine, best, maxLength);
-    mine.popMove();
-  }
-
-  if (mine.pushMove(RobotCommand::Down)) {
-    bruteForceSearch(mine, best, maxLength);
-    mine.popMove();
-  }
-
-  if (mine.pushMove(RobotCommand::Wait)) {
-    bruteForceSearch(mine, best, maxLength);
-    mine.popMove();
-  }
+  bruteForceSearch(best, mine, RobotCommand::Right, maxLength);
+  bruteForceSearch(best, mine, RobotCommand::Left, maxLength);
+  bruteForceSearch(best, mine, RobotCommand::Up, maxLength);
+  bruteForceSearch(best, mine, RobotCommand::Down, maxLength);
+  bruteForceSearch(best, mine, RobotCommand::Wait, maxLength);
+  bruteForceSearch(best, mine, RobotCommand::Abort, maxLength);
 }

@@ -1,19 +1,16 @@
 CXX=g++
-CXXFLAGS=-std=c++0x -O3
+CXXFLAGS=-std=c++0x -g
 
 CPPFILES = $(wildcard *.cpp)
 OFILES = $(patsubst %.cpp,%.o,$(CPPFILES))
 HFILES = $(wildcard *.h) $(wildcard *.hpp)
 
-all: main libkyren.so
+all: main
 
 main: $(OFILES)
 	$(CXX) $(CXXFLAGS) -static $^ -o main
 
 $(OFILES): $(HFILES)
-
-libkyren.so: $(HFILES) $(CPPFILES)
-	g++ -DGUI $(CXXFLAGS) -fPIC $(CPPFILES) -shared -o $@
 
 clean:
 	rm -f *.o *.so main

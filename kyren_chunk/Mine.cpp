@@ -158,12 +158,8 @@ Tile Mine::get(int x, int y) const {
   return content.at(x,y);
 }
 
-Tile const* Mine::getGrid() const {
-  return content.getGrid();
-}
-
-Tile* Mine::getGrid() {
-  return content.getGrid();
+bool Mine::ended() const {
+  return state != State::InProgress;
 }
 
 State Mine::currentState() const {
@@ -177,11 +173,6 @@ Mine::VariadicState const& Mine::currentVariadicState() const {
 int Mine::score() const {
   int s = var.collectedLambdas * 25 - totalMoves;
 
-  // Add one to score if state is aborted, since abort doesn't count against
-  // the move penalty.
-  if (state == State::Aborted)
-    s += 1;
-
   if (state == State::Aborted)
     s += var.collectedLambdas * 25;
   else if (state == State::Win)
@@ -192,7 +183,7 @@ int Mine::score() const {
 
 void Mine::evaluate(RobotCommands commandList) {
   for (auto c : commandList) {
-    pushMove(c);
+    doCommand(c);
     if (state != State::InProgress)
       return;
   }
@@ -201,7 +192,7 @@ void Mine::evaluate(RobotCommands commandList) {
 void Mine::evaluateAndPrint(RobotCommands commandList) {
   print();
   for (auto c : commandList) {
-    if (!pushMove(c))
+    if (!doCommand(c))
       std::cout << "Illegal command: " << commandName(c) << std::endl;
 
     print();
@@ -212,17 +203,13 @@ void Mine::evaluateAndPrint(RobotCommands commandList) {
   std::cout << "Final score: " << score() << std::endl;
 }
 
-bool Mine::pushMove(RobotCommand command) {
-  checkConsistency();
+bool Mine::doCommand(RobotCommand command) {
   if (state != State::InProgress)
     return false;
 
   if (command == RobotCommand::Abort) {
     state = State::Aborted;
     commandHistory.push_back(command);
-    historyList.push_back({{}, var});
-    ++totalMoves;
-    checkConsistency();
     return true;
   }
 
@@ -232,13 +219,13 @@ bool Mine::pushMove(RobotCommand command) {
   std::vector<MineUpdate> updateQueue;
 
   int dx=0, dy=0;
-  switch (command)
-  {
+  switch (command) {
 	  case RobotCommand::Left:  dx=-1; break;
 	  case RobotCommand::Right: dx=+1; break;
 	  case RobotCommand::Up:    dy=+1; break;
 	  case RobotCommand::Down:  dy=-1; break;
   }
+
   if (dx != 0 || dy != 0) {
     int nx = var.robotX + dx;
     int ny = var.robotY + dy;
@@ -266,10 +253,7 @@ bool Mine::pushMove(RobotCommand command) {
     // If we have been commanded to move, but haven't moved, command must not
     // have been valid, do nothing.
     if (newRobotX == var.robotX && newRobotY == var.robotY)
-    {
-      checkConsistency();
       return false;
-    }
   }
 
   if (command == RobotCommand::Slice) {
@@ -283,9 +267,6 @@ bool Mine::pushMove(RobotCommand command) {
 
   commandHistory.push_back(command);
 
-  // Record history for this state before updating.
-  MineHistory historyEntry = {{}, var};
-
   auto nr = get(newRobotX, newRobotY);
   if (nr == Tile::Lambda)
     ++var.collectedLambdas;
@@ -298,11 +279,8 @@ bool Mine::pushMove(RobotCommand command) {
   updateQueue.push_back({newRobotX, newRobotY, Tile::Robot});
 
   // Apply all of the robot moves before computing the world update.
-  for (auto update : updateQueue) {
-    // Add the required update to go *backwards* onto the history entry.
-    historyEntry.updates.push_back({update.x, update.y, get(update.x, update.y)});
+  for (auto update : updateQueue)
     set(update.x, update.y, update.c);
-  }
   updateQueue.clear();
 
   var.robotX = newRobotX;
@@ -329,7 +307,7 @@ bool Mine::pushMove(RobotCommand command) {
         updateQueue.push_back({x + 1, y - 1, Tile::Rock});
       }
     } else {
-      assert( content.atidx(rockbeardpos) == Tile::Beard);
+      assert(content.atidx(rockbeardpos) == Tile::Beard);
       if (beardGrowTime) {
         for ( auto dir : BeardDirs ) {
           int nx = x + dir.dx;
@@ -355,28 +333,20 @@ bool Mine::pushMove(RobotCommand command) {
   }
 
   if (var.collectedLambdas == problem.numInitialLambdas) {
-    for (auto lift : problem.liftLoc) {
+    for (auto lift : problem.liftLoc)
       updateQueue.push_back({lift.x, lift.y, Tile::OpenLift});
-    }
   }
 
   for (auto update : updateQueue) {
-    // Add the required update to go *backwards* onto the history entry.
-    historyEntry.updates.push_back({update.x, update.y, get(update.x, update.y)});
-
     if (update.c == Tile::Rock && update.x == var.robotX && update.y == var.robotY + 1) {
       // Robot was hit on the head by rock
       state = State::Lose;
     }
+
     set(update.x, update.y, update.c);
   }
 
-  historyList.push_back(historyEntry);
-
   ++totalMoves;
-    
-
-  checkConsistency();
   return true;
 }
 
@@ -394,24 +364,6 @@ int Mine::moveCount() const {
 
 RobotCommands const& Mine::commands() const {
   return commandHistory;
-}
-
-bool Mine::popMove() {
-  if (historyList.empty())
-    return false;
-
-  auto const& history = historyList[historyList.size() - 1];
-  memcpy(&var, &history.prevvarstate, sizeof var);
-  for (auto const& update : history.updates)
-    set(update.x, update.y, update.c);
-
-  historyList.pop_back();
-  commandHistory.pop_back();
-  
-  var.curWaterLevel = waterLevel(totalMoves - 1);
-  state = State::InProgress;
-  --totalMoves;
-  return true;
 }
 
 void Mine::print() const {
@@ -437,11 +389,4 @@ void Mine::set(int x, int y, Tile c)
   tile = c;
   if ( tile == Tile::Rock || tile == Tile::Beard )
     rockbeardpositions.insert(content.pos2idx(x,y));
-}
-
-void Mine::checkConsistency() {
-	// TODO: check whether the collectedLambdas is correct
-	// TODO: check the rockindex
-	// etc
-  assert( moveCount() == historyList.size() );
 }

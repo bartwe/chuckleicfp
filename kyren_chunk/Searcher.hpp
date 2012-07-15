@@ -9,10 +9,10 @@
 
 class Searcher {
 public:
-  void bruteForce(Mine mine, Best& best, int maxLength);
+  void bruteForce(Best& best, Mine mine, int maxLength);
 
 private:
-  void bruteForceSearch(Mine& mine, Best& best, int maxLength);
+  void bruteForceSearch(Best& best, Mine mine, RobotCommand command, int maxLength);
 
   std::unordered_map<std::string, int> visited;
 };
