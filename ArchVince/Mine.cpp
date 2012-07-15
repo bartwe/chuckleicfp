@@ -37,7 +37,7 @@ Mine::Mine(std::vector<std::string> rows)
       switch(rows[i][j])
       {
         case 'R':
-          row.push_back(Tiles::robot);
+          row.push_back(Tiles::empty);
           robot = {j, i};
           break;
         case '#':
