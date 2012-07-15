@@ -32,7 +32,7 @@ def DoTest(exe, shortname, mapfn):
         if c in "LRUDAW":
             solution += c
         
-    print '%s-%s.value %6d' % (mapname(mapfn), shortname, score)
+    print '%s-%s.value %d' % (mapname(mapfn), shortname, score)
 
     os.kill(killer.pid, 9)
     return score
@@ -53,11 +53,16 @@ def main():
         if main[2]:
             p = subprocess.Popen(main[2], shell=True, stdout=open('/dev/null', 'w'), stderr=subprocess.STDOUT)
             p.wait();
+        sum = 0;
         for map in sorted(maps):
             if config:
-                print '%s-%s.label score' % (mapname(map), main[1])
+                print '%s-%s.label %s %s' % (mapname(map), main[1], mapname(map), main[1])
             else:
-                DoTest(main[0], main[1], os.path.join(MAPDIR, map))
+                sum += DoTest(main[0], main[1], os.path.join(MAPDIR, map))
+        if config:
+            print '%s.label %s' %(main[1], main[1])
+        else:
+            print '%s.value %d' %(main[1], sum)
 
 if __name__ == '__main__':
     main()
