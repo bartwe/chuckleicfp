@@ -24,6 +24,7 @@ class NodeMap
     std::vector< Point > lambdas;
     std::vector< MNode > nodes;
     Mine mine;
+    int water, flooding, waterproof;
 };
 
 #endif // NODEMAP_H
