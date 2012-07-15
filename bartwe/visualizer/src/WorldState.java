@@ -19,6 +19,7 @@ public abstract class WorldState {
     protected StepResult stepResult = StepResult.Ok;
     public WorldState parent;
     public RobotAction action;
+    public TransporterMap map;
 
     public abstract byte get(int x, int y);
 
@@ -69,13 +70,14 @@ public abstract class WorldState {
                     break;
                 } else if (c == 10) { // newline
                     if (lastByteNewLine) { //two newlines in a row means weather
-                      break;
+                        break;
                     }
                     lastByteNewLine = true;
                     rows.add(Arrays.copyOf(buffer, index));
                     index = 0;
                 } else {
-                    lastByteNewLine = false;
+                    if (c != 13)
+                        lastByteNewLine = false;
                     byte state = Cell.charToState(c);
                     if (state != Cell.Invalid) {
                         if (buffer.length == index) {
@@ -97,25 +99,34 @@ public abstract class WorldState {
         for (byte[] row : rows)
             n = Math.max(n, row.length);
         SolidWorldState result = new SolidWorldState(n, m);
-        
+        result.map = new TransporterMap();
+
         try {
-          BufferedReader buf = new BufferedReader(new InputStreamReader(stream));
-          String line;
-          while ((line = buf.readLine()) != null) {
-            String[] para = line.split(" ");
-            if (para[0].equals("Water")) {
-              result.initWaterLevel = Integer.parseInt(para[1]);
-              result.curWaterLevel = Integer.parseInt(para[1]);
+            BufferedReader buf = new BufferedReader(new InputStreamReader(stream));
+            String line;
+            while ((line = buf.readLine()) != null) {
+                String[] para = line.split(" ");
+                if (para[0].equals("Water")) {
+                    result.initWaterLevel = Integer.parseInt(para[1]);
+                    result.curWaterLevel = Integer.parseInt(para[1]);
+                }
+                if (para[0].equals("Flooding")) {
+                    result.floodingFreq = Integer.parseInt(para[1]);
+                }
+                if (para[0].equals("Waterproof")) {
+                    result.waterproof = Integer.parseInt(para[1]);
+                }
+                if (para[0].equals("Trampoline")) {
+                    assert para[1].length() == 1;
+                    assert para[2].equals("targets");
+                    assert para[3].length() == 1;
+                    byte source = Cell.charToState(para[1].charAt(0));
+                    byte target = Cell.charToState(para[3].charAt(0));
+                    result.map.addMapping(source, target);
+                }
             }
-            if (para[0].equals("Flooding")) {
-              result.floodingFreq = Integer.parseInt(para[1]);
-            }
-            if (para[0].equals("Waterproof")) {
-              result.waterproof = Integer.parseInt(para[1]);
-            }
-          }
         } catch (IOException e) {
-          throw new RuntimeException(e);
+            throw new RuntimeException(e);
         }
 
         for (int i = 0; i < m; i++) {
@@ -151,6 +162,7 @@ public abstract class WorldState {
         lambdaCollected = current.lambdaCollected;
         lambdaRemaining = current.lambdaRemaining;
         steps = current.steps;
+        map = current.map;
     }
 
     public abstract WorldState copy();
@@ -158,5 +170,27 @@ public abstract class WorldState {
     public abstract WorldStateHash getHash();
 
     public abstract int score();
+
+    public void doTransporter(byte sourceTransporter, byte targetTransporter) {
+        int n = getN();
+        int m = getM();
+        boolean foundTarget = false;
+        boolean[] cleanuplist = map.cleanupList(targetTransporter);
+        for (int y = 1; y < m + 1; y++) {
+            for (int x = 1; x < n + 1; x++) {
+                byte cell = get(x, y);
+                if (cell == targetTransporter) {
+                    set(x, y, Cell.RobotLocation);
+                    robotX = x;
+                    robotY = y;
+                    foundTarget = true;
+                } else if (cell >= Cell.TrampolineSource1 && cell <= Cell.TrampolineSource9) {
+                    if (cleanuplist[cell - Cell.TrampolineSource1])
+                        set(x, y, Cell.Empty);
+                }
+            }
+        }
+        assert foundTarget;
+    }
 }
 

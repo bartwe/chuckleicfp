@@ -142,7 +142,7 @@ public class Cell {
         }
     }
 
-    public static boolean isEmptyEarthLambdaLift(byte cell) {
+    public static boolean isEmptyEarthLambdaLiftTransporter(byte cell) {
         switch (cell) {
             case Cell.Empty:
                 return true;
@@ -151,6 +151,24 @@ public class Cell {
             case Cell.Lambda:
                 return true;
             case Cell.ClosedLambdaLift:
+                return true;
+            case Cell.TrampolineSource1:
+                return true;
+            case Cell.TrampolineSource2:
+                return true;
+            case Cell.TrampolineSource3:
+                return true;
+            case Cell.TrampolineSource4:
+                return true;
+            case Cell.TrampolineSource5:
+                return true;
+            case Cell.TrampolineSource6:
+                return true;
+            case Cell.TrampolineSource7:
+                return true;
+            case Cell.TrampolineSource8:
+                return true;
+            case Cell.TrampolineSource9:
                 return true;
             default:
                 return false;
@@ -167,5 +185,30 @@ public class Cell {
 
     public static boolean isLambda(byte cell) {
         return cell == Cell.Lambda;
+    }
+
+    public static boolean isTransporter(byte cell) {
+        switch (cell) {
+            case Cell.TrampolineSource1:
+                return true;
+            case Cell.TrampolineSource2:
+                return true;
+            case Cell.TrampolineSource3:
+                return true;
+            case Cell.TrampolineSource4:
+                return true;
+            case Cell.TrampolineSource5:
+                return true;
+            case Cell.TrampolineSource6:
+                return true;
+            case Cell.TrampolineSource7:
+                return true;
+            case Cell.TrampolineSource8:
+                return true;
+            case Cell.TrampolineSource9:
+                return true;
+            default:
+                return false;
+        }
     }
 }

@@ -1,6 +1,4 @@
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 
 public class DualAStarApproach {
@@ -96,7 +94,7 @@ public class DualAStarApproach {
             if (stop)
                 break;
             for (int y = -radius; y <= radius; y++) {
-               int y_ = y + state.robotY;
+                int y_ = y + state.robotY;
                 if ((y_ < 1) || (y_ > m))
                     continue;
                 for (int x = -radius; x <= radius; x++) {
@@ -116,11 +114,44 @@ public class DualAStarApproach {
                 break;
             radius++;
         }
+        /*
         Collections.sort(goals, new Comparator<LambdaGoal>() {
             public int compare(LambdaGoal o1, LambdaGoal o2) {
                 return o1.radius - o2.radius;
             }
         });
+        */
+    }
+
+    private void findTransporters(WorldState state, ArrayList<LambdaGoal> goals) {
+        int radius = 1;
+        int n = state.getN();
+        int m = state.getM();
+        int startSize = goals.size();
+        while (true) {
+            if (stop)
+                break;
+            for (int y = -radius; y <= radius; y++) {
+                int y_ = y + state.robotY;
+                if ((y_ < 1) || (y_ > m))
+                    continue;
+                for (int x = -radius; x <= radius; x++) {
+                    int x_ = x + state.robotX;
+                    if ((x_ < 1) || (x_ > n))
+                        continue;
+                    if (Math.abs(x_) + Math.abs(y) != radius)
+                        continue; // zomg, expensive
+                    if (Cell.isTransporter(state.get(x_, y_)))
+                        goals.add(new LambdaGoal(state, x_, y_, radius));
+                }
+            }
+
+            if (goals.size() - startSize >= 10)
+                break;
+            if ((radius >= n) && (radius >= m))
+                break;
+            radius++;
+        }
     }
 
     private int findInnerPaths(WorldState initialState, WorldState[] adjacentsBuffer) {
@@ -131,9 +162,11 @@ public class DualAStarApproach {
         ArrayList<LambdaGoal> goals = new ArrayList<LambdaGoal>();
 
         if (initialState.lambdaRemaining > 0)
-        findLambdas(initialState, goals);
+            findLambdas(initialState, goals);
         else
             goals.add(new LambdaGoal(initialState, initialState.exitX, initialState.exitY, 0));
+
+        findTransporters(initialState, goals);
 
         //find a number of lambdas to try and reach, path find them concurrently, stop looking if you find enough of them, abandon rest.
         for (LambdaGoal goal : goals) {
@@ -197,9 +230,8 @@ public class DualAStarApproach {
                 if (goal.pathfinder.run()) {
                     goal.done = true;
                     ArrayList<WorldState> path = goal.pathfinder.getResult();
-                    if ((path != null)&&(path.size()>1) && (results < adjacentsBuffer.length))
-                    {
-                        adjacentsBuffer[results] = path.get(path.size()-1);
+                    if ((path != null) && (path.size() > 1) && (results < adjacentsBuffer.length)) {
+                        adjacentsBuffer[results] = path.get(path.size() - 1);
                         results++;
                     }
                 } else
