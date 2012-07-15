@@ -1,3 +1,6 @@
+import sun.misc.Signal;
+import sun.misc.SignalHandler;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -6,10 +9,23 @@ public class DasaConsole {
     static DualAStarApproach dasa;
 
     public static void main(String[] args) {
+        sun.misc.Signal.handle(new Signal("INT"), new SignalHandler() {
+            public void handle(Signal signal) {
+                DualAStarApproach.stop();
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                }
+            }
+        });
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
                 DualAStarApproach.stop();
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                }
             }
         });
 
@@ -55,6 +71,7 @@ public class DasaConsole {
                     e.printStackTrace();
             System.out.println("A");
         }
+        System.out.flush();
     }
 
     static void printPath(ArrayList<WorldState> rawPath) {
