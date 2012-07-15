@@ -45,6 +45,7 @@ void BDFSSearcher::bruteForceSearch(Best& best, Mine mine, RobotCommand command)
   bruteForceSearch(best, mine, RobotCommand::Left);
   bruteForceSearch(best, mine, RobotCommand::Up);
   bruteForceSearch(best, mine, RobotCommand::Down);
+  bruteForceSearch(best, mine, RobotCommand::Slice);
   bruteForceSearch(best, mine, RobotCommand::Wait);
   bruteForceSearch(best, mine, RobotCommand::Abort);
 }

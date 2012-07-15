@@ -1,5 +1,5 @@
-if ps -ef | grep -v grep | grep domunin ; then
-        echo other domunin also running
+if ps -ef | grep -v grep | grep domunin.py ; then
+        echo other domunin.py also running
 fi
 cd ~/git/chuckleicfp
 git pull
