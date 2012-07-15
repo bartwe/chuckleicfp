@@ -62,4 +62,6 @@ private:
   Solutions currentSolutions;
 };
 
+bool reachable(Mine mine, Position destination);
+
 #endif
