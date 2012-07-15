@@ -1,0 +1,9 @@
+#!/bin/sh
+
+case $1 in
+   config)
+        cat /tmp/icfpmuninpconfig
+        exit 0;;
+esac
+
+cat /tmp/icfpmunin

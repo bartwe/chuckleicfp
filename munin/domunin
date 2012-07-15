@@ -1,0 +1,8 @@
+if ps -ef | grep -v grep | grep domunin ; then
+        exit 0
+fi
+cd ~/git/chuckleicfp
+git pull
+cd munin
+./domunin.py config > /tmp/icfpmuninpconfig
+./domunin.py > /tmp/icfpmunin
