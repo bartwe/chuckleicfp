@@ -8,42 +8,57 @@
 class Pathfinder
 {
   public:
+    struct updStep
+    {
+      int id;
+      Tiles type;
+    };
+
     Pathfinder(Mine tmine);
 
     std::string getSteps();
-    bool liftStatus();
 
   private:
-    struct PNode
+
+    struct scoreCard
     {
-      Tiles type;
-      std::vector< int > connections;
-      std::vector< std::string > commands;
-      std::string commandChain;
+      std::string moves;
+      int score;
+    };
+
+    struct searchState
+    {
+      int id;
+      std::vector< int > lambdas;
+      std::vector< updStep > steps;
+      std::string commands;
       int moveCost, cost;
-      int x, y;
-      int target, targetLevel;
+      int score;
     };
 
     std::string findPath(Point start, Point end);
     std::string findPath(int start, int end);
-    int getLowest(std::vector< int > nodeList);
+    int getLowest(std::vector< searchState > nodeList);
     int manhattan(int x1, int y1, int x2, int y2);
-    PNode mToP(NodeMap::MNode m);
-    bool contains(std::vector< int > list, int key);
-    int getTarget(int node);
-    void updTargets();
+    int manhattan(Point p1, Point p2);
+    int contains(std::vector< searchState > list, searchState key);
+    int getTarget(searchState ss, int id);
+    void clearStoredNodes();
+    std::vector< updStep > stepUpdMap(searchState ss, updStep step);
+    int pushOpen(searchState ss);
+    Tiles getType(searchState ss, int id);
+    bool vectorMatch(std::vector< int > v, std::vector< int > w);
+    bool liftStatus(searchState ss);
 
     Mine mine;
     Point robot;
     Point lift;
     bool liftReachable;
-    int pushOpen(int node);
-    std::vector< PNode > nodes;
+    std::vector< NodeMap::MNode > nodes;
     std::vector< Point > lambdas;
     std::vector< Point > badLambdas;
-    std::vector< int > openNodes;
-    std::vector< int > closedNodes;
+    std::vector< searchState > openNodes;
+    std::vector< searchState > closedNodes;
 };
 
 #endif // PATHFINDER_H
