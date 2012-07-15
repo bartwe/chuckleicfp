@@ -119,20 +119,26 @@ public class StepLogic {
             for (int x = 1; x <= n; ++x) {
                 byte c = current.get(x, y);
                 if (Cell.isRockish(c)) {
-                    byte goal = Cell.Rock;
-                    if (c == Cell.HighOrderRock)
-                        goal = Cell.Lambda;
+                    byte goal = c;
                     if (current.get(x, y - 1) == Cell.Empty) {
                         next.set(x, y, Cell.Empty);
+                        if (c == Cell.HighOrderRock && Cell.notEmptyNorRobot(current.get(x, y - 2)))
+                            goal = Cell.Lambda;
                         next.set(x, y - 1, goal);
                     } else if (Cell.isRockish(current.get(x, y - 1)) && current.get(x + 1, y) == Cell.Empty && current.get(x + 1, y - 1) == Cell.Empty) {
                         next.set(x, y, Cell.Empty);
+                        if (c == Cell.HighOrderRock && Cell.notEmptyNorRobot(current.get(x + 1, y - 2)))
+                            goal = Cell.Lambda;
                         next.set(x + 1, y - 1, goal);
                     } else if (Cell.isRockish(current.get(x, y - 1)) && current.get(x - 1, y) == Cell.Empty && current.get(x - 1, y - 1) == Cell.Empty) {
                         next.set(x, y, Cell.Empty);
+                        if (c == Cell.HighOrderRock && Cell.notEmptyNorRobot(current.get(x - 1, y - 2)))
+                            goal = Cell.Lambda;
                         next.set(x - 1, y - 1, goal);
                     } else if (current.get(x, y - 1) == Cell.Lambda && current.get(x + 1, y) == Cell.Empty && current.get(x + 1, y - 1) == Cell.Empty) {
                         next.set(x, y, Cell.Empty);
+                        if (c == Cell.HighOrderRock && Cell.notEmptyNorRobot(current.get(x + 1, y - 2)))
+                            goal = Cell.Lambda;
                         next.set(x + 1, y - 1, goal);
                     }
                 }
