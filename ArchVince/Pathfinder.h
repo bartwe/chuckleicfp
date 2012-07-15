@@ -58,6 +58,7 @@ class Pathfinder
     searchState processSimilar(searchState ss, int index);
     std::vector< updStep > fixMismatch(searchState s, searchState o);
     searchState stateFromSimilar(searchState ss, similarState sim);
+    bool isFlooded(searchState ss);
 
     Mine mine;
     Point robot;
@@ -68,6 +69,7 @@ class Pathfinder
     std::vector< Point > badLambdas;
     std::vector< searchState > openNodes;
     std::vector< searchState > closedNodes;
+    int water, waterproof, flooding;
 };
 
 #endif // PATHFINDER_H

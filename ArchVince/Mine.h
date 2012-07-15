@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <stdlib.h>
 
 enum class Tiles : char
 {
@@ -40,6 +41,7 @@ class Mine
     std::vector< Point > lambdas;
     Point lift;
     Point robot;
+    int water, flooding, waterproof;
 
   private:
     std::vector< std::vector< Tiles > > mine;

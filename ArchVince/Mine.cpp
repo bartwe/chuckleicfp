@@ -3,8 +3,28 @@
 Mine::Mine(std::vector<std::string> rows)
 {
   width = 0;
-  height = rows.size();
-  for(int i = 0; i < (int)rows.size(); i++)
+  height = 1;
+  water = 0;
+  flooding = 0;
+  waterproof = 0;
+  while(height <= (int)rows.size() && rows[height-1] != "")
+  {
+    height++;
+  }
+  if(height <= (int)rows.size())
+  {
+    height--;
+    for(int i = height; i < (int)rows.size(); i++)
+    {
+      if(rows[i].substr(0, 6).compare("Water ") == 0)
+        water = atoi(rows[i].substr(6).c_str());
+      else if(rows[i].substr(0, 9).compare("Flooding ") == 0)
+        water = atoi(rows[i].substr(9).c_str());
+      else if(rows[i].substr(0, 11).compare("Waterproof ") == 0)
+        water = atoi(rows[i].substr(11).c_str());
+    }
+  }
+  for(int i = 0; i < height; i++)
     width = std::max(width, (int)rows[i].length());
 
   {

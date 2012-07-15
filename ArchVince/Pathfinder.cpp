@@ -9,6 +9,9 @@ Pathfinder::Pathfinder(Mine tmine) : mine(tmine)
   lambdas = nodeMap.lambdas;
   liftReachable = nodeMap.liftReachable;
   nodes = nodeMap.nodes;
+  water = nodeMap.water;
+  waterproof = nodeMap.waterproof;
+  flooding = nodeMap.flooding;
 }
 
 std::string Pathfinder::findPath(Point start, Point end)
@@ -38,6 +41,15 @@ std::string Pathfinder::findPath(int start, int end)
     {
       bestScore = ss.score - (int)ss.commands.size();
       bestScorer = ss;
+    }
+    if(isFlooded(ss))
+    {
+      openNodes.erase(openNodes.begin() + bestIndex, openNodes.begin() + bestIndex + 1);
+      while((int)ss.similar.size() > 0)
+      {
+        openNodes.push_back(stateFromSimilar(ss, ss.similar.back()));
+        ss.similar.pop_back();
+      }
     }
     ss = processSimilar(ss, bestIndex);
     bestIndex = getLowest(openNodes);
@@ -151,6 +163,23 @@ std::string Pathfinder::findPath(int start, int end)
   }
   std::cout << "Score: " << 2 * bestScorer.score  - (int)bestScorer.commands.size() << std::endl;
   return bestScorer.commands + "A";
+}
+
+bool Pathfinder::isFlooded(searchState ss)
+{
+  int waterLevel = mine.height - water;
+  int submerged;
+  int robotY = robot.y;
+  for(int i = 0; i < (int)ss.commands.size(); i++)
+  {
+    if(ss.commands.at(i) == 'D') robotY++;
+    else if (ss.commands.at(i) == 'U') robotY--;
+    if(flooding != 0 && i != 0 && i % flooding == 0) waterLevel++;
+    if(robotY > waterLevel) submerged++;
+    else submerged = 0;
+    if(submerged > waterproof) return true;
+  }
+  return false;
 }
 
 Pathfinder::searchState Pathfinder::stateFromSimilar(searchState ss, similarState sim)

@@ -5,6 +5,9 @@ NodeMap::NodeMap(Mine tmine) : mine(tmine)
   liftReachable = false;
   robot = mine.robot;
   lift = mine.lift;
+  water = mine.water;
+  flooding = mine.flooding;
+  waterproof = mine.waterproof;
   std::vector< Point > expand;
   expand.push_back(robot);
   while((int)expand.size() > 0)
