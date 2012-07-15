@@ -8,7 +8,27 @@ public class Cell {
     public static final byte Earth = 6;
     public static final byte RobotLocation = 7;
 
-    private static final byte HighestState = RobotLocation;
+    public static final byte TrampolineTarget1 = 11;
+    public static final byte TrampolineTarget2 = 12;
+    public static final byte TrampolineTarget3 = 13;
+    public static final byte TrampolineTarget4 = 14;
+    public static final byte TrampolineTarget5 = 15;
+    public static final byte TrampolineTarget6 = 16;
+    public static final byte TrampolineTarget7 = 17;
+    public static final byte TrampolineTarget8 = 18;
+    public static final byte TrampolineTarget9 = 19;
+
+    public static final byte TrampolineSource1 = 21;
+    public static final byte TrampolineSource2 = 22;
+    public static final byte TrampolineSource3 = 23;
+    public static final byte TrampolineSource4 = 24;
+    public static final byte TrampolineSource5 = 25;
+    public static final byte TrampolineSource6 = 26;
+    public static final byte TrampolineSource7 = 27;
+    public static final byte TrampolineSource8 = 28;
+    public static final byte TrampolineSource9 = 29;
+
+    private static final byte HighestState = TrampolineSource9;
 
 
     public static boolean validState(byte b) {
@@ -31,6 +51,26 @@ public class Cell {
                 return 0x00ff00;
             case Cell.RobotLocation:
                 return 0xffff00;
+            case Cell.TrampolineSource1:
+            case Cell.TrampolineSource2:
+            case Cell.TrampolineSource3:
+            case Cell.TrampolineSource4:
+            case Cell.TrampolineSource5:
+            case Cell.TrampolineSource6:
+            case Cell.TrampolineSource7:
+            case Cell.TrampolineSource8:
+            case Cell.TrampolineSource9:
+                return 0x0000ff;
+            case Cell.TrampolineTarget1:
+            case Cell.TrampolineTarget2:
+            case Cell.TrampolineTarget3:
+            case Cell.TrampolineTarget4:
+            case Cell.TrampolineTarget5:
+            case Cell.TrampolineTarget6:
+            case Cell.TrampolineTarget7:
+            case Cell.TrampolineTarget8:
+            case Cell.TrampolineTarget9:
+                return 0x8000ff;
             default:
                 assert false;
                 return 0x808080;
@@ -55,6 +95,45 @@ public class Cell {
                 return Cell.Earth;
             case 32: // <space>
                 return Cell.Empty;
+
+            case 49: // 1
+                return Cell.TrampolineTarget1;
+            case 50: // 2
+                return Cell.TrampolineTarget2;
+            case 51: // 3
+                return Cell.TrampolineTarget3;
+            case 52: // 4
+                return Cell.TrampolineTarget4;
+            case 53: // 5
+                return Cell.TrampolineTarget5;
+            case 54: // 6
+                return Cell.TrampolineTarget6;
+            case 55: // 7
+                return Cell.TrampolineTarget7;
+            case 56: // 8
+                return Cell.TrampolineTarget8;
+            case 57: // 9
+                return Cell.TrampolineTarget9;
+
+            case 65: // A
+                return Cell.TrampolineSource1;
+            case 66: // B
+                return Cell.TrampolineSource2;
+            case 67: // C
+                return Cell.TrampolineSource3;
+            case 68: // D
+                return Cell.TrampolineSource4;
+            case 69: // E
+                return Cell.TrampolineSource5;
+            case 70: // F
+                return Cell.TrampolineSource6;
+            case 71: // G
+                return Cell.TrampolineSource7;
+            case 72: // H
+                return Cell.TrampolineSource8;
+            case 73: // I
+                return Cell.TrampolineSource9;
+
             case 13:
                 return Cell.Invalid;
             default:
