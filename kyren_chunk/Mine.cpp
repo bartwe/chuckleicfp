@@ -18,7 +18,6 @@ static delta_t BeardDirs[] = {
 
 Mine::Mine(std::shared_ptr<Problem> p) {
   problem = p;
-  content = p->tiles;
   state = State::InProgress;
   totalMoves = 0;
   rockBeardPositions = problem->rockBeardPositions;
@@ -29,6 +28,14 @@ Mine::Mine(std::shared_ptr<Problem> p) {
   var.robotX = problem->robotX;
   var.robotY = problem->robotY;
 
+  chunks.reset(problem->tiles.width() / ChunkSize + 1, problem->tiles.height() / ChunkSize + 1, std::shared_ptr<Chunk>());
+  for (int y = 0; y < chunks.width(); ++y)
+    for (int x = 0; x < chunks.width(); ++x)
+      chunks.at(x, y) = std::make_shared<Chunk>();
+
+  for (int y = 0; y < problem->tiles.height(); ++y)
+    for (int x = 0; x < problem->tiles.width(); ++x)
+      set(x, y, problem->tiles.at(x, y));
 }
 
 std::shared_ptr<Problem> Mine::getProblem() const {
@@ -36,11 +43,31 @@ std::shared_ptr<Problem> Mine::getProblem() const {
 }
 
 Tile Mine::get(int x, int y) const {
-  return content.at(x,y);
+  int xc = x / ChunkSize;
+  int yc = y / ChunkSize;
+
+  x -= xc;
+  y -= yc;
+
+  auto const& chunk = chunks.at(xc, yc);
+  return chunk->tiles.at(x, y);
 }
 
 void Mine::set(int x, int y, Tile c) {
-  Tile& tile = content.at(x,y);
+  int xc = x / ChunkSize;
+  int yc = y / ChunkSize;
+
+  x -= xc;
+  y -= yc;
+
+  auto& chunk = chunks.at(xc, yc);
+  if (!chunk.unique())
+    chunk = std::make_shared<Chunk>(*chunk);
+
+  Tile& tile = chunk->tiles.at(x,y);
+  if (tile != c)
+    chunk->hashDirty = true;
+
   if (tile == Tile::Rock || tile == Tile::Beard)
     rockBeardPositions.erase({x, y});
   tile = c;
@@ -277,7 +304,28 @@ void Mine::print() const {
 }
 
 std::string Mine::hashcode() const {
+  std::string totalHash(20, '\0');
+  for (int y = 0; y < chunks.height(); ++y) {
+    for (int x = 0; x < chunks.width(); ++x) {
+      auto const& chunk = chunks.at(x, y);
+      if (chunk->hashDirty)
+        chunk->computeHash();
+      for (int i = 0; i < 20; ++i)
+        totalHash[i] ^= chunk->hashCode[i];
+    }
+  }
+
+  return totalHash;
+}
+
+Mine::Chunk::Chunk() {
+  tiles.reset(ChunkSize, ChunkSize, Tile::Wall);
+  hashDirty = true;
+}
+
+void Mine::Chunk::computeHash() {
   unsigned char hash[20];
-  sha1::calc(content.getGrid(), content.gridSize(), hash);
-  return std::string((char const*)hash, 20);
+  sha1::calc(tiles.getGrid(), tiles.gridSize(), hash);
+  hashCode = std::string((char const*)hash, 20);
+  hashDirty = false;
 }

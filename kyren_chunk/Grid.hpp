@@ -91,6 +91,14 @@ public:
 		return xx*yy;
 	}
 
+  int width() const {
+    return xx;
+  }
+
+  int height() const {
+    return yy;
+  }
+
 private:
 	int xx, yy;
 	std::vector<content_t> data;

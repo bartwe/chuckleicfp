@@ -11,7 +11,7 @@
 #include "Grid.hpp"
 
 struct Problem {
-  typedef Grid<Tile, uint32_t> TileGrid;
+  typedef Grid<Tile> TileGrid;
 
   static std::shared_ptr<Problem> read(std::istream& is);
 

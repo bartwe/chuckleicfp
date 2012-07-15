@@ -52,13 +52,23 @@ public:
   int waterLevel(int turn) const;
 
 private:
+  static int const ChunkSize = 64;
+  struct Chunk {
+    Chunk();
+    void computeHash();
+
+    Grid<Tile> tiles;
+    std::string hashCode;
+    bool hashDirty;
+  };
+
   struct MineUpdate {
     int x, y;
     Tile c;
   };
 
   std::shared_ptr<Problem> problem;
-  Problem::TileGrid content;
+  Grid<std::shared_ptr<Chunk>> chunks;
 
   // any tile type that can trigger an update
   std::set<Position> rockBeardPositions;
