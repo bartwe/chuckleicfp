@@ -22,6 +22,9 @@ public:
   Tile get(int x, int y) const;
   void set(int x, int y, Tile c);
 
+  Tile get(Position const& pos) const;
+  void set(Position const& pos, Tile c);
+
   bool ended() const;
   State currentState() const;
   VariadicState const& currentVariadicState() const;

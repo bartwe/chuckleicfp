@@ -39,6 +39,23 @@ Tile Mine::get(int x, int y) const {
   return content.at(x,y);
 }
 
+void Mine::set(int x, int y, Tile c) {
+  Tile& tile = content.at(x,y);
+  if (tile == Tile::Rock || tile == Tile::Beard)
+    rockBeardPositions.erase({x, y});
+  tile = c;
+  if (tile == Tile::Rock || tile == Tile::Beard)
+    rockBeardPositions.insert({x, y});
+}
+
+Tile Mine::get(Position const& pos) const {
+  return get(pos.x, pos.y);
+}
+
+void Mine::set(Position const& pos, Tile c) {
+  set(pos.x, pos.y, c);
+}
+
 bool Mine::ended() const {
   return state != State::InProgress;
 }
@@ -176,7 +193,7 @@ bool Mine::doCommand(RobotCommand command) {
     int x = rockbeard.x;
     int y = rockbeard.y;
 
-    if (content.at(rockbeard) == Tile::Rock) {
+    if (get(rockbeard) == Tile::Rock) {
       if (get(x, y - 1) == Tile::Empty) {
         updateQueue.push_back({x, y, Tile::Empty});
         updateQueue.push_back({x, y - 1, Tile::Rock});
@@ -191,7 +208,7 @@ bool Mine::doCommand(RobotCommand command) {
         updateQueue.push_back({x + 1, y - 1, Tile::Rock});
       }
     } else {
-      assert(content.at(rockbeard) == Tile::Beard);
+      assert(get(rockbeard) == Tile::Beard);
       if (beardGrowTime) {
         for ( auto dir : BeardDirs ) {
           int nx = x + dir.dx;
@@ -263,13 +280,4 @@ std::string Mine::hashcode() const {
   unsigned char hash[20];
   sha1::calc(content.getGrid(), content.gridSize(), hash);
   return std::string((char const*)hash, 20);
-}
-
-void Mine::set(int x, int y, Tile c) {
-  Tile& tile = content.at(x,y);
-  if (tile == Tile::Rock || tile == Tile::Beard)
-    rockBeardPositions.erase({x, y});
-  tile = c;
-  if (tile == Tile::Rock || tile == Tile::Beard)
-    rockBeardPositions.insert({x, y});
 }
