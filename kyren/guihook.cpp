@@ -5,7 +5,7 @@
 #include <fstream>
 #include "Heuristic.hpp"
 #include "Heuristic.hpp"
-#include "BestSoFar.h"
+#include "BestSoFar.hpp"
 #include "Searcher.hpp"
 
 extern "C" {
@@ -28,20 +28,20 @@ Mine* Init(const char* map)
 
 char* GetData(Mine* m, int* width, int* height)
 {
-	*width = m->width;
-	*height = m->height;
-	Tile* grid = m->content.getGrid();
+	*width = m->getProblem().width;
+	*height = m->getProblem().height;
+	Tile* grid = m->getGrid();
 	return (char*)grid;
 }
 
 void GetInfo(Mine* m, char* str, int buflen, int* waterlevel)
 {
 	snprintf(str, buflen-1, "SCORE=%d (state=%s, move %d, L=%d/%d, submerged for %d)",
-			m->score(), Mine::stateToString(m->state).c_str(),
-			m->totalMoves, m->var.collectedLambdas, m->numInitialLambdas,
-			m->var.submergedSteps);
+			m->score(), stateToString(m->currentState()).c_str(),
+			m->moveCount(), m->collectedLambdas(), m->getProblem().numInitialLambdas,
+			m->submergedSteps());
 
-	*waterlevel = m->var.curWaterLevel;
+	*waterlevel = m->currentWaterLevel();
 }
 
 char* GetSafeZone(Mine* m)
@@ -59,9 +59,9 @@ int DoMove(Mine* m, char move)
 	}
 	else
 	{
-		m->pushMove(Mine::charToCommand(move));
+		m->pushMove(charToCommand(move));
 	}
-	//printf("Score: %d, state=%s\n", m->score(), Mine::stateToString(m->state).c_str());
+	//printf("Score: %d, state=%s\n", m->score(), stateToString(m->state).c_str());
 	return m->score();
 }
 
@@ -70,8 +70,11 @@ static void* docalc(void* arg)
         Mine* mine = (Mine*)arg;
 
         // Copied from main... todo: share code
-        Searcher searcher(*mine);;
-        auto result = searcher.bruteForce(24);
+        Searcher searcher;
+        searcher.bruteForce(*mine, 24, [](RobotCommands const& commands, int score) {
+            if (Best::isImprovement(score))
+              Best::improveSolution(score, commandString(commands).c_str());
+            });
 
         return 0;
 }
@@ -87,7 +90,7 @@ void GoForIt(Mine* m)
 
 char* GetBest()
 {
-  return Best::GetBest();
+  return Best::getBest();
 }
 
 } // extern

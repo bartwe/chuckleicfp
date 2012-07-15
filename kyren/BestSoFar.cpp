@@ -1,24 +1,17 @@
-#include "BestSoFar.h"
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <signal.h>
+#include "BestSoFar.hpp"
+
+#include <cstring>
+#include <cstdlib>
+#include <cstdio>
 
 static int BESTSCORE = -1000000000;
 static char* dabest;
 static char* alternate;
 static int MAXLEN = 0;
 
-static void ourhandler(int signum)
-{
-	printf("# score: %d\n", BESTSCORE);
-	printf("%s\n", Best::GetBest());
-	exit(0);
-}
-
 namespace Best {
-void ReserveSpace(int maxcommandlength)
-{
+
+void reserveSpace(int maxcommandlength) {
 	// Only init just once
 	if ( MAXLEN != 0 ) return;
 
@@ -26,17 +19,14 @@ void ReserveSpace(int maxcommandlength)
 	dabest = (char*)malloc(MAXLEN+1);
 	alternate = (char*)malloc(MAXLEN+1);
 	memcpy(dabest, "A", 2);
-
-	// Now register
-	signal(SIGINT, ourhandler);
 }
-bool IsImprovement(int score)
-{
+
+bool isImprovement(int score) {
 	return score > BESTSCORE;
 }
-void ImproveSolution(int score, const char* newsolution)
-{
-	if (!IsImprovement(score)) return;
+
+void improveSolution(int score, const char* newsolution) {
+	if (!isImprovement(score)) return;
 	BESTSCORE = score;
 
 	int cmdlen = strlen(newsolution);
@@ -51,14 +41,13 @@ void ImproveSolution(int score, const char* newsolution)
 	alternate = prev;
 	__asm__ __volatile__ ("" ::: "memory");
 }
-char* GetBest()
-{
+
+char* getBest() {
 	return dabest;
 }
 
-void GiveUp()
-{
-	ourhandler(SIGINT);
+int getBestScore() {
+  return BESTSCORE;
 }
 
 }

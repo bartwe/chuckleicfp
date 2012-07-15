@@ -8,50 +8,56 @@
 #include <cstdint>
 #include <cstring>
 
-#include "Tile.hpp"
+#include "Types.hpp"
 #include "Grid.hpp"
 
-enum class RobotCommand : uint8_t {
-  Left,
-  Right,
-  Up,
-  Down,
-  Wait,
-  Abort,
-  Slice
+struct Problem {
+  int initialTileHistogram[128];
+  std::vector<Position> liftLoc;
+  std::vector<Position> trampLoc;
+  std::vector<Position> targetLoc;
+  std::vector<std::pair<Tile, Tile>> trampMapping;
+
+  int width;
+  int height;
+  int numInitialLambdas;
+
+  struct {
+    int initWaterLevel;
+    int waterproof;
+    int floodingFreq;
+  } water;
+  struct {
+    int growthrate;
+    int initRazors;
+  } beard;
 };
 
-typedef Tile MineContent;
-
-enum class State : uint8_t {
-  InProgress,
-  Win,
-  Lose,
-  Aborted
-};
-
-struct Coord {
-  int x;
-  int y;
-};
-
-typedef std::vector<RobotCommand> RobotCommands;
 
 class Mine {
 public:
-  static std::string stateToString(State s);
-  static char commandChar(RobotCommand command);
-  static RobotCommand charToCommand(char command);
-  static std::string commandName(RobotCommand command);
-  static std::string commandString(RobotCommands commands);
+  // State that changes every move, and can be trivially copied
+  struct VariadicState {
+	  int robotX;
+	  int robotY;
+	  int collectedLambdas;
+	  int curWaterLevel;
+	  int submergedSteps;
+    int curRazors;
+  };
 
   void read(std::istream& is);
+  Problem const& getProblem() const;
 
-  MineContent get(int x, int y);
+  Tile get(int x, int y) const;
 
-  State currentState();
+  Tile const* getGrid() const;
+  Tile* getGrid();
 
-  int score();
+  State currentState() const;
+  VariadicState const& currentVariadicState() const;
+
+  int score() const;
 
   // Do a series of commands until state != InProgress
   void evaluate(RobotCommands commandList);
@@ -63,87 +69,55 @@ public:
   // Revert the most recent move action.  Returns false if no more moves to revert.
   bool popMove();
 
-  int moveCount() const;
   RobotCommands const& commands() const;
+  int moveCount() const;
+  int collectedLambdas() const;
+  int submergedSteps() const;
+  int currentWaterLevel() const;
 
-  void print();
+  void print() const;
 
   // Returns 20 char (binary) SHA-1 hash of map state.
-  std::string hashcode();
+  std::string hashcode() const;
   int waterLevel(int turn) const;
-  int indexOfTrampTarget(MineContent c) const;
-  MineContent getTargetForTramp(MineContent c) const;
-  std::vector<Coord> getTrampLocsForTarget(MineContent c) const;
+  int indexOfTrampTarget(Tile c) const;
+  Tile getTargetForTramp(Tile c) const;
+  std::vector<Position> getTrampLocsForTarget(Tile c) const;
 
 private:
-  void set(int x, int y, MineContent c);
-
-  void checkConsistency();
-
   struct MineUpdate {
     int x, y;
-    MineContent c;
-  };
-
-  // State that changes every move, and can be trivially copied
-  struct variadicstate {
-	  int robotX;
-	  int robotY;
-	  int collectedLambdas;
-	  int curWaterLevel;
-	  int submergedSteps;
-    int curRazors;
+    Tile c;
   };
 
   struct MineHistory {
     // The updates it takes to go back to the previous state.
     std::vector<MineUpdate> updates;
 
-    struct variadicstate prevvarstate;
+    struct VariadicState prevvarstate;
   };
 
-public:
-  Grid<Tile> content;
-private:
+  typedef uint32_t PosIdx;
+
+  void set(int x, int y, Tile c);
+  void checkConsistency();
+
+  Grid<Tile, PosIdx> content;
+
   // any tile type that can trigger an update
   std::set<PosIdx> rockbeardpositions;
 
   std::vector<MineHistory> historyList;
   RobotCommands commandHistory;
 
-  // These are all problem-static fields -- they do not change anywhere except
-  // in read()
-  int initialTileHistogram[128];
-  std::vector<Coord> liftLoc;
-  std::vector<Coord> trampLoc;
-  std::vector<Coord> targetLoc;
-  std::vector<std::pair<MineContent, MineContent>> trampMapping;
-
-public:
-
   int totalMoves;
   State state;
 
-
-  variadicstate var;
-
+  VariadicState var;
 
   // These are all problem-static fields -- they do not change anywhere except
   // in read()
-  int width;
-  int height;
-  int numInitialLambdas;
-  struct {
-	  struct {
-		  int initWaterLevel;
-		  int waterproof;
-		  int floodingFreq;
-	  } water;
-	  struct {
-		  int growthrate;
-		  int initRazors;
-	  } beard;
-  } problem;
+  Problem problem;
 };
 
 #endif

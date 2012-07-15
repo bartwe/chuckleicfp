@@ -2,24 +2,19 @@
 #define SEARCHER_HPP
 
 #include <unordered_map>
+#include <functional>
 
 #include "Mine.hpp"
 
 class Searcher {
 public:
-  Searcher(Mine const& mine);
+  typedef std::function<void (RobotCommands const& commands, int score)> SolutionCallback;
 
-  struct Result {
-    std::vector<RobotCommand> commands;
-    int score;
-  };
-
-  Result bruteForce(int maxLength);
+  void bruteForce(Mine mine, int maxLength, SolutionCallback callback);
 
 private:
-  Result bruteForceSearch(int maxLength, Mine& mine);
+  void bruteForceSearch(Mine& mine, int maxLength, SolutionCallback callback);
 
-  Mine mineInitialState;
   std::unordered_map<std::string, int> visited;
 };
 

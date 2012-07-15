@@ -1,18 +1,30 @@
 #include "Searcher.hpp"
-#include "BestSoFar.h"
+#include "BestSoFar.hpp"
+
+#include <signal.h>
+
+static void sighandler(int signum) {
+	printf("# score: %d\n", Best::getBestScore());
+	printf("%s\n", Best::getBest());
+	exit(0);
+}
 
 int main(int argc, char** argv) {
+	// Now register
+	signal(SIGINT, sighandler);
+
   Mine mine;
   mine.read(std::cin);
 
-  Searcher searcher(mine);;
-  auto result = searcher.bruteForce(24);
+  Best::reserveSpace(4 * 1024 * 1024);
 
+  Searcher searcher;
+  searcher.bruteForce(mine, 24, [](RobotCommands const& commands, int score) {
+      if (Best::isImprovement(score))
+        Best::improveSolution(score, commandString(commands).c_str());
+    });
 
-  //mine.evaluateAndPrint(result.commands);
-  //std::cout << "solution: " << Mine::commandString(result.commands) << " length: " << result.commands.size() << " score: " << result.score << std::endl;
-
-  Best::GiveUp();
+  sighandler(SIGINT);
 
   return 0;
 }
