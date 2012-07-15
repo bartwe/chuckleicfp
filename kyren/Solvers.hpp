@@ -8,6 +8,26 @@
 #include "Mine.hpp"
 #include "Best.hpp"
 
+class RandomDijkstraSolver {
+public:
+  RandomDijkstraSolver(Best& best, int maxOpenSet, int sortNumber, int sortBuff);
+
+  void run(Mine mine);
+
+private:
+  // Returns true if should continue adding moves
+  bool performCommand(Mine& mine, RobotCommand command);
+  bool checkHashCode(std::string const& hash, int score);
+
+  Best& best;
+  int maxOpenSet;
+  int sortNumber;
+  int sortBuff;
+
+  std::unordered_map<std::string, int> visited;
+  std::deque<Mine> openSet;
+};
+
 // Bounded depth first search
 class BDFSSearcher {
 public:

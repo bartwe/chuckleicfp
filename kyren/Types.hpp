@@ -48,6 +48,15 @@ enum class RobotCommand : uint8_t {
   Slice
 };
 typedef std::vector<RobotCommand> RobotCommands;
+static const auto AllRobotCommands = {
+    RobotCommand::Left,
+    RobotCommand::Right,
+    RobotCommand::Up,
+    RobotCommand::Down,
+    RobotCommand::Wait,
+    RobotCommand::Abort,
+    RobotCommand::Slice
+  };
 
 enum class State : uint8_t {
   InProgress,
