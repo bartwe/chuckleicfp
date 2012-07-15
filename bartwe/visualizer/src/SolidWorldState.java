@@ -1,5 +1,4 @@
 import java.nio.ByteBuffer;
-import java.util.Arrays;
 import java.security.MessageDigest;
 
 public class SolidWorldState extends WorldState {
@@ -68,6 +67,9 @@ public class SolidWorldState extends WorldState {
                     case Cell.Lambda:
                         lambdaRemaining++;
                         break;
+                    case Cell.HighOrderRock:
+                        lambdaRemaining++;
+                        break;
                     default:
                 }
                 if (Cell.isTransporter(cell))
@@ -80,7 +82,7 @@ public class SolidWorldState extends WorldState {
         SolidWorldState result = new SolidWorldState(n, m);
         result.data = new byte[m + 2][];
         for (int i = 0; i < m + 2; i++) {
-            result.data[i] = Arrays.copyOf(data[i], data[i].length);
+            result.data[i] = new byte[n+2];
         }
 
         result.robotX = robotX;
@@ -101,6 +103,40 @@ public class SolidWorldState extends WorldState {
         result.razors = razors;
         result.growth = growth;
         return result;
+    }
+
+    public void copyFrom(WorldState current) {
+        int n = getN();
+        int m = getM();
+        if (current instanceof SolidWorldState) {
+            SolidWorldState sws = (SolidWorldState) current;
+            for (int i = 0; i < m + 2; i++) {
+                System.arraycopy(sws.data[i], 0, data[i], 0, data[i].length);
+            }
+        } else {
+            for (int y = 0; y < m + 2; y++) {
+                for (int x = 0; x < n + 2; x++) {
+                    set(x, y, current.get(x, y));
+                }
+            }
+        }
+
+        robotX = current.robotX;
+        robotY = current.robotY;
+        exitX = current.exitX;
+        exitY = current.exitY;
+        lambdaCollected = current.lambdaCollected;
+        lambdaRemaining = current.lambdaRemaining;
+        numberOfTransporters = current.numberOfTransporters;
+        curWaterLevel = current.curWaterLevel;
+        initWaterLevel = current.initWaterLevel;
+        floodingFreq = current.floodingFreq;
+        submergedSteps = current.submergedSteps;
+        steps = current.steps;
+        map = current.map;
+        trampolined = false;
+        razors = current.razors;
+        growth = current.growth;
     }
 
     static MessageDigest md = null;

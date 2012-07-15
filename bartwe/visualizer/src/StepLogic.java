@@ -6,8 +6,7 @@ public class StepLogic {
             throw new RuntimeException("Cannot move out of final step.");
         if (scratch == null)
             scratch = current.copy();
-        else
-            scratch.copyFrom(current);
+        scratch.copyFrom(current);
         scratch.trampolined = false;
         StepResult result = applyRobotAction(current, scratch, action);
         next.copyFrom(scratch);
@@ -19,7 +18,9 @@ public class StepLogic {
             result = applyWorldStep(result, scratch, next);
             if ((next.robotX == next.exitX) && (next.robotY == next.exitY))
                 result = StepResult.Win;
-            else if ((next.get(next.robotX, next.robotY + 1) == Cell.Rock) && (current.get(next.robotX, next.robotY + 1) != Cell.Rock))
+            else if (Cell.isRockish(next.get(next.robotX, next.robotY + 1)) && !Cell.isRockish(current.get(next.robotX, next.robotY + 1)))
+                result = StepResult.Lose;
+            else if (Cell.isLambda(next.get(next.robotX, next.robotY + 1)) && Cell.isEmpty(current.get(next.robotX, next.robotY + 1)))
                 result = StepResult.Lose;
         } else
             next.stepResult = result;
@@ -72,21 +73,21 @@ public class StepLogic {
             return StepResult.MoveFail;
         } else {
             if (action.dx == -1) {
-                if (Cell.isRock(current.get(current.robotX - 1, current.robotY)) && Cell.isEmpty(current.get(current.robotX - 2, current.robotY))) {
+                if (Cell.isRockish(current.get(current.robotX - 1, current.robotY)) && Cell.isEmpty(current.get(current.robotX - 2, current.robotY))) {
                     next.set(current.robotX, current.robotY, Cell.Empty);
                     next.robotX += -1;
                     next.set(next.robotX, next.robotY, Cell.RobotLocation);
-                    next.set(current.robotX - 2, current.robotY, Cell.Rock);
+                    next.set(current.robotX - 2, current.robotY, current.get(current.robotX - 1, current.robotY));
                     return StepResult.Ok;
                 } else
                     return StepResult.MoveFail;
             } else {
                 assert action.dx == 1;
-                if (Cell.isRock(current.get(current.robotX + 1, current.robotY)) && Cell.isEmpty(current.get(current.robotX + 2, current.robotY))) {
+                if (Cell.isRockish(current.get(current.robotX + 1, current.robotY)) && Cell.isEmpty(current.get(current.robotX + 2, current.robotY))) {
                     next.set(current.robotX, current.robotY, Cell.Empty);
                     next.robotX += 1;
                     next.set(next.robotX, next.robotY, Cell.RobotLocation);
-                    next.set(current.robotX + 2, current.robotY, Cell.Rock);
+                    next.set(current.robotX + 2, current.robotY, current.get(current.robotX + 1, current.robotY));
                     return StepResult.Ok;
                 } else
                     return StepResult.MoveFail;
@@ -117,19 +118,22 @@ public class StepLogic {
         for (int y = 1; y <= m; ++y) {
             for (int x = 1; x <= n; ++x) {
                 byte c = current.get(x, y);
-                if (c == Cell.Rock) {
+                if (Cell.isRockish(c)) {
+                    byte goal = Cell.Rock;
+                    if (c == Cell.HighOrderRock)
+                        goal = Cell.Lambda;
                     if (current.get(x, y - 1) == Cell.Empty) {
                         next.set(x, y, Cell.Empty);
-                        next.set(x, y - 1, Cell.Rock);
-                    } else if (current.get(x, y - 1) == Cell.Rock && current.get(x + 1, y) == Cell.Empty && current.get(x + 1, y - 1) == Cell.Empty) {
+                        next.set(x, y - 1, goal);
+                    } else if (Cell.isRockish(current.get(x, y - 1)) && current.get(x + 1, y) == Cell.Empty && current.get(x + 1, y - 1) == Cell.Empty) {
                         next.set(x, y, Cell.Empty);
-                        next.set(x + 1, y - 1, Cell.Rock);
-                    } else if (current.get(x, y - 1) == Cell.Rock && current.get(x - 1, y) == Cell.Empty && current.get(x - 1, y - 1) == Cell.Empty) {
+                        next.set(x + 1, y - 1, goal);
+                    } else if (Cell.isRockish(current.get(x, y - 1)) && current.get(x - 1, y) == Cell.Empty && current.get(x - 1, y - 1) == Cell.Empty) {
                         next.set(x, y, Cell.Empty);
-                        next.set(x - 1, y - 1, Cell.Rock);
+                        next.set(x - 1, y - 1, goal);
                     } else if (current.get(x, y - 1) == Cell.Lambda && current.get(x + 1, y) == Cell.Empty && current.get(x + 1, y - 1) == Cell.Empty) {
                         next.set(x, y, Cell.Empty);
-                        next.set(x + 1, y - 1, Cell.Rock);
+                        next.set(x + 1, y - 1, goal);
                     }
                 }
                 if (beardy && c == Cell.Beard) {

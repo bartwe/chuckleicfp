@@ -156,32 +156,7 @@ public abstract class WorldState {
         return result;
     }
 
-    public void copyFrom(WorldState current) {
-        int n = getN();
-        int m = getM();
-        for (int y = 0; y < m + 2; y++) {
-            for (int x = 0; x < n + 2; x++) {
-                set(x, y, current.get(x, y));
-            }
-        }
-
-        robotX = current.robotX;
-        robotY = current.robotY;
-        exitX = current.exitX;
-        exitY = current.exitY;
-        lambdaCollected = current.lambdaCollected;
-        lambdaRemaining = current.lambdaRemaining;
-        numberOfTransporters = current.numberOfTransporters;
-        curWaterLevel = current.curWaterLevel;
-        initWaterLevel = current.initWaterLevel;
-        floodingFreq = current.floodingFreq;
-        submergedSteps = current.submergedSteps;
-        steps = current.steps;
-        map = current.map;
-        trampolined = false;
-        razors = current.razors;
-        growth = current.growth;
-    }
+    public abstract void copyFrom(WorldState current);
 
     public abstract WorldState copy();
 

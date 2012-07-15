@@ -9,6 +9,7 @@ public class Cell {
     public static final byte RobotLocation = 7;
     public static final byte Beard = 8;
     public static final byte Razor = 9;
+    public static final byte HighOrderRock = 10;
 
     public static final byte TrampolineTarget1 = 11;
     public static final byte TrampolineTarget2 = 12;
@@ -77,6 +78,8 @@ public class Cell {
                 return 0x00ff80;
             case Cell.Beard:
                 return 0x80ff00;
+            case Cell.HighOrderRock:
+                return 0xff8080;
             default:
                 assert false;
                 return 0x808080;
@@ -144,6 +147,8 @@ public class Cell {
                 return Cell.Beard;
             case 33: // !
                 return Cell.Razor;
+            case 64: // @
+                return Cell.HighOrderRock;
 
             case 13:
                 return Cell.Invalid;
@@ -188,10 +193,6 @@ public class Cell {
         }
     }
 
-    public static boolean isRock(byte cell) {
-        return cell == Cell.Rock;
-    }
-
     public static boolean isEmpty(byte cell) {
         return cell == Cell.Empty;
     }
@@ -223,5 +224,9 @@ public class Cell {
             default:
                 return false;
         }
+    }
+
+    public static boolean isRockish(byte b) {
+        return (b == Cell.Rock) || (b == Cell.HighOrderRock);
     }
 }

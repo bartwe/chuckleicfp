@@ -158,6 +158,8 @@ public class DualAStarApproach {
                 continue;
             if (state.get(x_, y_) == Cell.Lambda)
                 goals.add(new Goal(state, x_, y_, false));
+            if (state.get(x_, y_) == Cell.HighOrderRock)
+                goals.add(new Goal(state, x_, y_, false));
 
             if (goals.size() >= limit)
                 break;
@@ -200,8 +202,9 @@ public class DualAStarApproach {
 
         ArrayList<Goal> goals = new ArrayList<Goal>();
 
-        if (initialState.lambdaRemaining > 0)
+        if (initialState.lambdaRemaining > 0) {
             findLambdas(initialState, goals);
+        }
         else
             goals.add(new Goal(initialState, initialState.exitX, initialState.exitY, false));
 
