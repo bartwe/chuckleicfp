@@ -40,8 +40,7 @@ public class StepLogic {
             } else if (target == Cell.ClosedLambdaLift && next.lambdaRemaining != 0)
                 return StepResult.MoveFail;
             else if (Cell.isTransporter(target)) {
-                byte sourceTransporter = target;
-                byte targetTransporter = current.map.getTargetTransporter(sourceTransporter);
+                byte targetTransporter = current.map.getTargetTransporter(target);
                 next.set(current.robotX, current.robotY, Cell.Empty);
                 next.doTransporter(targetTransporter);
                 return StepResult.Ok;

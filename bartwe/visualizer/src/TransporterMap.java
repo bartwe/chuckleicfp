@@ -1,5 +1,5 @@
 public class TransporterMap {
-    byte[] mapping = new byte[9];
+    final byte[] mapping = new byte[9];
 
     public byte getTargetTransporter(byte sourceTransporter) {
         assert Cell.isTransporter(sourceTransporter);
@@ -14,7 +14,7 @@ public class TransporterMap {
         mapping[source-Cell.TrampolineSource1] = target;
     }
 
-    boolean[] cleanupListTemp = new boolean[9];
+    final boolean[] cleanupListTemp = new boolean[9];
     public boolean[] cleanupList(byte target) {
         for (int i = 0; i< mapping.length; i++)
             cleanupListTemp[i] = (mapping[i] == target);

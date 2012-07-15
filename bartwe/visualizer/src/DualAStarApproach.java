@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class DualAStarApproach {
@@ -86,79 +87,109 @@ public class DualAStarApproach {
         public final WorldState state;
         public final int x;
         public final int y;
-        public final int radius;
 
         public AStar pathfinder;
         public boolean done;
-        public boolean trampoline;
+        public final boolean trampoline;
 
-        public Goal(WorldState state, int x_, int y_, int radius, boolean trampoline) {
+        public Goal(WorldState state, int x_, int y_, boolean trampoline) {
             this.state = state;
             this.x = x_;
             this.y = y_;
-            this.radius = radius;
             this.trampoline = trampoline;
         }
     }
 
-    private void findLambdas(WorldState state, ArrayList<Goal> goals) {
+    static int[] radiusScanX;
+    static int[] radiusScanY;
+
+    // maybe cull for non square regions ?
+    private static void buildRadiusScan(int n, int m) {
+        radiusScanX = new int[4225];
+        radiusScanY = new int[4225];
+        int ix = 0;
+
         int radius = 1;
-        int n = state.getN();
-        int m = state.getM();
-        while (true) {
+        while (radius < 32) {
             if (stop)
                 break;
             for (int y = -radius; y <= radius; y++) {
-                int y_ = y + state.robotY;
-                if ((y_ < 1) || (y_ > m))
+                if ((y < -m) || (y > m))
                     continue;
                 for (int x = -radius; x <= radius; x++) {
-                    int x_ = x + state.robotX;
-                    if ((x_ < 1) || (x_ > n))
+                    if ((x < -n) || (x > n))
                         continue;
-                    if (Math.abs(x_) + Math.abs(y) != radius)
+                    if (Math.abs(x) + Math.abs(y) != radius)
                         continue; // zomg, expensive
-                    if (state.get(x_, y_) == Cell.Lambda)
-                        goals.add(new Goal(state, x_, y_, radius, false));
+                    radiusScanX[ix] = x;
+                    radiusScanY[ix] = y;
+                    ix++;
                 }
             }
-
-            if ((goals.size() >= 10) || (goals.size() == state.lambdaRemaining))
-                break;
             if ((radius >= n) && (radius >= m))
                 break;
             radius++;
         }
+
+        if (ix < radiusScanX.length) {
+            radiusScanX = Arrays.copyOf(radiusScanX, ix);
+        }
     }
 
-    private void findTransporters(WorldState state, ArrayList<Goal> goals) {
-        int radius = 1;
+
+    private void findLambdas(WorldState state, ArrayList<Goal> goals) {
         int n = state.getN();
         int m = state.getM();
-        int startSize = goals.size();
-        while (true) {
+        if (radiusScanX == null)
+            buildRadiusScan(n, m);
+        int limit = state.lambdaRemaining;
+        if (limit > 10)
+            limit = 10;
+        for (int idx = 0; idx < radiusScanX.length; ++idx) {
             if (stop)
                 break;
-            for (int y = -radius; y <= radius; y++) {
-                int y_ = y + state.robotY;
-                if ((y_ < 1) || (y_ > m))
-                    continue;
-                for (int x = -radius; x <= radius; x++) {
-                    int x_ = x + state.robotX;
-                    if ((x_ < 1) || (x_ > n))
-                        continue;
-                    if (Math.abs(x_) + Math.abs(y) != radius)
-                        continue; // zomg, expensive
-                    if (Cell.isTransporter(state.get(x_, y_)))
-                        goals.add(new Goal(state, x_, y_, radius, true));
-                }
-            }
+            int x = radiusScanX[idx];
+            int y = radiusScanY[idx];
+            int y_ = y + state.robotY;
+            if ((y_ < 1) || (y_ > m))
+                continue;
+            int x_ = x + state.robotX;
+            if ((x_ < 1) || (x_ > n))
+                continue;
+            if (state.get(x_, y_) == Cell.Lambda)
+                goals.add(new Goal(state, x_, y_, false));
 
-            if (goals.size() - startSize >= 10)
+            if (goals.size() >= limit)
                 break;
-            if ((radius >= n) && (radius >= m))
+        }
+    }
+
+
+    private void findTransporters(WorldState state, ArrayList<Goal> goals) {
+        int n = state.getN();
+        int m = state.getM();
+        if (radiusScanX == null)
+            buildRadiusScan(n, m);
+        int startSize = goals.size();
+        int limit = state.numberOfTransporters;
+        if (limit > 10)
+            limit = 10;
+        for (int idx = 0; idx < radiusScanX.length; ++idx) {
+            if (stop)
                 break;
-            radius++;
+            int x = radiusScanX[idx];
+            int y = radiusScanY[idx];
+            int y_ = y + state.robotY;
+            if ((y_ < 1) || (y_ > m))
+                continue;
+            int x_ = x + state.robotX;
+            if ((x_ < 1) || (x_ > n))
+                continue;
+            if (Cell.isTransporter(state.get(x_, y_)))
+                goals.add(new Goal(state, x_, y_, true));
+
+            if (goals.size() - startSize >= limit)
+                break;
         }
     }
 
@@ -172,12 +203,9 @@ public class DualAStarApproach {
         if (initialState.lambdaRemaining > 0)
             findLambdas(initialState, goals);
         else
-            goals.add(new Goal(initialState, initialState.exitX, initialState.exitY, 0, false));
+            goals.add(new Goal(initialState, initialState.exitX, initialState.exitY, false));
 
         findTransporters(initialState, goals);
-
-//        assert goals.size() > 0;
-
 
         //find a number of lambdas to try and reach, path find them concurrently, stop looking if you find enough of them, abandon rest.
         for (Goal goal : goals) {

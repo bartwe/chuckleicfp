@@ -70,6 +70,8 @@ public class SolidWorldState extends WorldState {
                         break;
                     default:
                 }
+                if (Cell.isTransporter(cell))
+                    numberOfTransporters++;
             }
         }
     }
@@ -87,6 +89,7 @@ public class SolidWorldState extends WorldState {
         result.exitY = exitY;
         result.lambdaCollected = lambdaCollected;
         result.lambdaRemaining = lambdaRemaining;
+        result.numberOfTransporters = numberOfTransporters;
         result.curWaterLevel = curWaterLevel;
         result.initWaterLevel = initWaterLevel;
         result.floodingFreq = floodingFreq;
@@ -116,13 +119,7 @@ public class SolidWorldState extends WorldState {
         ByteBuffer bb = ByteBuffer.allocate(11 * 4);
         bb.putInt(robotX);
         bb.putInt(robotY);
-        bb.putInt(exitX);
-        bb.putInt(exitY);
-        bb.putInt(lambdaCollected);
-        bb.putInt(lambdaRemaining);
         bb.putInt(curWaterLevel);
-        bb.putInt(initWaterLevel);
-        bb.putInt(floodingFreq);
         bb.putInt(submergedSteps);
         bb.putInt(waterproof);
         bb.flip();

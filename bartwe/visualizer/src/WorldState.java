@@ -21,6 +21,7 @@ public abstract class WorldState {
     public RobotAction action;
     public TransporterMap map;
     boolean trampolined;
+    public int numberOfTransporters;
 
     public abstract byte get(int x, int y);
 
@@ -162,11 +163,11 @@ public abstract class WorldState {
         exitY = current.exitY;
         lambdaCollected = current.lambdaCollected;
         lambdaRemaining = current.lambdaRemaining;
+        numberOfTransporters = current.numberOfTransporters;
         curWaterLevel = current.curWaterLevel;
         initWaterLevel = current.initWaterLevel;
         floodingFreq = current.floodingFreq;
         submergedSteps = current.submergedSteps;
-        waterproof = current.waterproof;
         steps = current.steps;
         map = current.map;
         trampolined = false;
@@ -193,7 +194,10 @@ public abstract class WorldState {
                     foundTarget = true;
                 } else if (cell >= Cell.TrampolineSource1 && cell <= Cell.TrampolineSource9) {
                     if (cleanuplist[cell - Cell.TrampolineSource1])
+                    {
                         set(x, y, Cell.Empty);
+                        numberOfTransporters--;
+                    }
                 }
             }
         }
@@ -207,13 +211,7 @@ public abstract class WorldState {
         if ((rx < 1) || (rx > getN()) || (ry < 1) || (ry > getM()))
             return true;
         byte cell = get(rx, ry);
-        if ((cell >= Cell.TrampolineSource1) && (cell <= Cell.TrampolineSource9))
-        {
-            if ((x == rx) && (y == ry))
-                return false;
-            return true;
-        }
-        return false;
+        return (cell >= Cell.TrampolineSource1) && (cell <= Cell.TrampolineSource9) && !((x == rx) && (y == ry));
     }
 }
 
