@@ -15,6 +15,7 @@ def DoTest(cwdpath, exe, shortname, mapfn):
     s = time.time()
     exepath = os.path.abspath(cwdpath+exe)
     fullcwdpath = os.path.abspath(cwdpath)
+    print >> sys.stderr, 'Running ' + exepath + ' map ' + mapfn
     p = subprocess.Popen((exepath,), cwd=fullcwdpath, stdin=open(mapfn), stdout=subprocess.PIPE)
     killer = subprocess.Popen("sleep 10; kill -INT %d; sleep 10; kill -9 %d" % (p.pid, p.pid), shell=True)
     out = ""
@@ -56,24 +57,30 @@ def main():
         print 'graph_title Progress'
         print 'graph_vlabel score'
         print 'graph_category icfp'
-    for main in PACKAGES:
-        if main[3]:
-            p = subprocess.Popen(main[3], shell=True, stdout=open('/dev/null', 'w'), stderr=subprocess.STDOUT)
-            p.wait();
+    else:
+        for main in PACKAGES:
+            if main[3]:
+                p = subprocess.Popen(main[3], shell=True, stdout=open('/dev/null', 'w'), stderr=subprocess.STDOUT)
+                p.wait();
+    first = True;
+    sums = {}
+    for map in sorted(maps):
+        if test and not first:
+            break
         sum = 0;
-        first = True;
-        for map in sorted(maps):
-            if test and not first:
-                break
-            first = False
+        first = False
+        for main in PACKAGES:
             if config:
                 print '%s-%s.label %s %s' % (mapname(map), main[2], mapname(map), main[2])
             else:
+                sum = sums.get(main[2], 0)
                 sum += DoTest(main[0], main[1], main[2], os.path.join(MAPDIR, map))
+                sums[main[2]] = sum;
+    for main in PACKAGES:
         if config:
             print '%s.label %s' %(main[2], main[2])
         else:
-            print '%s.value %d' %(main[2], sum)
+            print '%s.value %d' %(main[2], sums[main[2]])
 
 if __name__ == '__main__':
     main()
