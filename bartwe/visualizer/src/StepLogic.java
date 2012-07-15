@@ -8,11 +8,13 @@ public class StepLogic {
             scratch = current.copy();
         else
             scratch.copyFrom(current);
+        scratch.trampolined = false;
         StepResult result = applyRobotAction(current, scratch, action);
         next.copyFrom(scratch);
         next.steps++;
         next.parent = current;
         next.action = action;
+        next.trampolined = scratch.trampolined;
         if (result != StepResult.Abort)
             applyWorldStep(scratch, next);
         if ((next.robotX == next.exitX) && (next.robotY == next.exitY))
@@ -40,7 +42,7 @@ public class StepLogic {
                 byte sourceTransporter = target;
                 byte targetTransporter = current.map.getTargetTransporter(sourceTransporter);
                 next.set(current.robotX, current.robotY, Cell.Empty);
-                next.doTransporter(sourceTransporter, targetTransporter);
+                next.doTransporter(targetTransporter);
                 return StepResult.Ok;
             }
             next.set(current.robotX, current.robotY, Cell.Empty);

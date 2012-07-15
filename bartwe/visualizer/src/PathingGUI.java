@@ -43,14 +43,25 @@ public class PathingGUI implements KeyListener {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_SPACE:
                 path.clear();
+                DualAStarApproach.stop = false;
+                Thread stopper = new Thread(new Runnable() {
+                    public void run() {
+                        try {
+                            Thread.sleep(20000);
+                        } catch (InterruptedException e1) {
+                        }
+                        DualAStarApproach.stop = true;
+                    }
+                });
+                stopper.setDaemon(true);
+                stopper.start();
                 DualAStarApproach dasa = new DualAStarApproach();
                 ArrayList<WorldState> highLevelPath = dasa.findPath(state);
                 System.err.println("Path found.");
                 System.err.println("Top layer size: "+highLevelPath.size());
                 if (highLevelPath.size() > 0) {
-//                    /*
                     WorldState cursor = highLevelPath.get(highLevelPath.size() - 1);
-                    System.err.println("Final state score: "+cursor.score() +"  Reason:"+cursor.stepResult.toString());
+                    System.err.println("Final state score: "+cursor.score() +"  Reason:"+cursor.stepResult.toString()+" FinishOnAbort: "+(cursor.action == RobotAction.Abort));
 
                     while (cursor != null) {
                         path.add(cursor);
@@ -58,8 +69,6 @@ public class PathingGUI implements KeyListener {
                     }
                     System.err.println("Base path size: "+path.size());
                     Collections.reverse(path);
-//                    */
-//                    path.addAll(highLevelPath);
                     state = path.remove(0);
                 } else
                     Toolkit.getDefaultToolkit().beep();

@@ -32,15 +32,16 @@ public class DualAStarApproach {
             }
 
             public double goalHeuristic(WorldState state) {
-                return (state.stepResult == StepResult.Win) ? 0 : 1; // no know goal know, return something low
+                return state.lambdaRemaining;
             }
 
             public double edgeCost(WorldState from, WorldState to) {
-                return to.steps - from.steps;
+                assert to.steps - from.steps > 0;
+                return Math.sqrt(to.steps - from.steps);
             }
 
             public boolean isEndPoint(WorldState state) {
-                return state.stepResult == StepResult.Win;
+                return false;
             }
 
             public AStar.AStarNode findBest(AStar.AStarNode best, boolean singleSolution, HashMap<WorldStateHash, AStar.AStarNode> nodes) {
@@ -69,7 +70,7 @@ public class DualAStarApproach {
         stop = true;
     }
 
-    class LambdaGoal {
+    class Goal {
         public final WorldState state;
         public final int x;
         public final int y;
@@ -77,16 +78,18 @@ public class DualAStarApproach {
 
         public AStar pathfinder;
         public boolean done;
+        public boolean trampoline;
 
-        public LambdaGoal(WorldState state, int x_, int y_, int radius) {
+        public Goal(WorldState state, int x_, int y_, int radius, boolean trampoline) {
             this.state = state;
             this.x = x_;
             this.y = y_;
             this.radius = radius;
+            this.trampoline = trampoline;
         }
     }
 
-    private void findLambdas(WorldState state, ArrayList<LambdaGoal> goals) {
+    private void findLambdas(WorldState state, ArrayList<Goal> goals) {
         int radius = 1;
         int n = state.getN();
         int m = state.getM();
@@ -104,7 +107,7 @@ public class DualAStarApproach {
                     if (Math.abs(x_) + Math.abs(y) != radius)
                         continue; // zomg, expensive
                     if (state.get(x_, y_) == Cell.Lambda)
-                        goals.add(new LambdaGoal(state, x_, y_, radius));
+                        goals.add(new Goal(state, x_, y_, radius, false));
                 }
             }
 
@@ -123,7 +126,7 @@ public class DualAStarApproach {
         */
     }
 
-    private void findTransporters(WorldState state, ArrayList<LambdaGoal> goals) {
+    private void findTransporters(WorldState state, ArrayList<Goal> goals) {
         int radius = 1;
         int n = state.getN();
         int m = state.getM();
@@ -142,7 +145,7 @@ public class DualAStarApproach {
                     if (Math.abs(x_) + Math.abs(y) != radius)
                         continue; // zomg, expensive
                     if (Cell.isTransporter(state.get(x_, y_)))
-                        goals.add(new LambdaGoal(state, x_, y_, radius));
+                        goals.add(new Goal(state, x_, y_, radius, true));
                 }
             }
 
@@ -159,18 +162,21 @@ public class DualAStarApproach {
         final int horizon = initialState.getM() * initialState.getN();
         final StepLogic logic = new StepLogic();
 
-        ArrayList<LambdaGoal> goals = new ArrayList<LambdaGoal>();
+        ArrayList<Goal> goals = new ArrayList<Goal>();
 
         if (initialState.lambdaRemaining > 0)
             findLambdas(initialState, goals);
         else
-            goals.add(new LambdaGoal(initialState, initialState.exitX, initialState.exitY, 0));
+            goals.add(new Goal(initialState, initialState.exitX, initialState.exitY, 0, false));
 
         findTransporters(initialState, goals);
 
+//        assert goals.size() > 0;
+
+
         //find a number of lambdas to try and reach, path find them concurrently, stop looking if you find enough of them, abandon rest.
-        for (LambdaGoal goal : goals) {
-            final LambdaGoal lg = goal;
+        for (Goal goal : goals) {
+            final Goal lg = goal;
             goal.pathfinder = new AStar(new AStar.Controller() {
                 public int getAdjacent(WorldState state, WorldState[] adjacentsBuffer) {
                     if (stop)
@@ -188,23 +194,36 @@ public class DualAStarApproach {
                 }
 
                 int addToBuffer(WorldState state, int count, WorldState[] adjacentsBufffer, RobotAction action) {
+                    if (state.disallowNonGoalTransportMove(action, lg.x, lg.y))
+                        return count;
                     WorldState next = state.copy();
                     logic.applyStep(state, next, action);
                     if (next.stepResult == StepResult.MoveFail)
                         return count;
+                    if (state.trampolined && !lg.trampoline)
+                        state.disallowNonGoalTransportMove(action, lg.x, lg.y);
                     adjacentsBufffer[count] = next;
                     return count + 1;
                 }
 
                 public double goalHeuristic(WorldState state) {
+                    if (state.trampolined) {
+                        assert lg.trampoline;
+                        return 0;
+                    }
                     return Math.abs(state.robotX - lg.x) + Math.abs(state.robotY - lg.y);
                 }
 
                 public double edgeCost(WorldState from, WorldState to) {
-                    return 1; // its about shortest path, ignore score
+                    assert to.steps - from.steps == 1;
+                    return 1;
                 }
 
                 public boolean isEndPoint(WorldState state) {
+                    if (state.trampolined) {
+                        assert lg.trampoline;
+                        return true;
+                    }
                     return Math.abs(state.robotX - lg.x) + Math.abs(state.robotY - lg.y) == 0;
                 }
 
@@ -224,7 +243,7 @@ public class DualAStarApproach {
 
         while (true) {
             boolean active = false;
-            for (LambdaGoal goal : goals) {
+            for (Goal goal : goals) {
                 if (goal.done)
                     continue;
                 if (goal.pathfinder.run()) {

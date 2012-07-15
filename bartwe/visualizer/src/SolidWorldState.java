@@ -94,6 +94,7 @@ public class SolidWorldState extends WorldState {
         result.waterproof = waterproof;
         result.steps = steps;
         result.map = map;
+        result.trampolined = false; //is carried over manually
         return result;
     }
 

@@ -20,7 +20,7 @@
   <component name="DebuggerManager">
     <line_breakpoints>
       <breakpoint url="file://$PROJECT_DIR$/src/Manual.java" line="3" class="Manual.java" package="">
-        <option name="ENABLED" value="true" />
+        <option name="ENABLED" value="false" />
         <option name="LOG_ENABLED" value="false" />
         <option name="LOG_EXPRESSION_ENABLED" value="false" />
         <option name="SUSPEND_POLICY" value="SuspendAll" />
@@ -29,8 +29,8 @@
         <option name="CONDITION_ENABLED" value="false" />
         <option name="CLASS_FILTERS_ENABLED" value="false" />
         <option name="INSTANCE_FILTERS_ENABLED" value="false" />
-        <option name="CONDITION" value="" />
-        <option name="LOG_MESSAGE" value="" />
+        <option name="CONDITION" value="&#13;&#13;JAVA" />
+        <option name="LOG_MESSAGE" value="&#13;&#13;JAVA" />
       </breakpoint>
     </line_breakpoints>
     <exception_breakpoints>
@@ -46,8 +46,23 @@
         <option name="CONDITION_ENABLED" value="false" />
         <option name="CLASS_FILTERS_ENABLED" value="false" />
         <option name="INSTANCE_FILTERS_ENABLED" value="false" />
-        <option name="CONDITION" value="" />
-        <option name="LOG_MESSAGE" value="" />
+        <option name="CONDITION" value="&#13;&#13;JAVA" />
+        <option name="LOG_MESSAGE" value="&#13;&#13;JAVA" />
+      </breakpoint>
+      <breakpoint class_name="java.lang.AssertionError" package_name="java.lang">
+        <option name="NOTIFY_CAUGHT" value="true" />
+        <option name="NOTIFY_UNCAUGHT" value="true" />
+        <option name="ENABLED" value="true" />
+        <option name="LOG_ENABLED" value="false" />
+        <option name="LOG_EXPRESSION_ENABLED" value="false" />
+        <option name="SUSPEND_POLICY" value="SuspendAll" />
+        <option name="COUNT_FILTER_ENABLED" value="false" />
+        <option name="COUNT_FILTER" value="0" />
+        <option name="CONDITION_ENABLED" value="false" />
+        <option name="CLASS_FILTERS_ENABLED" value="false" />
+        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
+        <option name="CONDITION" value="&#13;&#13;JAVA" />
+        <option name="LOG_MESSAGE" value="&#13;&#13;JAVA" />
       </breakpoint>
     </exception_breakpoints>
     <breakpoint_any>
@@ -63,8 +78,8 @@
         <option name="CONDITION_ENABLED" value="false" />
         <option name="CLASS_FILTERS_ENABLED" value="false" />
         <option name="INSTANCE_FILTERS_ENABLED" value="false" />
-        <option name="CONDITION" value="" />
-        <option name="LOG_MESSAGE" value="" />
+        <option name="CONDITION" value="&#13;&#13;JAVA" />
+        <option name="LOG_MESSAGE" value="&#13;&#13;JAVA" />
       </breakpoint>
       <breakpoint>
         <option name="NOTIFY_CAUGHT" value="true" />
@@ -78,8 +93,8 @@
         <option name="CONDITION_ENABLED" value="false" />
         <option name="CLASS_FILTERS_ENABLED" value="false" />
         <option name="INSTANCE_FILTERS_ENABLED" value="false" />
-        <option name="CONDITION" value="" />
-        <option name="LOG_MESSAGE" value="" />
+        <option name="CONDITION" value="&#13;&#13;JAVA" />
+        <option name="LOG_MESSAGE" value="&#13;&#13;JAVA" />
       </breakpoint>
     </breakpoint_any>
     <breakpoint_rules />
@@ -119,22 +134,22 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/src/Cell.java" />
-        <option value="$PROJECT_DIR$/src/Manual.java" />
-        <option value="$PROJECT_DIR$/src/StepResult.java" />
         <option value="$PROJECT_DIR$/src/RobotAction.java" />
-        <option value="$PROJECT_DIR$/src/PathingGUI.java" />
         <option value="$PROJECT_DIR$/readme.txt" />
         <option value="$PROJECT_DIR$/lifter" />
         <option value="$PROJECT_DIR$/Makefile" />
         <option value="$PROJECT_DIR$/src/DasaConsole.java" />
-        <option value="$PROJECT_DIR$/src/DualAStarApproach.java" />
         <option value="$PROJECT_DIR$/PACKAGES" />
-        <option value="$PROJECT_DIR$/src/AStar.java" />
-        <option value="$PROJECT_DIR$/src/WorldState.java" />
-        <option value="$PROJECT_DIR$/src/SolidWorldState.java" />
         <option value="$PROJECT_DIR$/src/WorldStateHash.java" />
+        <option value="$PROJECT_DIR$/src/Cell.java" />
+        <option value="$PROJECT_DIR$/src/Manual.java" />
+        <option value="$PROJECT_DIR$/src/TransporterMap.java" />
         <option value="$PROJECT_DIR$/src/StepLogic.java" />
+        <option value="$PROJECT_DIR$/src/AStar.java" />
+        <option value="$PROJECT_DIR$/src/DualAStarApproach.java" />
+        <option value="$PROJECT_DIR$/src/PathingGUI.java" />
+        <option value="$PROJECT_DIR$/src/SolidWorldState.java" />
+        <option value="$PROJECT_DIR$/src/WorldState.java" />
       </list>
     </option>
   </component>
@@ -143,8 +158,9 @@
     <option name="LAST_EDITED_TAB_NAME" />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="956" />
-    <option name="width" value="954" />
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
+    <option name="width" value="1936" />
     <option name="height" value="1096" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
@@ -232,6 +248,7 @@
     <property name="MemberChooser.sorted" value="false" />
     <property name="options.lastSelected" value="project.propVCSSupport.Mappings" />
     <property name="recentsLimit" value="5" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../maps" />
     <property name="MemberChooser.copyJavadoc" value="false" />
     <property name="GoToClass.toSaveIncludeLibraries" value="false" />
     <property name="MemberChooser.showClasses" value="true" />
@@ -245,7 +262,7 @@
       <recent name="" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.DasaConsole">
+  <component name="RunManager" selected="Application.PathingGUI">
     <configuration default="true" type="Remote" factoryName="Remote">
       <option name="USE_SOCKET_TRANSPORT" value="true" />
       <option name="SERVER_MODE" value="false" />
@@ -366,8 +383,8 @@
     </configuration>
     <configuration default="false" name="PathingGUI" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="PathingGUI" />
-      <option name="VM_PARAMETERS" value="-Xmx3g" />
-      <option name="PROGRAM_PARAMETERS" value="..\..\maps\huge1.map" />
+      <option name="VM_PARAMETERS" value="-Xmx2g -ea" />
+      <option name="PROGRAM_PARAMETERS" value="..\..\maps\contest10.map" />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" value="" />
@@ -466,26 +483,26 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="956" y="0" width="954" height="1096" extended-state="0" />
+    <frame x="-8" y="-8" width="1936" height="1096" extended-state="6" />
     <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33125" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.33125" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.28958333" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.43854168" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.27151257" sideWeight="0.114583336" order="-1" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32987553" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32916668" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32987553" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.19235095" sideWeight="0.6010417" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Inspection" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.39895833" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.17258883" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.27151257" sideWeight="0.546875" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39895833" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.171875" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32987553" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -551,73 +568,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/Makefile">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="6" column="48" selection-start="175" selection-end="175" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lifter">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="3" column="29" selection-start="70" selection-end="70" vertical-scroll-proportion="0.07810107" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/DualAStarApproach.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="90" selection-start="181" selection-end="181" vertical-scroll-proportion="0.15555556" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/PathingGUI.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="3" column="0" selection-start="86" selection-end="86" vertical-scroll-proportion="0.06666667" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/readme.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="25" column="14" selection-start="720" selection-end="720" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../tester/kyren-7256d71727a8b28ec19f3877b271a534220353a9.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/DasaConsole.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="17" column="49" selection-start="460" selection-end="460" vertical-scroll-proportion="0.51724136">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/WorldStateHash.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="15" column="0" selection-start="376" selection-end="376" vertical-scroll-proportion="0.50395256">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/AStar.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="157" column="0" selection-start="5271" selection-end="5271" vertical-scroll-proportion="0.5048544">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/PACKAGES">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="2" column="0" selection-start="24" selection-end="24" vertical-scroll-proportion="0.06439394">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../tester/dotest.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="24" column="46" selection-start="611" selection-end="611" vertical-scroll-proportion="0.792233">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../../tester/bart-6971bddfc0b49f4723e9648ccc8ad619769a047b.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state line="22" column="29" selection-start="2777" selection-end="2777" vertical-scroll-proportion="0.7262136">
@@ -625,32 +575,113 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/SolidWorldState.java">
+    <entry file="file://$PROJECT_DIR$/../../maps/beard1.map">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="61" column="0" selection-start="1548" selection-end="1548" vertical-scroll-proportion="0.031657357">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/WorldState.java">
+    <entry file="file://$PROJECT_DIR$/src/Manual.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="97" column="31" selection-start="2999" selection-end="2999" vertical-scroll-proportion="0.32363635">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state line="71" column="18" selection-start="2111" selection-end="2111" vertical-scroll-proportion="0.40122512">
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/StepLogic.java">
+    <entry file="file://$PROJECT_DIR$/src/TransporterMap.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="23" column="0" selection-start="967" selection-end="967" vertical-scroll-proportion="0.7281192">
+        <state line="18" column="0" selection-start="729" selection-end="729" vertical-scroll-proportion="0.46860644">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../maps/trampoline1.map">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="10" column="159" selection-start="168" selection-end="168" vertical-scroll-proportion="0.22880216">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.6.0_26/src.zip!/java/lang/Thread.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="1274" column="0" selection-start="48445" selection-end="48445" vertical-scroll-proportion="0.20053835">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/DisplayWindow.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="54" column="37" selection-start="1495" selection-end="1495" vertical-scroll-proportion="0.29272726">
+        <state line="89" column="0" selection-start="2532" selection-end="2532" vertical-scroll-proportion="0.20053835">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/AStar.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="63" column="0" selection-start="2019" selection-end="2019" vertical-scroll-proportion="0.20053835">
+          <folding>
+            <element signature="e#3810#3822#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Cell.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="189" column="26" selection-start="6350" selection-end="6350" vertical-scroll-proportion="0.2907133">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/StepLogic.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="87" column="129" selection-start="3978" selection-end="3978" vertical-scroll-proportion="0.72357726">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/WorldState.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="172" column="67" selection-start="5713" selection-end="5713" vertical-scroll-proportion="0.6650407">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/SolidWorldState.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="94" column="0" selection-start="2697" selection-end="2697" vertical-scroll-proportion="0.3327674">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/DisplayWorld.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="1" column="13" selection-start="46" selection-end="46" vertical-scroll-proportion="0.027642276">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/DualAStarApproach.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="174" column="101" selection-start="6138" selection-end="6138" vertical-scroll-proportion="0.3039867">
+          <folding>
+            <element signature="e#5841#5847#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/DasaConsole.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="62" column="52" selection-start="2056" selection-end="2056" vertical-scroll-proportion="0.36422765">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/PathingGUI.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="72" column="101" selection-start="2737" selection-end="2737" vertical-scroll-proportion="0.5821138">
           <folding />
         </state>
       </provider>

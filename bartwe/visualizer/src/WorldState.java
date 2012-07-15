@@ -20,6 +20,7 @@ public abstract class WorldState {
     public WorldState parent;
     public RobotAction action;
     public TransporterMap map;
+    boolean trampolined;
 
     public abstract byte get(int x, int y);
 
@@ -161,8 +162,14 @@ public abstract class WorldState {
         exitY = current.exitY;
         lambdaCollected = current.lambdaCollected;
         lambdaRemaining = current.lambdaRemaining;
+        curWaterLevel = current.curWaterLevel;
+        initWaterLevel = current.initWaterLevel;
+        floodingFreq = current.floodingFreq;
+        submergedSteps = current.submergedSteps;
+        waterproof = current.waterproof;
         steps = current.steps;
         map = current.map;
+        trampolined = false;
     }
 
     public abstract WorldState copy();
@@ -171,7 +178,7 @@ public abstract class WorldState {
 
     public abstract int score();
 
-    public void doTransporter(byte sourceTransporter, byte targetTransporter) {
+    public void doTransporter(byte targetTransporter) {
         int n = getN();
         int m = getM();
         boolean foundTarget = false;
@@ -191,6 +198,22 @@ public abstract class WorldState {
             }
         }
         assert foundTarget;
+        trampolined = true;
+    }
+
+    public boolean disallowNonGoalTransportMove(RobotAction action, int x, int y) {
+        int rx = robotX + action.dx;
+        int ry = robotY + action.dy;
+        if ((rx < 1) || (rx > getN()) || (ry < 1) || (ry > getM()))
+            return true;
+        byte cell = get(rx, ry);
+        if ((cell >= Cell.TrampolineSource1) && (cell <= Cell.TrampolineSource9))
+        {
+            if ((x == rx) && (y == ry))
+                return false;
+            return true;
+        }
+        return false;
     }
 }
 
