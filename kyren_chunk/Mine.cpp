@@ -265,7 +265,6 @@ bool Mine::doCommand(RobotCommand command) {
         }
       }
     } else {
-      checkConsistency();
       return false;
     }
   }
