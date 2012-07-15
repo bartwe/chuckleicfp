@@ -229,4 +229,8 @@ public class Cell {
     public static boolean isRockish(byte b) {
         return (b == Cell.Rock) || (b == Cell.HighOrderRock);
     }
+
+    public static boolean notEmptyNorRobot(byte b) {
+        return (b != Cell.Empty) && (b != Cell.RobotLocation);
+    }
 }
