@@ -97,7 +97,6 @@ std::shared_ptr<Problem> Problem::read(std::istream& is) {
   assert(problem->getTileCount(Tile::Robot) == 1);
   assert(problem->getTileCount(Tile::ClosedLift) == 1);
   assert(problem->getTileCount(Tile::OpenLift) == 0);
-  assert(problem->getTileCount(Tile::Lambda) == problem->numInitialLambdas);
   assert(problem->getTileCount(Tile::Lambda) + problem->getTileCount(Tile::HigherOrderRock) == problem->numInitialLambdas);
 
   return problem;
