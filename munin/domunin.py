@@ -2,7 +2,8 @@
 
 import subprocess, time, os, sys
 
-PACKAGES = [ ['../bartwe/visualizer/', 'lifter', 'dasa', 'cd ../bartwe/visualizer; make'], ['../lightning/', 'lifter', 'lightning', 'cd ../lightning; ./install'], ['../kyren/', 'main', 'brute', 'cd ../kyren/; make'], ['../kyren_chunk/', 'main', 'chunk', 'cd ../kyren_chunk/; make'] ]
+PACKAGES = [ ['../bartwe/visualizer/', 'lifter', 'dasa', 'cd ../bartwe/visualizer; make'], ['../lightning/', 'lifter', 'lightning', 'cd ../lightning; ./install'], ['../kyren/', 'main', 'brute', 'cd ../kyren/; make'] ]
+# , ['../kyren_chunk/', 'main', 'chunk', 'cd ../kyren_chunk/; make'] ]
 MAPDIR = '../maps'
 
 def mapname(map):
