@@ -8,6 +8,9 @@ RandomDijkstraSolver::RandomDijkstraSolver(Best& best, int maxOpenSet, int sortN
   best(best), maxOpenSet(maxOpenSet), sortNumber(sortNumber), sortBuff(sortBuff) {}
 
 void RandomDijkstraSolver::run(Mine mine) {
+  visited.clear();
+  openSet.clear();
+
   for (auto command : AllRobotCommands) {
     Mine m(mine);
     if (performCommand(m, command))

@@ -22,6 +22,7 @@ Mine::Mine(std::shared_ptr<Problem> p) {
   totalMoves = 0;
   rockBeardPositions = problem->rockBeardPositions;
 
+  var.submergedSteps = 0;
   var.collectedLambdas = 0;
   var.curWaterLevel = problem->water.initWaterLevel;
   var.curRazors = problem->beard.initRazors;
@@ -52,7 +53,7 @@ Mine::Mine(std::shared_ptr<Problem> p) {
       set(x, y, problem->tiles.at(x, y));
 }
 
-Mine::Mine() { }
+Mine::Mine() {}
 
 std::shared_ptr<Problem> Mine::getProblem() const {
   return problem;
