@@ -69,7 +69,7 @@ std::shared_ptr<Problem> Problem::read(std::istream& is) {
         problem->robotY = i;
       } else if (c == Tile::ClosedLift) {
         problem->liftLoc.push_back({j, i});
-      } else if (c == Tile::Lambda) {
+      } else if (c == Tile::Lambda || c == Tile::HigherOrderRock) {
 	      problem->numInitialLambdas++;
       } else if (c >= Tile::TrampolineA && c <= Tile::TrampolineI) {
         int index = problem->indexOfTrampTarget(c);
@@ -87,7 +87,7 @@ std::shared_ptr<Problem> Problem::read(std::istream& is) {
 
       problem->tiles.at(j, i) = c;
 
-      if (c == Tile::Rock || c == Tile::Beard)
+      if (rockType(c) || c == Tile::Beard)
         problem->rockBeardPositions.insert({j, i});
 
       problem->initialTileHistogram[charFromTile(c)]++;
