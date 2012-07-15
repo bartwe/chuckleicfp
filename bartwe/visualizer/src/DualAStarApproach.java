@@ -64,13 +64,16 @@ public class DualAStarApproach {
         while (!pathfinder.run()) {
         }
         ArrayList<WorldState> path = pathfinder.getResult();
-        if (path != null && path.size()> 0 && path.get(path.size()-1).stepResult == StepResult.Ok) {
-            WorldState state = path.get(path.size()-1).copy();
-            state.copyFrom(path.get(path.size()-1));
-            state.parent = path.get(path.size()-1);
-            state.action = RobotAction.Abort;
-            state.stepResult = StepResult.Abort;
-            path.add(state);
+        if (path != null && path.size() > 0) {
+            WorldState tail = path.get(path.size() - 1);
+            if (tail.stepResult == StepResult.Ok) {
+                WorldState state = tail.copy();
+                state.copyFrom(tail);
+                state.parent = tail;
+                state.action = RobotAction.Abort;
+                state.stepResult = StepResult.Abort;
+                path.add(state);
+            }
         }
         return path;
     }
@@ -126,13 +129,6 @@ public class DualAStarApproach {
                 break;
             radius++;
         }
-        /*
-        Collections.sort(goals, new Comparator<LambdaGoal>() {
-            public int compare(LambdaGoal o1, LambdaGoal o2) {
-                return o1.radius - o2.radius;
-            }
-        });
-        */
     }
 
     private void findTransporters(WorldState state, ArrayList<Goal> goals) {
@@ -193,7 +189,6 @@ public class DualAStarApproach {
                     if (state.stepResult != StepResult.Ok)
                         return 0;
                     int count = 0;
-//                    count = addToBuffer(state, count, adjacentsBuffer, RobotAction.Abort);
                     count = addToBuffer(state, count, adjacentsBuffer, RobotAction.Left);
                     count = addToBuffer(state, count, adjacentsBuffer, RobotAction.Right);
                     count = addToBuffer(state, count, adjacentsBuffer, RobotAction.Up);
