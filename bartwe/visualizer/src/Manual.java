@@ -9,7 +9,7 @@ public class Manual implements KeyListener {
     final int[] raw;
 
     public static void main(String[] args) {
-        PathingGUI manual = new PathingGUI(WorldState.loadFromDisk(args[0]));
+        Manual manual = new Manual(WorldState.loadFromDisk(args[0]));
     }
 
     public Manual(WorldState state) {
@@ -60,8 +60,8 @@ public class Manual implements KeyListener {
             case KeyEvent.VK_SPACE:
                 action = RobotAction.Wait;
                 break;
-            case KeyEvent.VK_TAB:
-                action = RobotAction.Shave;
+            case KeyEvent.VK_G:
+                    action = RobotAction.Shave;
                 break;
             case KeyEvent.VK_ENTER:
                 action = RobotAction.Abort;

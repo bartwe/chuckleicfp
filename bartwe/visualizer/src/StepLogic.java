@@ -45,6 +45,7 @@ public class StepLogic {
                 }
             if (!beard)
                 return StepResult.MoveFail;
+            next.razors--;
             return StepResult.Ok;
         }
         byte target = current.get(current.robotX + action.dx, current.robotY + action.dy);
