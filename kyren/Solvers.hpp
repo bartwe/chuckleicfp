@@ -8,6 +8,8 @@
 #include "Mine.hpp"
 #include "Best.hpp"
 
+bool reachable(Mine const& mine, Position const& destination);
+
 class RandomDijkstraSolver {
 public:
   RandomDijkstraSolver(Best& best, int maxOpenSet, int sortNumber, int sortBuff);
@@ -61,7 +63,5 @@ private:
   int maxTotalBranches;
   Solutions currentSolutions;
 };
-
-bool reachable(Mine mine, Position destination);
 
 #endif

@@ -5,7 +5,8 @@ import subprocess, time, os
 MAIN = '../kyren/main'
 #MAIN = '../bartwe/visualizer/lifter'
 MAPDIR = '../maps'
-TIME = 20
+TIME = 90
+totalScore = 0
 
 def DoTest(exe, mapfn):
     #print 'Testing with map %s' % mapfn
@@ -32,6 +33,7 @@ def DoTest(exe, mapfn):
             solution += c
 
     print '%30s %6d %3d %d %r' % (os.path.basename(mapfn), score, int(e-s), p.returncode, solution)
+    totalScore += score;
 
     os.kill(killer.pid, 9)
 
@@ -40,7 +42,8 @@ def main():
     print 'MAPNAME SCORE RUNTIME EXITCODE SOLUTION'
     for map in sorted(maps):
         DoTest(MAIN, os.path.join(MAPDIR, map))
+    
+    print "Total: %s" % totalScore
 
 if __name__ == '__main__':
     main()
-

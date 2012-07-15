@@ -29,19 +29,16 @@ Mine::Mine(std::shared_ptr<Problem> p) {
   var.robotY = problem->robotY;
 
   chunks.reset(problem->tiles.width() / ChunkSize + 1, problem->tiles.height() / ChunkSize + 1, std::shared_ptr<Chunk>());
-  for (int y = 0; y < chunks.width(); ++y) {
+  for (int y = 0; y < chunks.height(); ++y) {
     for (int x = 0; x < chunks.width(); ++x) {
-      int xc = x / ChunkSize;
-      int yc = y / ChunkSize;
-
       int cwidth;
       int cheight;
-      if (xc == chunks.width() - 1)
+      if (x == chunks.width() - 1)
         cwidth = problem->tiles.width() - (chunks.width() - 1) * ChunkSize;
       else
         cwidth = ChunkSize;
 
-      if (yc == chunks.height() - 1)
+      if (y == chunks.height() - 1)
         cheight = problem->tiles.height() - (chunks.height() - 1) * ChunkSize;
       else
         cheight = ChunkSize;
@@ -65,8 +62,8 @@ Tile Mine::get(int x, int y) const {
   int xc = x / ChunkSize;
   int yc = y / ChunkSize;
 
-  x -= xc;
-  y -= yc;
+  x -= xc * ChunkSize;
+  y -= yc * ChunkSize;
 
   auto const& chunk = chunks.at(xc, yc);
   return chunk->tiles.at(x, y);
@@ -76,8 +73,8 @@ void Mine::set(int x, int y, Tile c) {
   int xc = x / ChunkSize;
   int yc = y / ChunkSize;
 
-  x -= xc;
-  y -= yc;
+  x -= xc * ChunkSize;
+  y -= yc * ChunkSize;
 
   auto& chunk = chunks.at(xc, yc);
   if (!chunk.unique())
