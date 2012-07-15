@@ -1,8 +1,8 @@
 import java.util.Arrays;
 
 public class WorldStateHash {
-    private byte[] digest;
-    private int hash;
+    private final byte[] digest;
+    private final int hash;
 
     public WorldStateHash(byte[] digest) {
         this.digest = digest;
@@ -13,9 +13,7 @@ public class WorldStateHash {
     public boolean equals(Object o) {
         if (this == o) return true;
         WorldStateHash that = (WorldStateHash) o;
-        if (hash != that.hash)
-            return false;
-        return Arrays.equals(digest, that.digest);
+        return (hash == that.hash) && Arrays.equals(digest, that.digest);
     }
 
     @Override

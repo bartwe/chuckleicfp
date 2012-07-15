@@ -72,10 +72,10 @@ public class DualAStarApproach {
     }
 
     class LambdaGoal {
-        public WorldState state;
-        public int x;
-        public int y;
-        public int radius;
+        public final WorldState state;
+        public final int x;
+        public final int y;
+        public final int radius;
 
         public AStar pathfinder;
         public boolean done;

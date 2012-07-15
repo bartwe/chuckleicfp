@@ -1,7 +1,7 @@
 public class StepLogic {
     WorldState scratch;
 
-    public StepResult applyStep(WorldState current, WorldState next, RobotAction action) {
+    public void applyStep(WorldState current, WorldState next, RobotAction action) {
         if (current.stepResult != StepResult.Ok)
             throw new RuntimeException("Cannot move out of final step.");
         if (scratch == null)
@@ -21,7 +21,6 @@ public class StepLogic {
         if ((next.get(next.robotX, next.robotY + 1) == Cell.Rock) && (current.get(next.robotX, next.robotY + 1) != Cell.Rock))
            result = StepResult.Lose;
         next.stepResult = result;
-        return result;
     }
 
     private StepResult applyRobotAction(WorldState current, WorldState next, RobotAction action) {

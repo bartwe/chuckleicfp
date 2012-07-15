@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class PathingGUI implements KeyListener {
-    DisplayWindow window;
+    final DisplayWindow window;
     WorldState state;
-    int[] raw;
-    private ArrayList<WorldState> path = new ArrayList<WorldState>();
+    final int[] raw;
+    private final ArrayList<WorldState> path = new ArrayList<WorldState>();
 
     public static void main(String[] args) {
         PathingGUI manual = new PathingGUI(WorldState.loadFromDisk(args[0]));
