@@ -15,13 +15,15 @@ public class StepLogic {
         next.parent = current;
         next.action = action;
         next.trampolined = scratch.trampolined;
-        if (result != StepResult.Abort)
+        if (result != StepResult.Abort) {
             applyWorldStep(scratch, next);
-        if ((next.robotX == next.exitX) && (next.robotY == next.exitY))
-            result = StepResult.Win;
+            if ((next.robotX == next.exitX) && (next.robotY == next.exitY))
+                result = StepResult.Win;
+            else if ((next.get(next.robotX, next.robotY + 1) == Cell.Rock) && (current.get(next.robotX, next.robotY + 1) != Cell.Rock))
+                result = StepResult.Lose;
+        }
         else
-        if ((next.get(next.robotX, next.robotY + 1) == Cell.Rock) && (current.get(next.robotX, next.robotY + 1) != Cell.Rock))
-           result = StepResult.Lose;
+            next.stepResult = result;
         next.stepResult = result;
     }
 
@@ -37,8 +39,7 @@ public class StepLogic {
                 next.lambdaRemaining--;
             } else if (target == Cell.ClosedLambdaLift && next.lambdaRemaining != 0)
                 return StepResult.MoveFail;
-            else if (Cell.isTransporter(target))
-            {
+            else if (Cell.isTransporter(target)) {
                 byte sourceTransporter = target;
                 byte targetTransporter = current.map.getTargetTransporter(sourceTransporter);
                 next.set(current.robotX, current.robotY, Cell.Empty);
@@ -79,19 +80,19 @@ public class StepLogic {
     private void applyWorldStep(WorldState current, WorldState next) {
         int width = current.getN() + 2;
         int height = current.getM() + 2;
-        
+
         if (next.floodingFreq != 0 && (next.steps) % next.floodingFreq == 0) {
-          next.curWaterLevel++;
+            next.curWaterLevel++;
         }
 
         if (next.curWaterLevel > next.robotY) {
-          next.submergedSteps++;
+            next.submergedSteps++;
         } else {
-          next.submergedSteps = 0;
+            next.submergedSteps = 0;
         }
 
         if (next.submergedSteps > next.waterproof) {
-          next.stepResult = StepResult.Lose;
+            next.stepResult = StepResult.Lose;
         }
 
         for (int y = 0; y < height; ++y) {

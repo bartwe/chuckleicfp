@@ -58,31 +58,35 @@ public class PathingGUI implements KeyListener {
                 DualAStarApproach dasa = new DualAStarApproach();
                 ArrayList<WorldState> highLevelPath = dasa.findPath(state);
                 System.err.println("Path found.");
-                System.err.println("Top layer size: "+highLevelPath.size());
+                System.err.println("Top layer size: " + highLevelPath.size());
                 if (highLevelPath.size() > 0) {
                     WorldState cursor = highLevelPath.get(highLevelPath.size() - 1);
-                    System.err.println("Final state score: "+cursor.score() +"  Reason:"+cursor.stepResult.toString()+" FinishOnAbort: "+(cursor.action == RobotAction.Abort));
+                    System.err.println("Final state score: " + cursor.score() + "  Reason:" + cursor.stepResult.toString() + " FinishOnAbort: " + (cursor.action == RobotAction.Abort));
 
                     while (cursor != null) {
                         path.add(cursor);
                         cursor = cursor.parent;
                     }
-                    System.err.println("Base path size: "+path.size());
+                    System.err.println("Base path size: " + path.size());
                     Collections.reverse(path);
+                    System.err.println("Path:");
+                    for (WorldState s : path) {
+                        if (s.action != null)
+                            System.err.print(s.action.letter);
+                    }
+                    System.err.println();
                     state = path.remove(0);
                 } else
                     Toolkit.getDefaultToolkit().beep();
                 break;
             case KeyEvent.VK_ENTER:
-                if (path.size() > 0)
-                {
+                if (path.size() > 0) {
                     state = path.remove(0);
                     if (path.size() == 0)
-                        System.err.println("Done. score: "+state.score() +"  Reason:"+state.stepResult.toString());
+                        System.err.println("Done. score: " + state.score() + "  Reason:" + state.stepResult.toString());
                     else
-                        System.err.println("Step. score: "+state.score() +"  Reason:"+state.stepResult.toString());
-                }
-                else
+                        System.err.println("Step. score: " + state.score() + "  Reason:" + state.stepResult.toString());
+                } else
                     Toolkit.getDefaultToolkit().beep();
                 break;
             default:

@@ -63,7 +63,16 @@ public class DualAStarApproach {
 
         while (!pathfinder.run()) {
         }
-        return pathfinder.getResult();
+        ArrayList<WorldState> path = pathfinder.getResult();
+        if (path != null && path.size()> 0 && path.get(path.size()-1).stepResult == StepResult.Ok) {
+            WorldState state = path.get(path.size()-1).copy();
+            state.copyFrom(path.get(path.size()-1));
+            state.parent = path.get(path.size()-1);
+            state.action = RobotAction.Abort;
+            state.stepResult = StepResult.Abort;
+            path.add(state);
+        }
+        return path;
     }
 
     public static void stop() {
@@ -184,7 +193,7 @@ public class DualAStarApproach {
                     if (state.stepResult != StepResult.Ok)
                         return 0;
                     int count = 0;
-                    count = addToBuffer(state, count, adjacentsBuffer, RobotAction.Abort);
+//                    count = addToBuffer(state, count, adjacentsBuffer, RobotAction.Abort);
                     count = addToBuffer(state, count, adjacentsBuffer, RobotAction.Left);
                     count = addToBuffer(state, count, adjacentsBuffer, RobotAction.Right);
                     count = addToBuffer(state, count, adjacentsBuffer, RobotAction.Up);
