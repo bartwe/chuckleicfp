@@ -116,12 +116,9 @@ public class SolidWorldState extends WorldState {
             }
         }
         md.reset();
-        ByteBuffer bb = ByteBuffer.allocate(11 * 4);
-        bb.putInt(robotX);
-        bb.putInt(robotY);
+        ByteBuffer bb = ByteBuffer.allocate(2 * 4);
         bb.putInt(curWaterLevel);
         bb.putInt(submergedSteps);
-        bb.putInt(waterproof);
         bb.flip();
         md.update(bb);
         for (byte[] row : data)

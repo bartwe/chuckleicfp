@@ -47,7 +47,7 @@ public class PathingGUI implements KeyListener {
                 Thread stopper = new Thread(new Runnable() {
                     public void run() {
                         try {
-                            Thread.sleep(20000);
+                            Thread.sleep(200000);
                         } catch (InterruptedException e1) {
                         }
                         DualAStarApproach.stop = true;
@@ -83,9 +83,10 @@ public class PathingGUI implements KeyListener {
                 if (path.size() > 0) {
                     state = path.remove(0);
                     if (path.size() == 0)
-                        System.err.println("Done. score: " + state.score() + "  Reason:" + state.stepResult.toString());
+                        System.err.print("Done.");
                     else
-                        System.err.println("Step. score: " + state.score() + "  Reason:" + state.stepResult.toString());
+                        System.err.print("Step.");
+                    System.err.println("step: "+state.steps+" score: " + state.score() + "  Reason:" + state.stepResult.toString() + " waterLevel: " + state.curWaterLevel + " submergedSteps:" + state.submergedSteps);
                 } else
                     Toolkit.getDefaultToolkit().beep();
                 break;

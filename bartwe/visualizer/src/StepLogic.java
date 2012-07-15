@@ -16,7 +16,7 @@ public class StepLogic {
         next.action = action;
         next.trampolined = scratch.trampolined;
         if (result != StepResult.Abort) {
-            applyWorldStep(scratch, next);
+            result = applyWorldStep(result, scratch, next);
             if ((next.robotX == next.exitX) && (next.robotY == next.exitY))
                 result = StepResult.Win;
             else if ((next.get(next.robotX, next.robotY + 1) == Cell.Rock) && (current.get(next.robotX, next.robotY + 1) != Cell.Rock))
@@ -76,22 +76,22 @@ public class StepLogic {
         }
     }
 
-    private void applyWorldStep(WorldState current, WorldState next) {
+    private StepResult applyWorldStep(StepResult result, WorldState current, WorldState next) {
         int width = current.getN() + 2;
         int height = current.getM() + 2;
 
-        if (next.floodingFreq != 0 && (next.steps) % next.floodingFreq == 0) {
-            next.curWaterLevel++;
-        }
-
-        if (next.curWaterLevel > next.robotY) {
+        if (next.curWaterLevel >= next.robotY) {
             next.submergedSteps++;
         } else {
             next.submergedSteps = 0;
         }
 
+        if (next.floodingFreq != 0 && (next.steps) % next.floodingFreq == 0) {
+            next.curWaterLevel++;
+        }
+
         if (next.submergedSteps > next.waterproof) {
-            next.stepResult = StepResult.Lose;
+            result = StepResult.Lose;
         }
 
         for (int y = 0; y < height; ++y) {
@@ -111,5 +111,6 @@ public class StepLogic {
                 }
             }
         }
+        return result;
     }
 }
