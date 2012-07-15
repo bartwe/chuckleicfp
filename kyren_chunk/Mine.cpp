@@ -304,6 +304,10 @@ int Mine::waterLevel(int turn) const {
   }
 }
 
+Grid<Tile, Problem::PosIdx>* Mine::getContent() {
+  return &content;
+}
+
 int Mine::moveCount() const {
   return totalMoves;
 }

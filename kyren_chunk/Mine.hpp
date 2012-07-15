@@ -40,9 +40,6 @@ public:
 
   RobotCommands const& commands() const;
   int moveCount() const;
-  int collectedLambdas() const;
-  int submergedSteps() const;
-  int currentWaterLevel() const;
 
   void print() const;
 
@@ -50,6 +47,8 @@ public:
   std::string hashcode() const;
 
   int waterLevel(int turn) const;
+
+  Grid<Tile, Problem::PosIdx>* getContent();
 
 private:
   static int const ChunkSize = 64;
