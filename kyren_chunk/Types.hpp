@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <cassert>
 #include <string>
+#include <vector>
 
 enum class Tile : uint8_t {
   Robot = 'R',
@@ -14,6 +15,7 @@ enum class Tile : uint8_t {
   Earth = '.',
   Beard = 'W',
   Razor = '!',
+  HigherOrderRock = '@',
   TrampolineA = 'A',
   TrampolineB = 'B',
   TrampolineC = 'C',
@@ -60,6 +62,10 @@ inline Tile tileFromChar(char c) {
 
 inline char charFromTile(Tile t) {
 	return (char)t;
+}
+
+inline bool rockType(Tile t) {
+  return t == Tile::Rock || t == Tile::HigherOrderRock;
 }
 
 inline std::string stateToString(State s) {

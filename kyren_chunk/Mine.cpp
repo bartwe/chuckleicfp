@@ -85,10 +85,10 @@ void Mine::set(int x, int y, Tile c) {
   if (tile != c)
     chunk->hashDirty = true;
 
-  if (tile == Tile::Rock || tile == Tile::Beard)
+  if (rockType(tile) || tile == Tile::Beard)
     rockBeardPositions.erase({x, y});
   tile = c;
-  if (tile == Tile::Rock || tile == Tile::Beard)
+  if (rockType(tile) || tile == Tile::Beard)
     rockBeardPositions.insert({x, y});
 }
 
@@ -180,8 +180,8 @@ bool Mine::doCommand(RobotCommand command) {
         c == Tile::Razor) {
       newRobotX = nx;
       newRobotY = ny;
-    } else if (c == Tile::Rock && dy == 0 && get(nx + dx, var.robotY) == Tile::Empty) {
-      updateQueue.push_back({nx+dx, var.robotY, Tile::Rock});
+    } else if (rockType(c) && dy == 0 && get(nx + dx, var.robotY) == Tile::Empty) {
+      updateQueue.push_back({nx+dx, var.robotY, c});
       newRobotX = nx;
     } else if (c >= Tile::TrampolineA && c <= Tile::TrampolineI) {
       Tile target = problem->getTargetForTramp(c);
@@ -238,19 +238,36 @@ bool Mine::doCommand(RobotCommand command) {
     int x = rockbeard.x;
     int y = rockbeard.y;
 
-    if (get(rockbeard) == Tile::Rock) {
+    if (rockType(get(rockbeard))) {
+      Tile thisRock = get(rockbeard);
       if (get(x, y - 1) == Tile::Empty) {
         updateQueue.push_back({x, y, Tile::Empty});
-        updateQueue.push_back({x, y - 1, Tile::Rock});
-      } else if (get(x, y - 1) == Tile::Rock && get(x + 1, y) == Tile::Empty && get(x + 1, y - 1) == Tile::Empty) {
+        if (thisRock == Tile::HigherOrderRock && get(x, y - 2) != Tile::Empty) {
+          updateQueue.push_back({x, y - 1, Tile::Lambda});
+        } else {
+          updateQueue.push_back({x, y - 1, thisRock});
+        }
+      } else if (rockType(get(x, y - 1)) && get(x + 1, y) == Tile::Empty && get(x + 1, y - 1) == Tile::Empty) {
         updateQueue.push_back({x, y, Tile::Empty});
-        updateQueue.push_back({x + 1, y - 1, Tile::Rock});
-      } else if (get(x, y - 1) == Tile::Rock && get(x - 1, y) == Tile::Empty && get(x - 1, y - 1) == Tile::Empty) {
+        if (thisRock == Tile::HigherOrderRock && get(x + 1, y - 2) != Tile::Empty) {
+          updateQueue.push_back({x + 1, y - 1, Tile::Lambda});
+        } else {
+          updateQueue.push_back({x + 1, y - 1, thisRock});
+        }
+      } else if (rockType(get(x, y - 1)) && get(x - 1, y) == Tile::Empty && get(x - 1, y - 1) == Tile::Empty) {
         updateQueue.push_back({x, y, Tile::Empty});
-        updateQueue.push_back({x - 1, y - 1, Tile::Rock});
+        if (thisRock == Tile::HigherOrderRock && get(x - 1, y - 2) != Tile::Empty) {
+          updateQueue.push_back({x - 1, y - 1, Tile::Lambda});
+        } else {
+          updateQueue.push_back({x - 1, y - 1, thisRock});
+        }
       } else if (get(x, y - 1) == Tile::Lambda && get(x + 1, y) == Tile::Empty && get(x + 1, y - 1) == Tile::Empty) {
         updateQueue.push_back({x, y, Tile::Empty});
-        updateQueue.push_back({x + 1, y - 1, Tile::Rock});
+        if (thisRock == Tile::HigherOrderRock && get(x + 1, y - 2) != Tile::Empty) {
+          updateQueue.push_back({x + 1, y - 1, Tile::Lambda});
+        } else {
+          updateQueue.push_back({x + 1, y - 1, thisRock});
+        }
       }
     } else {
       assert(get(rockbeard) == Tile::Beard);
@@ -284,7 +301,7 @@ bool Mine::doCommand(RobotCommand command) {
   }
 
   for (auto update : updateQueue) {
-    if (update.c == Tile::Rock && update.x == var.robotX && update.y == var.robotY + 1) {
+    if (rockType(update.c) && update.x == var.robotX && update.y == var.robotY + 1) {
       // Robot was hit on the head by rock
       state = State::Lose;
     }
