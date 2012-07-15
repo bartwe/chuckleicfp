@@ -2,19 +2,21 @@
 
 import subprocess, time, os, sys
 
-PACKAGES = [ ['../bartwe/visualizer/lifter', 'dasa', 'cd ../bartwe/visualizer; make'], ['../lightning/lifter', 'lightning', 'cd ../lightning; ./install'], ['../kyren/main', 'brute', 'cd ../kyren/; make'], ['../kyren_chunk/main', 'chunk', 'cd ../kyren_chunk/; make'] ]
+PACKAGES = [ ['../bartwe/visualizer/', 'lifter', 'dasa', 'cd ../bartwe/visualizer; make'], ['../lightning/', 'lifter', 'lightning', 'cd ../lightning; ./install'], ['../kyren/', 'main', 'brute', 'cd ../kyren/; make'], ['../kyren_chunk/', 'main', 'chunk', 'cd ../kyren_chunk/; make'] ]
 MAPDIR = '../maps'
 
 def mapname(map):
     return os.path.basename(map).replace('.map', '')
 
-def DoTest(exe, shortname, mapfn):
+def DoTest(cwdpath, exe, shortname, mapfn):
     #print 'Testing with map %s' % mapfn
     with open(mapfn, 'r') as fd:
         mapdata = fd.read()
     s = time.time()
-    p = subprocess.Popen((exe,), stdin=open(mapfn), stdout=subprocess.PIPE)
-    killer = subprocess.Popen("sleep 150; kill -INT %d" % p.pid, shell=True)
+    exepath = os.path.abspath(cwdpath+exe)
+    fullcwdpath = os.path.abspath(cwdpath)
+    p = subprocess.Popen((exepath,), cwd=fullcwdpath, stdin=open(mapfn), stdout=subprocess.PIPE)
+    killer = subprocess.Popen("sleep 10; kill -INT %d; sleep 10; kill -9 %d" % (p.pid, p.pid), shell=True)
     out = ""
     while True:
         r = p.stdout.read()
@@ -53,8 +55,8 @@ def main():
         print 'graph_vlabel score'
         print 'graph_category icfp'
     for main in PACKAGES:
-        if main[2]:
-            p = subprocess.Popen(main[2], shell=True, stdout=open('/dev/null', 'w'), stderr=subprocess.STDOUT)
+        if main[3]:
+            p = subprocess.Popen(main[3], shell=True, stdout=open('/dev/null', 'w'), stderr=subprocess.STDOUT)
             p.wait();
         sum = 0;
         first = True;
@@ -63,13 +65,13 @@ def main():
                 break
             first = False
             if config:
-                print '%s-%s.label %s %s' % (mapname(map), main[1], mapname(map), main[1])
+                print '%s-%s.label %s %s' % (mapname(map), main[2], mapname(map), main[2])
             else:
-                sum += DoTest(main[0], main[1], os.path.join(MAPDIR, map))
+                sum += DoTest(main[0], main[1], main[2], os.path.join(MAPDIR, map))
         if config:
-            print '%s.label %s' %(main[1], main[1])
+            print '%s.label %s' %(main[2], main[2])
         else:
-            print '%s.value %d' %(main[1], sum)
+            print '%s.value %d' %(main[2], sum)
 
 if __name__ == '__main__':
     main()
