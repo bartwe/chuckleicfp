@@ -20,10 +20,12 @@ class Pathfinder
 
   private:
 
-    struct scoreCard
+    struct similarState
     {
-      std::string moves;
-      int score;
+      int replaceLength;
+      std::string replaceCommand;
+      int addedCost;
+      std::vector< updStep > addedSteps;
     };
 
     struct searchState
@@ -31,6 +33,7 @@ class Pathfinder
       int id;
       std::vector< int > lambdas;
       std::vector< updStep > steps;
+      std::vector< similarState > similar;
       std::string commands;
       int moveCost, cost;
       int score;
@@ -44,11 +47,17 @@ class Pathfinder
     int contains(std::vector< searchState > list, searchState key);
     int getTarget(searchState ss, int id);
     void clearStoredNodes();
-    std::vector< updStep > stepUpdMap(searchState ss, updStep step);
+    std::vector< updStep > stepUpdMap(searchState ss);
     int pushOpen(searchState ss);
     Tiles getType(searchState ss, int id);
     bool vectorMatch(std::vector< int > v, std::vector< int > w);
     bool liftStatus(searchState ss);
+    bool isLegal(searchState ss, int cid);
+    std::vector< updStep > applyUpd(std::vector< updStep > steps, searchState ss, updStep step1);
+    std::vector< int > getSimilar(searchState ss, int index);
+    searchState processSimilar(searchState ss, int index);
+    std::vector< updStep > fixMismatch(searchState s, searchState o);
+    searchState stateFromSimilar(searchState ss, similarState sim);
 
     Mine mine;
     Point robot;
