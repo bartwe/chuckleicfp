@@ -115,13 +115,21 @@ class Projection(wx.Control):
                 wx.WXK_RIGHT: 'R',
                 }
 
+        BACKSPACE = '\x08'
+
         def do(c):
+            if c == BACKSPACE:
+                if not self.command:
+                    return # do nothing
+                self.command = self.command[:-1]
+            else:
+                self.command += c
+
             libicfp.DoMove(self.data, c)
-            self.command += c
 
         if kc in kc2cmd:
             do(kc2cmd[kc])
-        elif char.lower() in 'aw':
+        elif char.lower() in 'aws\x08':
             do(str(char.upper()))
         elif char.lower() == ' ':
             if self.fn is None:

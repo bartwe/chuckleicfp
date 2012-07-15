@@ -53,7 +53,14 @@ char* GetSafeZone(Mine* m)
 
 int DoMove(Mine* m, char move)
 {
-	m->pushMove(Mine::charToCommand(move));
+	if ( move == '\x08' ) // backspace
+	{
+		m->popMove();
+	}
+	else
+	{
+		m->pushMove(Mine::charToCommand(move));
+	}
 	//printf("Score: %d, state=%s\n", m->score(), Mine::stateToString(m->state).c_str());
 	return m->score();
 }
