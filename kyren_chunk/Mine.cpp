@@ -29,9 +29,26 @@ Mine::Mine(std::shared_ptr<Problem> p) {
   var.robotY = problem->robotY;
 
   chunks.reset(problem->tiles.width() / ChunkSize + 1, problem->tiles.height() / ChunkSize + 1, std::shared_ptr<Chunk>());
-  for (int y = 0; y < chunks.width(); ++y)
-    for (int x = 0; x < chunks.width(); ++x)
-      chunks.at(x, y) = std::make_shared<Chunk>();
+  for (int y = 0; y < chunks.width(); ++y) {
+    for (int x = 0; x < chunks.width(); ++x) {
+      int xc = x / ChunkSize;
+      int yc = y / ChunkSize;
+
+      int cwidth;
+      int cheight;
+      if (xc == chunks.width() - 1)
+        cwidth = problem->tiles.width() - (chunks.width() - 1) * ChunkSize;
+      else
+        cwidth = ChunkSize;
+
+      if (yc == chunks.height() - 1)
+        cheight = problem->tiles.height() - (chunks.height() - 1) * ChunkSize;
+      else
+        cheight = ChunkSize;
+
+      chunks.at(x, y) = std::make_shared<Chunk>(cwidth, cheight);
+    }
+  }
 
   for (int y = 0; y < problem->tiles.height(); ++y)
     for (int x = 0; x < problem->tiles.width(); ++x)
@@ -149,6 +166,7 @@ bool Mine::doCommand(RobotCommand command) {
 	  case RobotCommand::Right: dx=+1; break;
 	  case RobotCommand::Up:    dy=+1; break;
 	  case RobotCommand::Down:  dy=-1; break;
+    default: break;
   }
 
   if (dx != 0 || dy != 0) {
@@ -318,8 +336,8 @@ std::string Mine::hashcode() const {
   return totalHash;
 }
 
-Mine::Chunk::Chunk() {
-  tiles.reset(ChunkSize, ChunkSize, Tile::Wall);
+Mine::Chunk::Chunk(int width, int height) {
+  tiles.reset(width, height, Tile::Wall);
   hashDirty = true;
 }
 

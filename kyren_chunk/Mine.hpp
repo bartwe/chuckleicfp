@@ -54,7 +54,7 @@ public:
 private:
   static int const ChunkSize = 64;
   struct Chunk {
-    Chunk();
+    Chunk(int width, int height);
     void computeHash();
 
     Grid<Tile> tiles;
