@@ -206,7 +206,8 @@ bool reachable(Mine const& mine, Position const& destination) { //start is assum
           dest == Tile::Lambda || 
           dest == Tile::Earth ||
           dest == Tile::Razor ||
-          dest == Tile::OpenLift) {
+          dest == Tile::OpenLift ||
+          dest == Tile::Beard) {
         toVisit.push_back(i + consider);
       } else if (dest == Tile::Rock || dest == Tile::HigherOrderRock) {
         Position delta = {i.x, 0};
