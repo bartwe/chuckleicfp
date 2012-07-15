@@ -273,11 +273,16 @@ bool Mine::pushMove(RobotCommand command) {
   }
 
   if (command == RobotCommand::Slice) {
-    var.curRazors--;
-    for (auto i : BeardDirs) {
-      if (get(var.robotX + i.dx, var.robotY + i.dy) == Tile::Beard) {
-        updateQueue.push_back({var.robotX + i.dx, var.robotY + i.dy, Tile::Empty});
+    if (var.curRazors > 0) {
+      var.curRazors--;
+      for (auto i : BeardDirs) {
+        if (get(var.robotX + i.dx, var.robotY + i.dy) == Tile::Beard) {
+          updateQueue.push_back({var.robotX + i.dx, var.robotY + i.dy, Tile::Empty});
+        }
       }
+    } else {
+      checkConsistency();
+      return false;
     }
   }
 
