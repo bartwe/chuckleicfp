@@ -10,6 +10,7 @@
 Best g_best;
 Grid<Tile> g_grid;
 std::string g_bestCommands;
+Mine g_mine;
 
 extern "C" {
 
@@ -19,19 +20,19 @@ Mine* Init(const char* map)
 	if ( map )
 	{
 		std::ifstream is(map);
-		problem->read(is);
+		problem = problem->read(is);
 	}
 	else
 	{
-		problem->read(std::cin);
+		problem = problem->read(std::cin);
 	}
   
-  Mine* mine = new Mine(problem);
+  g_mine = Mine(problem);
 
-	return mine;
+	return &g_mine;
 }
 
-uint32_t* GetData(Mine* m, int* width, int* height)
+uint8_t* GetData(Mine* m, int* width, int* height)
 {
 	*width = m->getProblem()->width;
 	*height = m->getProblem()->height;
@@ -40,7 +41,7 @@ uint32_t* GetData(Mine* m, int* width, int* height)
     for (int x = 0; x < *width; ++x)
       g_grid.at(x, y) = m->get(x, y);
 
-	return (uint32_t*)g_grid.getGrid();
+	return (uint8_t*)g_grid.getGrid();
 }
 
 void GetInfo(Mine* m, char* str, int buflen, int* waterlevel)

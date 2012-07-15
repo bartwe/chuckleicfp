@@ -85,6 +85,10 @@ class Projection(wx.Control):
         libicfp.GetInfo(self.data, pointer(buf), 1024, pointer(waterlevel))
         waterlevel = waterlevel.value
         info = buf.value
+        
+        xx = c_int()
+        yy = c_int()
+        self.maze = libicfp.GetData(self.data, pointer(xx), pointer(yy))
 
         STATUSLINE = 30
         BMS = 10
