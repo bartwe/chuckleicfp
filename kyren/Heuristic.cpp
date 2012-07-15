@@ -12,14 +12,14 @@ int Heuristic::bestCase(Mine& mine)
 	// Assuming we can reach the exit, we still need one step for each lambda to
 	// collect
 	return mine.score()
-		+ (mine.getProblem().numInitialLambdas-mine.currentVariadicState().collectedLambdas)*24
-		+ mine.getProblem().numInitialLambdas * 50;
+		+ (mine.getProblem()->numInitialLambdas-mine.currentVariadicState().collectedLambdas)*24
+		+ mine.getProblem()->numInitialLambdas * 50;
 }
 
 Heuristic::Heuristic(Mine& mine)
 {
-	lambdas.reserve(mine.getProblem().numInitialLambdas);
-	for (int y=0;y<mine.getProblem().height;y++) for (int x=0;x<mine.getProblem().width;x++)
+	lambdas.reserve(mine.getProblem()->numInitialLambdas);
+	for (int y=0;y<mine.getProblem()->height;y++) for (int x=0;x<mine.getProblem()->width;x++)
 	{
 		if (mine.get(x, y) == MineContent::Lambda)
 		{
@@ -30,11 +30,11 @@ Heuristic::Heuristic(Mine& mine)
 
 void Heuristic::markSafeZone(Mine& mine, SafeZone& o_safezone)
 {
-	o_safezone.reset(mine.getProblem().width, mine.getProblem().height, 0);
+	o_safezone.reset(mine.getProblem()->width, mine.getProblem()->height, 0);
 
 	// note: we explore anything except the border, so that references are
 	// always okay
-	for (int y=1;y<mine.getProblem().height-1;y++) for (int x=1;x<mine.getProblem().width-1;x++) {
+	for (int y=1;y<mine.getProblem()->height-1;y++) for (int x=1;x<mine.getProblem()->width-1;x++) {
 		MineContent tile = mine.get(x, y);
 		if (tile == MineContent::Empty) {
 			o_safezone.at(x, y) = 1;
@@ -66,7 +66,7 @@ void Heuristic::findPathToNearestLambda(Mine& mine, SafeZone& safezone, RobotCom
 	Grid<pathinfo> shortest;
 	std::deque<Position> todo;
 
-	shortest.reset(mine.getProblem().width, mine.getProblem().height, {mine.getProblem().width*mine.getProblem().height, -1});
+	shortest.reset(mine.getProblem()->width, mine.getProblem()->height, {mine.getProblem()->width*mine.getProblem()->height, -1});
 
 	todo.push_back({mine.currentVariadicState().robotX, mine.currentVariadicState().robotY});
 	shortest.at(mine.currentVariadicState().robotX, mine.currentVariadicState().robotY) = {0, -1};

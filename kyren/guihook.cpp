@@ -3,88 +3,60 @@
 #include "Mine.hpp"
 #include <iostream>
 #include <fstream>
-#include "Heuristic.hpp"
-#include "Heuristic.hpp"
+#include "Problem.hpp"
 #include "Best.hpp"
 #include "Searcher.hpp"
 
 Best g_best;
+Grid<Tile> g_grid;
 
 extern "C" {
 
 Mine* Init(const char* map)
 {
-	Mine* res = new Mine;
+	auto problem = std::make_shared<Problem>();
 	if ( map )
 	{
 		std::ifstream is(map);
-		res->read(is);
+		problem->read(is);
 	}
 	else
 	{
-		res->read(std::cin);
+		problem->read(std::cin);
 	}
+  
+  Mine* mine = new Mine(problem);
 
-	return res;
+	return mine;
 }
 
-char* GetData(Mine* m, int* width, int* height)
+uint32_t* GetData(Mine* m, int* width, int* height)
 {
-	*width = m->getProblem().width;
-	*height = m->getProblem().height;
-	Tile* grid = m->getGrid();
-	return (char*)grid;
+	*width = m->getProblem()->width;
+	*height = m->getProblem()->height;
+  g_grid.reset(*width, *height, Tile::Wall);
+  for (int y = 0; y < *height; ++y)
+    for (int x = 0; x < *width; ++x)
+      g_grid.at(x, y) = m->get(x, y);
+
+	return (uint32_t*)g_grid.getGrid();
 }
 
 void GetInfo(Mine* m, char* str, int buflen, int* waterlevel)
 {
 	snprintf(str, buflen-1, "SCORE=%d (state=%s, move %d, L=%d/%d, submerged for %d)",
 			m->score(), stateToString(m->currentState()).c_str(),
-			m->moveCount(), m->collectedLambdas(), m->getProblem().numInitialLambdas,
-			m->submergedSteps());
+			m->moveCount(), m->currentVariadicState().collectedLambdas, m->getProblem()->numInitialLambdas,
+			m->currentVariadicState().submergedSteps);
 
-	*waterlevel = m->currentWaterLevel();
-}
-
-char* GetSafeZone(Mine* m)
-{
-	static SafeZone sz;
-	Heuristic::markSafeZone(*m, sz);
-	return sz.getGrid();
+	*waterlevel = m->currentVariadicState().curWaterLevel;
 }
 
 int DoMove(Mine* m, char move)
 {
-	if ( move == '\x08' ) // backspace
-	{
-		m->popMove();
-	}
-	else
-	{
-		m->pushMove(charToCommand(move));
-	}
+  m->doCommand(charToCommand(move));
 	//printf("Score: %d, state=%s\n", m->score(), stateToString(m->state).c_str());
 	return m->score();
-}
-
-static void* docalc(void* arg)
-{
-        Mine* mine = (Mine*)arg;
-
-        // Copied from main... todo: share code
-        Searcher searcher;
-        searcher.bruteForce(*mine, g_best, 24);
-
-        return 0;
-}
-
-void GoForIt(Mine* m)
-{
-	Mine* workingcopy = new Mine(*m);
-	pthread_t thread;
-	pthread_create(&thread, 0, docalc, workingcopy);
-
-        // we leak the thread, whatever
 }
 
 char* GetBest()

@@ -15,11 +15,12 @@ int main(int argc, char** argv) {
 	// Now register
 	signal(SIGINT, sighandler);
 
-  Mine mine;
-  mine.read(std::cin);
+  auto problem = Problem::read(std::cin);
+
+  Mine mine(problem);
 
   Searcher searcher;
-  searcher.bruteForce(mine, m_best, 24);
+  searcher.bruteForce(m_best, mine, 24);
 
   sighandler(SIGINT);
 
