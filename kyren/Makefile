@@ -1,5 +1,5 @@
 CXX=g++
-CXXFLAGS=-std=c++0x -O3
+CXXFLAGS=-std=c++0x -O3 -DNDEBUG
 
 CPPFILES = $(wildcard *.cpp)
 OFILES = $(patsubst %.cpp,%.o,$(CPPFILES))
