@@ -27,6 +27,7 @@ class Projection(wx.Control):
         self.bmp[' '] =  wx.Bitmap(imgdir + '/empty.png')
         self.bmp['#'] =  wx.Bitmap(imgdir + '/wall.png')
         self.bmp['*'] =  wx.Bitmap(imgdir + '/rock.png')
+        self.bmp['@'] =  wx.Bitmap(imgdir + '/higherorderrock.png')
         self.bmp['R'] =  wx.Bitmap(imgdir + '/robot.png')
         self.bmp['L'] =  wx.Bitmap(imgdir + '/lift.png')
         self.bmp['.'] =  wx.Bitmap(imgdir + '/earth.png')
@@ -81,7 +82,7 @@ class Projection(wx.Control):
 
         buf = (c_char * 1024)()
         waterlevel = c_int()
-        libicfp.GetInfo(self.data, buf, 1024, waterlevel)
+        libicfp.GetInfo(self.data, pointer(buf), 1024, pointer(waterlevel))
         waterlevel = waterlevel.value
         info = buf.value
 
@@ -115,35 +116,15 @@ class Projection(wx.Control):
                 wx.WXK_RIGHT: 'R',
                 }
 
-        BACKSPACE = '\x08'
-
         def do(c):
-            if c == BACKSPACE:
-                if not self.command:
-                    return # do nothing
-                self.command = self.command[:-1]
-            else:
-                self.command += c
+            self.command += c
 
             libicfp.DoMove(self.data, c)
 
         if kc in kc2cmd:
             do(kc2cmd[kc])
-        elif char.lower() in 'aws\x08':
+        elif char.lower() in 'aws':
             do(str(char.upper()))
-        elif char.lower() == ' ':
-            if self.fn is None:
-                raise Exception("Filename required for this")
-            print 'go for it...'
-            libicfp.GoForIt(self.data)
-            print 'going for it...'
-            self.bestcommand = None
-            threading.Thread(target=self.checkForBest).start()
-        elif char.lower() == 's':
-            if self.safezone is None:
-                self.safezone = libicfp.GetSafeZone(self.data)
-            else:
-                self.safezone = None
         else:
             print 'Unknown key: %d (%r)' % (kc, char)
             e.Skip()

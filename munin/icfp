@@ -2,7 +2,7 @@
 
 case $1 in
    config)
-        cat /tmp/icfpmuninpconfig
+        cat /tmp/icfpmuninconfig
         exit 0;;
 esac
 
