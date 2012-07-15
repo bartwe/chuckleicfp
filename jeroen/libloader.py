@@ -12,7 +12,7 @@ def LoadLibrary():
     libicfp.Init.argtypes = (c_char_p,)
     libicfp.Init.restype = data_t
     libicfp.GetData.argtypes = data_t, POINTER(c_int), POINTER(c_int)
-    libicfp.GetData.restype = POINTER(c_ulong)
+    libicfp.GetData.restype = POINTER(c_char)
     libicfp.DoMove.argtypes = data_t, c_char
     libicfp.DoMove.restype = c_int
 

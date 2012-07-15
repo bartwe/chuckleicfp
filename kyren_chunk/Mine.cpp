@@ -55,6 +55,8 @@ Mine::Mine(std::shared_ptr<Problem> p) {
       set(x, y, problem->tiles.at(x, y));
 }
 
+Mine::Mine() { }
+
 std::shared_ptr<Problem> Mine::getProblem() const {
   return problem;
 }

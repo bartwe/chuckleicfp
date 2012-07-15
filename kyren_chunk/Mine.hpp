@@ -16,6 +16,7 @@ public:
   };
 
   Mine(std::shared_ptr<Problem> problem);
+  Mine();
 
   std::shared_ptr<Problem> getProblem() const;
 
