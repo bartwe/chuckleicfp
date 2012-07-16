@@ -4,14 +4,22 @@
 #include <csignal>
 #include <ctime>
 
+#include <sys/types.h>
+#include <signal.h>
+#include <unistd.h>
+
+
 Best m_best;
 std::shared_ptr<Problem> m_problem;
 
 static void sighandler(int signum) {
   auto solution = m_best.solution();
+#ifndef RELEASE
 	printf("# score: %d\n", solution.score);
+#endif
 	printf("%s\n", commandString(solution.commands).c_str());
-	abort();
+	fflush(stdout);
+	kill(getpid(), 9);
 }
 
 int main(int argc, char** argv) {
