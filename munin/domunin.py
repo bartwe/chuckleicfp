@@ -2,7 +2,9 @@
 
 import subprocess, time, os, sys
 
-PACKAGES = [ ['../bartwe/visualizer/', 'lifter', 'dasa', 'cd ../bartwe/visualizer; make'], ['../kyren/', 'main', 'kyren', 'cd ../kyren/; make'] ]
+PACKAGES = [
+        #['../bartwe/visualizer/', 'lifter', 'dasa', 'cd ../bartwe/visualizer; make'],
+        ['../kyren/', 'main', 'kyren', 'cd ../kyren/; make'] ]
 
 # ['../lightning/', 'lifter', 'lightning', 'cd ../lightning; ./install'], 
 # , ['../kyren_chunk/', 'main', 'chunk', 'cd ../kyren_chunk/; make'] ]
@@ -67,8 +69,9 @@ def main():
     else:
         for main in PACKAGES:
             if main[3]:
-                p = subprocess.Popen(main[3], shell=True, stdout=open('/dev/null', 'w'), stderr=subprocess.STDOUT)
+                p = subprocess.Popen(main[3], shell=True, stderr=subprocess.STDOUT)
                 p.wait();
+                assert p.returncode == 0
     first = True;
     sums = {}
     for map in sorted(maps):
