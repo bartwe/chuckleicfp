@@ -49,7 +49,9 @@ public:
   bool dead() const;
 
   RobotCommands const& commands() const;
+  int solutionScore() const;
   Solution solution() const;
+
 
   void print() const;
 

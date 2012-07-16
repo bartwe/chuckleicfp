@@ -126,7 +126,8 @@ void WeirdAStarSolver::run(Mine mine) {
     }
   }
 
-  while (!distanceSet.empty() || !scoreSet.empty() || !randomSet.empty()) {
+  // Ignore random set in this check!
+  while (!distanceSet.empty() || !scoreSet.empty()) {
     for (int i = 0; i < distanceRuns; ++i) {
       if (distanceSet.empty())
         break;
@@ -193,7 +194,7 @@ bool WeirdAStarSolver::performCommand(Mine& mine, RobotCommand command) {
   if (!mine.doCommand(command))
     return false;
 
-  int score = mine.score();
+  int score = mine.solutionScore();
   if (best.isImprovement(score))
     best.improveSolution(mine.solution());
 
