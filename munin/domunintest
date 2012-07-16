@@ -5,4 +5,4 @@ cd ~/git/chuckleicfp
 git pull
 cd munin
 ./domunin.py config
-./domunin.py test
+./domunin.py test map
