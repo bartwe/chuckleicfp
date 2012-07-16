@@ -25,10 +25,17 @@ for outfile in outfiles:
             alllabels.add(key)
             data[key] = score
 
+himaps = [k for k,v in map2data.items() if 'hiscore-hi' in v]
+
+def mksum(lab, maps):
+    return sum(int(map2data[m].get(lab, '0')) for m in maps)
+
 labs = sorted(alllabels)
 print ','.join(['map'] + labs)
 for k, v in sorted(map2data.items()):
     print ','.join([k] + [v.get(lab, '') for lab in labs])
+print ','.join(['SUM'] + [str(mksum(lab, map2data.keys())) for lab in labs])
+print ','.join(['SUM_hionly'] + [str(mksum(lab, himaps)) for lab in labs])
 
 
 
