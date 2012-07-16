@@ -19,6 +19,9 @@ RunInfo* g_info;
 
 static void sighandler(int signum) {
   auto solution = g_info->best.solution();
+#ifndef NDEBUG
+	printf("Score: %d\n", solution.score);
+#endif
 	printf("%s\n", commandString(solution.commands).c_str());
   exit(0);
 }
