@@ -13,6 +13,7 @@ public:
   void improveSolution(Solution solution);
 
   Solution solution() const;
+  int maxScore() const;
 
 private:
   std::shared_ptr<Solution> dabest;

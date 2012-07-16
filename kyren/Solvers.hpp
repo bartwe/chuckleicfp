@@ -24,6 +24,9 @@ private:
   };
   static void insertSorted(std::deque<State>& list, State const& state);
 
+  void reset(Mine mine);
+  void doLoopSet();
+
   // Returns true if should continue adding moves
   bool performCommand(Mine& mine, RobotCommand command);
   bool checkHashCode(std::string const& hash, int moves);
@@ -41,6 +44,8 @@ private:
   int randomRuns;
 
   int mixAmount;
+  int maxNumSinceScoreImprovement;
+  int ourMaxScore;
 
   std::unordered_map<std::string, int> visited;
   std::deque<State> distanceSet;
