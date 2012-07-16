@@ -57,7 +57,7 @@ public:
   int waterLevel(int turn) const;
 
 private:
-  static int const ChunkSize = 64;
+  static int const ChunkSize = 32;
   struct Chunk {
     Chunk(int width, int height);
     void computeHash();
