@@ -4,32 +4,54 @@ import java.util.HashMap;
 
 public class DualAStarApproach {
     public static boolean stop;
-/*
+    /*
 
-    A: number of nodes in the top layer that a node may branch out to
-    B: radius(manhattan) of spaces
+        A: number of nodes in the top layer that a node may branch out to
+        B: radius(manhattan) of spaces
 
-    At the top level, insert the start position as a node
-    Greedily pick A neighbour lambdas within radius B
-    Do multiple bottom layer A* search from the SP to the NP, limit them to C steps of depth and D steps of breadth, process the A* calculations interleaved to have an early out if say 1/3 of them have a solution
+        At the top level, insert the start position as a node
+        Greedily pick A neighbour lambdas within radius B
+        Do multiple bottom layer A* search from the SP to the NP, limit them to C steps of depth and D steps of breadth, process the A* calculations interleaved to have an early out if say 1/3 of them have a solution
 
 
-    The bottom layer a* search is a straigh pathfinding from SP to NP
-    It is limited in depth and breadth, it may be stopped if other searches find results earlier.
-    The open/closed set is keyed by a (sha1?) hash of the worldstates
+        The bottom layer a* search is a straigh pathfinding from SP to NP
+        It is limited in depth and breadth, it may be stopped if other searches find results earlier.
+        The open/closed set is keyed by a (sha1?) hash of the worldstates
 
-    The point of the open/closed keying is to detect multiple paths to a point, and pick the on with the least steps.
-*/
+        The point of the open/closed keying is to detect multiple paths to a point, and pick the on with the least steps.
+    */
+    static boolean tryHarder;
 
     ArrayList<WorldState> findPath(WorldState initialState) {
+        tryHarder = false;
         final int horizon = initialState.getM() * initialState.getN();
-        AStar pathfinder = new AStar(new AStar.Controller() {
+        final StepLogic logic = new StepLogic();
+
+        AStar pathfinderQuicky = new AStar(new AStar.Controller() {
             public int getAdjacent(WorldState state, WorldState[] adjacentsBuffer) {
                 if (stop)
                     return 0;
                 if (state.stepResult != StepResult.Ok)
                     return 0;
-                return findInnerPaths(state, adjacentsBuffer);
+                int count = findInnerPaths(state, adjacentsBuffer);
+                if ((count == 0) || tryHarder) {
+                    count = addToBuffer(state, count, adjacentsBuffer, RobotAction.Left);
+                    count = addToBuffer(state, count, adjacentsBuffer, RobotAction.Right);
+                    count = addToBuffer(state, count, adjacentsBuffer, RobotAction.Up);
+                    count = addToBuffer(state, count, adjacentsBuffer, RobotAction.Down);
+                    count = addToBuffer(state, count, adjacentsBuffer, RobotAction.Wait);
+                    count = addToBuffer(state, count, adjacentsBuffer, RobotAction.Shave);
+                }
+                return count;
+            }
+
+            int addToBuffer(WorldState state, int count, WorldState[] adjacentsBufffer, RobotAction action) {
+                WorldState next = state.copy();
+                logic.applyStep(state, next, action);
+                if (next.stepResult == StepResult.MoveFail)
+                    return count;
+                adjacentsBufffer[count] = next;
+                return count + 1;
             }
 
             public double goalHeuristic(WorldState state) {
@@ -62,21 +84,110 @@ public class DualAStarApproach {
             }
         }, initialState);
 
-        while (!pathfinder.run()) {
+        /*
+        AStar pathfinderProper = new AStar(new AStar.Controller() {
+            public int getAdjacent(WorldState state, WorldState[] adjacentsBuffer) {
+                if (stop)
+                    return 0;
+                if (state.stepResult != StepResult.Ok)
+                    return 0;
+                int count = 0;
+                count = addToBuffer(state, count, adjacentsBuffer, RobotAction.Left);
+                count = addToBuffer(state, count, adjacentsBuffer, RobotAction.Right);
+                count = addToBuffer(state, count, adjacentsBuffer, RobotAction.Up);
+                count = addToBuffer(state, count, adjacentsBuffer, RobotAction.Down);
+                count = addToBuffer(state, count, adjacentsBuffer, RobotAction.Wait);
+                count = addToBuffer(state, count, adjacentsBuffer, RobotAction.Shave);
+                return count;
+            }
+
+            int addToBuffer(WorldState state, int count, WorldState[] adjacentsBufffer, RobotAction action) {
+                WorldState next = state.copy();
+                logic.applyStep(state, next, action);
+                if (next.stepResult == StepResult.MoveFail)
+                    return count;
+                adjacentsBufffer[count] = next;
+                return count + 1;
+            }
+
+            public double goalHeuristic(WorldState state) {
+                return state.lambdaRemaining;
+            }
+
+            public double edgeCost(WorldState from, WorldState to) {
+                return 1;
+            }
+
+            public boolean isEndPoint(WorldState state) {
+                return (state.stepResult == StepResult.Win);
+            }
+
+            public AStar.AStarNode findBest(AStar.AStarNode best, boolean singleSolution, HashMap<WorldStateHash, AStar.AStarNode> nodes) {
+                double bestScore = best.state.score();
+                for (AStar.AStarNode node : nodes.values()) {
+                    double score = node.state.score();
+                    if ((score > bestScore) || ((score == bestScore) && (node.gScore < best.gScore))) {
+                        bestScore = score;
+                        best = node;
+                    }
+                }
+                return best;
+            }
+
+            public double horizon() {
+                return horizon;
+            }
+        }, initialState);
+        */
+
+        boolean active = true;
+        while (active) {
+            active = false;
+            if (!pathfinderQuicky.run())
+                active = true;
+//            if (!pathfinderProper.run())
+//                active = true;
         }
-        ArrayList<WorldState> path = pathfinder.getResult();
-        if (path != null && path.size() > 0) {
-            WorldState tail = path.get(path.size() - 1);
+        ArrayList<WorldState> pathQuick = pathfinderQuicky.getResult();
+        int quickScore = -1;
+        if (pathQuick != null && pathQuick.size() > 0) {
+            WorldState tail = pathQuick.get(pathQuick.size() - 1);
             if (tail.stepResult == StepResult.Ok) {
                 WorldState state = tail.copy();
                 state.copyFrom(tail);
                 state.parent = tail;
                 state.action = RobotAction.Abort;
                 state.stepResult = StepResult.Abort;
-                path.add(state);
+                pathQuick.add(state);
+                tail = state;
             }
+            quickScore = tail.score();
         }
-        return path;
+        /*
+        ArrayList<WorldState> pathProper = pathfinderProper.getResult();
+        int properScore = -1;
+        if (pathProper != null && pathProper.size() > 0) {
+            WorldState tail = pathProper.get(pathProper.size() - 1);
+            if (tail.stepResult == StepResult.Ok) {
+                WorldState state = tail.copy();
+                state.copyFrom(tail);
+                state.parent = tail;
+                state.action = RobotAction.Abort;
+                state.stepResult = StepResult.Abort;
+                pathProper.add(state);
+                tail = state;
+            }
+            properScore = tail.score();
+        }
+
+        System.err.println("Proper: " + properScore + " quick: " + quickScore);
+        if (properScore < quickScore)
+
+            return pathQuick;
+        return pathProper;
+        */
+
+        return pathQuick;
     }
 
     public static void stop() {
@@ -204,8 +315,7 @@ public class DualAStarApproach {
 
         if (initialState.lambdaRemaining > 0) {
             findLambdas(initialState, goals);
-        }
-        else
+        } else
             goals.add(new Goal(initialState, initialState.exitX, initialState.exitY, false));
 
         findTransporters(initialState, goals);
