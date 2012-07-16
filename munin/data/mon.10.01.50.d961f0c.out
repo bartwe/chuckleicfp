@@ -1,0 +1,35 @@
+rm -f *.o *.so main
+g++ -std=c++0x -O3   -c -o Best.o Best.cpp
+g++ -std=c++0x -O3   -c -o Grid.o Grid.cpp
+g++ -std=c++0x -O3   -c -o guihook.o guihook.cpp
+g++ -std=c++0x -O3   -c -o main.o main.cpp
+g++ -std=c++0x -O3   -c -o Mine.o Mine.cpp
+g++ -std=c++0x -O3   -c -o Problem.o Problem.cpp
+g++ -std=c++0x -O3   -c -o sha1.o sha1.cpp
+g++ -std=c++0x -O3   -c -o Solvers.o Solvers.cpp
+g++ -std=c++0x -O3 -static Best.o Grid.o guihook.o main.o Mine.o Problem.o sha1.o Solvers.o -o main
+g++ -DGUI -std=c++0x -O3 -fpic Best.cpp Grid.cpp guihook.cpp main.cpp Mine.cpp Problem.cpp sha1.cpp Solvers.cpp -shared -o libkyren.so
+beard0-kyren.value 138
+beard1-kyren.value 571
+beard2-kyren.value 2974
+beard3-kyren.value 950
+beard4-kyren.value 1895
+beard5-kyren.value 661
+contest1-kyren.value 212
+contest10-kyren.value 3572
+contest2-kyren.value 278
+contest3-kyren.value 273
+contest4-kyren.value 561
+contest5-kyren.value 812
+contest6-kyren.value 739
+contest7-kyren.value 867
+contest8-kyren.value 1251
+contest9-kyren.value 1958
+flood1-kyren.value 932
+flood2-kyren.value 187
+flood3-kyren.value 812
+flood4-kyren.value 975
+flood5-kyren.value 557
+horock1-kyren.value 747
+horock2-kyren.value 235
+horock3-kyren.value 1585
