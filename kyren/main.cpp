@@ -9,9 +9,8 @@ std::shared_ptr<Problem> m_problem;
 
 static void sighandler(int signum) {
   auto solution = m_best.solution();
-	printf("# score: %d\n", solution.score);
 	printf("%s\n", commandString(solution.commands).c_str());
-	abort();
+	exit(0);
 }
 
 int main(int argc, char** argv) {

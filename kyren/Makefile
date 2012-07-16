@@ -1,21 +1,18 @@
 CXX=g++
 #CXXFLAGS=-std=c++0x -g
-CXXFLAGS=-std=c++0x -O3
-#CXXFLAGS=-std=c++0x -O3 -DNDEBUG
+#CXXFLAGS=-std=c++0x -O3
+CXXFLAGS=-std=c++0x -O3 -DNDEBUG
 
 CPPFILES = $(wildcard *.cpp)
 OFILES = $(patsubst %.cpp,%.o,$(CPPFILES))
 HFILES = $(wildcard *.h) $(wildcard *.hpp)
 
-all: clean main libkyren.so
+all: clean lifter
 
-main: $(OFILES)
-	$(CXX) $(CXXFLAGS) -static $^ -o main
+lifter: $(OFILES)
+	$(CXX) $(CXXFLAGS) -static $^ -o lifter
 
 $(OFILES): $(HFILES)
 
-libkyren.so: $(HFILES) $(CPPFILES)
-	g++ -DGUI $(CXXFLAGS) -fpic $(CPPFILES) -shared -o $@
-
 clean:
-	rm -f *.o *.so main
+	rm -f *.o *.so lifter
