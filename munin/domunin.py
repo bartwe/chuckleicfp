@@ -36,11 +36,13 @@ def DoTest(cwdpath, exe, shortname, mapfn):
     if score < 0:
         score = -1
     solution =  ""
+    print >> sys.stderr, out
     for c in out:
         if c in "LRUDAW":
             solution += c
         
     print '%s-%s.value %d' % (mapname(mapfn), shortname, score)
+    
 
     os.kill(killer.pid, 9)
     if score < 0:
@@ -56,6 +58,8 @@ def main():
     maps = os.listdir(MAPDIR)
     config = 'config' in sys.argv
     test = 'test' in sys.argv
+    if 'map' in sys.argv:
+        maps = [ '../maps/trampoline2.map' ]
     if config:
         print 'graph_title Progress'
         print 'graph_vlabel score'
