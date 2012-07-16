@@ -6,4 +6,6 @@ Jeroen 'jvw' van Wolffelaar
 Michael 'OmnipotentEntity' Reilly
 Mike 'ArchVince' Precup
 
-
+Weirdo randomized A* search with several heuristics mixed at regular
+intervals, using fast-ish hashable / copy-on-write maps using 32x32
+map chunks.  Programming is hard.
