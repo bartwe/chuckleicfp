@@ -238,7 +238,7 @@ bool WeirdAStarSolver::checkHashCode(std::string const& hash, int moves) {
   // of moves.
   auto vi = visited.find(hash);
   if (vi != visited.end()) {
-    if (moves > vi->second)
+    if (moves >= vi->second)
       return false;
   }
   visited[hash] = moves;
