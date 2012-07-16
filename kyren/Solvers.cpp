@@ -109,9 +109,32 @@ WeirdAStarSolver::WeirdAStarSolver(Best& best) : best(best) {
   randomRuns = 500;
 
   mixAmount = 100;
+  maxNumSinceScoreImprovement = 500;
 }
 
 void WeirdAStarSolver::run(Mine mine) {
+  int numSinceScoreImprovement = 0;
+  int maxScore = 0;
+
+  while (true) {
+    if ((distanceSet.empty() && scoreSet.empty()) || numSinceScoreImprovement > maxNumSinceScoreImprovement) {
+      reset(mine);
+      maxScore = 0;
+    }
+
+    doLoopSet();
+
+    int newMax = ourMaxScore;
+    if (newMax > maxScore) {
+      maxScore = newMax;
+      numSinceScoreImprovement = 0;
+    } else {
+      ++numSinceScoreImprovement;
+    }
+  }
+}
+
+void WeirdAStarSolver::reset(Mine mine) {
   visited.clear();
   distanceSet.clear();
   scoreSet.clear();
@@ -126,68 +149,69 @@ void WeirdAStarSolver::run(Mine mine) {
     }
   }
 
-  // Ignore random set in this check!
-  while (!distanceSet.empty() || !scoreSet.empty()) {
-    for (int i = 0; i < distanceRuns; ++i) {
-      if (distanceSet.empty())
-        break;
+  ourMaxScore = 0;
+}
 
-      State topState = distanceSet[0];
-      distanceSet.pop_front();
+void WeirdAStarSolver::doLoopSet() {
+  for (int i = 0; i < distanceRuns; ++i) {
+    if (distanceSet.empty())
+      break;
 
-      for (auto command : AllRobotCommands) {
-        Mine m(topState.mine);
-        if (!performCommand(m, command))
-          continue;
+    State topState = distanceSet[0];
+    distanceSet.pop_front();
 
-        insertSorted(distanceSet, {m, distanceHeuristic(m)});
-      }
+    for (auto command : AllRobotCommands) {
+      Mine m(topState.mine);
+      if (!performCommand(m, command))
+        continue;
+
+      insertSorted(distanceSet, {m, distanceHeuristic(m)});
     }
-
-    for (int i = 0; i < scoreRuns; ++i) {
-      if (scoreSet.empty())
-        break;
-
-      State topState = scoreSet[0];
-      scoreSet.pop_front();
-
-      for (auto command : AllRobotCommands) {
-        Mine m(topState.mine);
-        if (!performCommand(m, command))
-          continue;
-
-        insertSorted(scoreSet, {m, scoreHeuristic(m)});
-      }
-    }
-
-    for (int i = 0; i < randomRuns; ++i) {
-      if (randomSet.empty())
-        break;
-
-      int j = rand() % randomSet.size();
-      Mine randomMine = randomSet[j];
-      randomSet.erase(randomSet.begin() + j);
-
-      for (auto command : AllRobotCommands) {
-        Mine m(randomMine);
-        if (!performCommand(m, command))
-          continue;
-
-        randomSet.push_back(m);
-      }
-    }
-
-    while (distanceSet.size() > maxDistanceSet)
-      distanceSet.pop_back();
-
-    while (scoreSet.size() > maxScoreSet)
-      scoreSet.pop_back();
-
-    while (randomSet.size() > maxRandomSet)
-      randomSet.pop_back();
-
-    mixSets();
   }
+
+  for (int i = 0; i < scoreRuns; ++i) {
+    if (scoreSet.empty())
+      break;
+
+    State topState = scoreSet[0];
+    scoreSet.pop_front();
+
+    for (auto command : AllRobotCommands) {
+      Mine m(topState.mine);
+      if (!performCommand(m, command))
+        continue;
+
+      insertSorted(scoreSet, {m, scoreHeuristic(m)});
+    }
+  }
+
+  for (int i = 0; i < randomRuns; ++i) {
+    if (randomSet.empty())
+      break;
+
+    int j = rand() % randomSet.size();
+    Mine randomMine = randomSet[j];
+    randomSet.erase(randomSet.begin() + j);
+
+    for (auto command : AllRobotCommands) {
+      Mine m(randomMine);
+      if (!performCommand(m, command))
+        continue;
+
+      randomSet.push_back(m);
+    }
+  }
+
+  while (distanceSet.size() > maxDistanceSet)
+    distanceSet.pop_back();
+
+  while (scoreSet.size() > maxScoreSet)
+    scoreSet.pop_back();
+
+  while (randomSet.size() > maxRandomSet)
+    randomSet.pop_back();
+
+  mixSets();
 }
 
 bool WeirdAStarSolver::performCommand(Mine& mine, RobotCommand command) {
@@ -197,6 +221,8 @@ bool WeirdAStarSolver::performCommand(Mine& mine, RobotCommand command) {
   int score = mine.solutionScore();
   if (best.isImprovement(score))
     best.improveSolution(mine.solution());
+
+  ourMaxScore = std::max(ourMaxScore, score);
 
   if (mine.dead())
     return false;

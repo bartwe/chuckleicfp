@@ -24,3 +24,7 @@ void Best::improveSolution(Solution solution) {
 Solution Best::solution() const {
   return *dabest;
 }
+
+int Best::maxScore() const {
+  return dabest->score;
+}
