@@ -7,7 +7,7 @@ CPPFILES = $(wildcard *.cpp)
 OFILES = $(patsubst %.cpp,%.o,$(CPPFILES))
 HFILES = $(wildcard *.h) $(wildcard *.hpp)
 
-all: main libkyren.so
+all: clean main libkyren.so
 
 main: $(OFILES)
 	$(CXX) $(CXXFLAGS) -static $^ -o main
