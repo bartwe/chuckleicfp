@@ -80,9 +80,7 @@ int distanceToNextInterestingThing(Mine const& mine) {
     auto pos = Position{rpos.x + x, rpos.y +y};
     if (pos.x >= 0 && pos.x < X && pos.y >= 0 && pos.y < Y) {
       auto t = mine.get(pos);
-      if (mine.remainingLambdas() != 0 && (trampolineType(t) || t == Tile::Lambda))
-        return std::abs(x) + std::abs(y);
-      else if (mine.remainingLambdas() == 0 && (t == Tile::OpenLift))
+      if (t == Tile::Razor || trampolineType(t) || t == Tile::Lambda || t == Tile::HigherOrderRock || t == Tile::OpenLift)
         return std::abs(x) + std::abs(y);
     }
 
@@ -109,7 +107,7 @@ WeirdAStarSolver::WeirdAStarSolver(Best& best) : best(best) {
   randomRuns = 500;
 
   mixAmount = 100;
-  maxNumStale = 500;
+  maxNumStale = 400;
 
   distMultiplier = 1.0f;
 }
