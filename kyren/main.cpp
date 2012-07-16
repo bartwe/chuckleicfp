@@ -23,7 +23,6 @@ int main(int argc, char** argv) {
   m_problem = Problem::read(std::cin);
   WeirdAStarSolver solver(m_best);
 
-  solver.run(Mine(m_problem));
-
-  sighandler(SIGINT);
+  while (true)
+    solver.run(Mine(m_problem));
 }

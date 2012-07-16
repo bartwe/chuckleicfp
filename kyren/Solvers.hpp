@@ -22,18 +22,30 @@ private:
     Mine mine;
     int heuristic;
   };
+  static void insertSorted(std::deque<State>& list, State const& state);
 
   // Returns true if should continue adding moves
   bool performCommand(Mine& mine, RobotCommand command);
   bool checkHashCode(std::string const& hash, int moves);
-  int calcHeuristic(Mine const& mine);
-  void insertIntoOpenSet(State const& state);
+  int distanceHeuristic(Mine const& mine);
+  int scoreHeuristic(Mine const& mine);
+  void mixSets();
 
   Best& best;
-  int maxOpenSet;
+  int maxDistanceSet;
+  int maxScoreSet;
+  int maxRandomSet;
+
+  int distanceRuns;
+  int scoreRuns;
+  int randomRuns;
+
+  int mixAmount;
 
   std::unordered_map<std::string, int> visited;
-  std::deque<State> openSet;
+  std::deque<State> distanceSet;
+  std::deque<State> scoreSet;
+  std::deque<Mine> randomSet;
 };
 
 #endif

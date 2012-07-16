@@ -351,8 +351,22 @@ RobotCommands const& Mine::commands() const {
   return commandHistory;
 }
 
+int Mine::solutionScore() const {
+  int s = var.collectedLambdas * 25 - totalMoves;
+
+  if (state == State::Aborted || state == State::InProgress)
+    s += var.collectedLambdas * 25;
+  else if (state == State::Win)
+    s += var.collectedLambdas * 50;
+
+  return s;
+}
+
 Solution Mine::solution() const {
-  return {commandHistory, score()};
+  Solution sol = {commandHistory, solutionScore()};
+  if (state == State::InProgress)
+    sol.commands.push_back(RobotCommand::Abort);
+  return sol;
 }
 
 void Mine::print() const {

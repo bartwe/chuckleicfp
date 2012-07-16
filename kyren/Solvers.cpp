@@ -100,31 +100,93 @@ int distanceToNextInterestingThing(Mine const& mine) {
 }
 
 WeirdAStarSolver::WeirdAStarSolver(Best& best) : best(best) {
-  maxOpenSet = 10000;
+  maxDistanceSet = 500;
+  maxScoreSet = 1000;
+  maxRandomSet = 1000;
+
+  distanceRuns = 500;
+  scoreRuns = 500;
+  randomRuns = 200;
+
+  mixAmount = 100;
 }
 
 void WeirdAStarSolver::run(Mine mine) {
   visited.clear();
-  openSet.clear();
+  distanceSet.clear();
+  scoreSet.clear();
+  randomSet.clear();
 
   for (auto command : AllRobotCommands) {
     Mine m(mine);
-    if (performCommand(m, command))
-      insertIntoOpenSet({m, calcHeuristic(m)});
+    if (performCommand(m, command)) {
+      insertSorted(distanceSet, {m, distanceHeuristic(m)});
+      insertSorted(scoreSet, {m, scoreHeuristic(m)});
+      randomSet.push_back(m);
+    }
   }
 
-  while (!openSet.empty()) {
-    State top = openSet[0];
-    openSet.pop_front();
-    for (auto command : AllRobotCommands) {
-      Mine m(top.mine);
-      if (!performCommand(m, command))
-        continue;
+  // Ignore random set in this check!
+  while (!distanceSet.empty() || !scoreSet.empty()) {
+    for (int i = 0; i < distanceRuns; ++i) {
+      if (distanceSet.empty())
+        break;
 
-      insertIntoOpenSet({m, calcHeuristic(m)});
-      if (openSet.size() > maxOpenSet)
-        openSet.pop_back();
+      State topState = distanceSet[0];
+      distanceSet.pop_front();
+
+      for (auto command : AllRobotCommands) {
+        Mine m(topState.mine);
+        if (!performCommand(m, command))
+          continue;
+
+        insertSorted(distanceSet, {m, distanceHeuristic(m)});
+      }
     }
+
+    for (int i = 0; i < scoreRuns; ++i) {
+      if (scoreSet.empty())
+        break;
+
+      State topState = scoreSet[0];
+      scoreSet.pop_front();
+
+      for (auto command : AllRobotCommands) {
+        Mine m(topState.mine);
+        if (!performCommand(m, command))
+          continue;
+
+        insertSorted(scoreSet, {m, scoreHeuristic(m)});
+      }
+    }
+
+    for (int i = 0; i < randomRuns; ++i) {
+      if (randomSet.empty())
+        break;
+
+      int j = rand() % randomSet.size();
+      Mine randomMine = randomSet[j];
+      randomSet.erase(randomSet.begin() + j);
+
+      for (auto command : AllRobotCommands) {
+        Mine m(randomMine);
+        if (!performCommand(m, command))
+          continue;
+
+        randomSet.push_back(m);
+      }
+    }
+
+    while (distanceSet.size() > maxDistanceSet)
+      distanceSet.pop_back();
+
+    while (scoreSet.size() > maxScoreSet)
+      scoreSet.pop_back();
+
+    while (randomSet.size() > maxRandomSet)
+      randomSet.pop_back();
+
+    mixSets();
   }
 }
 
@@ -132,7 +194,7 @@ bool WeirdAStarSolver::performCommand(Mine& mine, RobotCommand command) {
   if (!mine.doCommand(command))
     return false;
 
-  int score = mine.score();
+  int score = mine.solutionScore();
   if (best.isImprovement(score))
     best.improveSolution(mine.solution());
 
@@ -157,20 +219,52 @@ bool WeirdAStarSolver::checkHashCode(std::string const& hash, int moves) {
   return true;
 }
 
-int WeirdAStarSolver::calcHeuristic(Mine const& mine) {
+int WeirdAStarSolver::distanceHeuristic(Mine const& mine) {
+  return scoreHeuristic(mine) + distanceToNextInterestingThing(mine);
+}
+
+int WeirdAStarSolver::scoreHeuristic(Mine const& mine) {
   int h;
   if (mine.remainingLambdas() == 0)
     h = mine.moveCount();
   else
     h = mine.remainingLambdas() * 75 + mine.collectedLambdas() * 25 + mine.moveCount();
 
-  h += distanceToNextInterestingThing(mine);
   return h;
 }
 
-void WeirdAStarSolver::insertIntoOpenSet(State const& state) {
-  auto i = std::lower_bound(openSet.begin(), openSet.end(), state, [](State const& s1, State const& s2) {
+void WeirdAStarSolver::insertSorted(std::deque<State>& list, State const& state) {
+  auto i = std::lower_bound(list.begin(), list.end(), state, [](State const& s1, State const& s2) {
       return s1.heuristic < s2.heuristic;
     });
-  openSet.insert(i, state);
+  list.insert(i, state);
+}
+
+void WeirdAStarSolver::mixSets() {
+  if (!distanceSet.empty()) {
+    int num = std::min(mixAmount, (int)distanceSet.size());
+    for (int i = 0; i < num; ++i) {
+      int j = rand() % distanceSet.size();
+      insertSorted(scoreSet, {distanceSet[j].mine, scoreHeuristic(distanceSet[j].mine)});
+      randomSet.push_back(distanceSet[j].mine);
+    }
+  }
+
+  if (!scoreSet.empty()) {
+    int num = std::min(mixAmount, (int)scoreSet.size());
+    for (int i = 0; i < num; ++i) {
+      int j = rand() % scoreSet.size();
+      insertSorted(distanceSet, {scoreSet[j].mine, distanceHeuristic(scoreSet[j].mine)});
+      randomSet.push_back(scoreSet[j].mine);
+    }
+  }
+
+  if (!randomSet.empty()) {
+    int num = std::min(mixAmount, (int)randomSet.size());
+    for (int i = 0; i < num; ++i) {
+      int j = rand() % randomSet.size();
+      insertSorted(distanceSet, {randomSet[j], distanceHeuristic(randomSet[j])});
+      insertSorted(scoreSet, {randomSet[j], scoreHeuristic(randomSet[j])});
+    }
+  }
 }
