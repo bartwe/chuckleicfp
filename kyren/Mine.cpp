@@ -280,13 +280,13 @@ bool Mine::doCommand(RobotCommand command) {
     }
   }
 
+  if (var.curWaterLevel <= var.robotY)
+    var.submergedSteps = 0;
+
   var.curWaterLevel = waterLevel(totalMoves + 1);
 
-  if (var.curWaterLevel > var.robotY) {
+  if (var.curWaterLevel > var.robotY)
     var.submergedSteps += 1;
-  } else {
-    var.submergedSteps = 0;
-  }
 
   if (var.submergedSteps > problem->water.waterproof) {
     state = State::Lose;
