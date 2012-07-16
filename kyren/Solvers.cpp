@@ -105,19 +105,20 @@ WeirdAStarSolver::WeirdAStarSolver(Best& best) : best(best) {
   maxRandomSet = 1000;
 
   distanceRuns = 500;
-  scoreRuns = 500;
-  randomRuns = 500;
+  scoreRuns = 300;
+  randomRuns = 300;
 
-  mixAmount = 100;
-  maxNumSinceScoreImprovement = 500;
+  mixAmount = 200;
+  maxNumStale = 500;
 }
 
 void WeirdAStarSolver::run(Mine mine) {
-  int numSinceScoreImprovement = 0;
+  int numSinceStale = 0;
   int maxScore = 0;
 
   while (true) {
-    if ((distanceSet.empty() && scoreSet.empty()) || numSinceScoreImprovement > maxNumSinceScoreImprovement) {
+    if ((distanceSet.empty() && scoreSet.empty()) || numSinceStale > maxNumStale) {
+      std::cout << "re-initializing" << std::endl;
       reset(mine);
       maxScore = 0;
     }
@@ -127,9 +128,9 @@ void WeirdAStarSolver::run(Mine mine) {
     int newMax = ourMaxScore;
     if (newMax > maxScore) {
       maxScore = newMax;
-      numSinceScoreImprovement = 0;
+      numSinceStale = 0;
     } else {
-      ++numSinceScoreImprovement;
+      ++numSinceStale;
     }
   }
 }

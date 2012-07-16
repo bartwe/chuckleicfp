@@ -44,7 +44,7 @@ private:
   int randomRuns;
 
   int mixAmount;
-  int maxNumSinceScoreImprovement;
+  int maxNumStale;
   int ourMaxScore;
 
   std::unordered_map<std::string, int> visited;
