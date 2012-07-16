@@ -9,6 +9,7 @@ TIME = 90
 totalScore = 0
 
 def DoTest(exe, mapfn):
+    global totalScore
     #print 'Testing with map %s' % mapfn
     with open(mapfn, 'r') as fd:
         mapdata = fd.read()

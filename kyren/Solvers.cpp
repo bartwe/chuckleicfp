@@ -77,11 +77,13 @@ bool RandomDijkstraSolver::checkHashCode(std::string const& hash, int moves) {
 }
 
 int RandomDijkstraSolver::simpleScoreHeuristic(Mine const& mine) {
-  int distance = mine.remainingLambdas() * 75 + mine.collectedLambdas() * 25 + mine.moveCount();
+  return -mine.score();
+  /*
   if (mine.remainingLambdas() == 0)
-    distance -= mine.collectedLambdas() * 25;
-
-  return distance;
+    return mine.moveCount();
+  else
+    return mine.remainingLambdas() * 75 + mine.collectedLambdas() * 25 + mine.moveCount();
+  */
 }
 
 bool reachable(Mine const& mine, Position const& destination) { //start is assumed to be robot location
