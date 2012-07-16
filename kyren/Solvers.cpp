@@ -118,7 +118,6 @@ void WeirdAStarSolver::run(Mine mine) {
 
   while (true) {
     if ((distanceSet.empty() && scoreSet.empty()) || numSinceStale > maxNumStale) {
-      std::cout << "re-initializing" << std::endl;
       reset(mine);
       maxScore = 0;
     }
