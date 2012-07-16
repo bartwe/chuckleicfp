@@ -34,12 +34,15 @@ public class DasaConsole {
                 try {
                     while (true) {
                         long memInUse = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-                        if (memInUse > 600 * 1000 * 1000) {
-                            DualAStarApproach.stop();
+                        if (memInUse > 700 * 1000 * 1000) {
 
                             Runtime.getRuntime().gc();
                             Runtime.getRuntime().gc();
-                            return;
+                            memInUse = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+                            if (memInUse > 700 * 1000 * 1000) {
+                                DualAStarApproach.stop();
+                                return;
+                            }
                         }
                         Thread.sleep(100);
                     }
@@ -49,6 +52,18 @@ public class DasaConsole {
         });
         oomWatcher.setDaemon(true);
         oomWatcher.start();
+
+        Thread tryHarder = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    Thread.sleep(50000);
+                } catch (InterruptedException e1) {
+                }
+                DualAStarApproach.tryHarder = true;
+            }
+        });
+        tryHarder.setDaemon(true);
+        tryHarder.start();
 
         try {
             String file = null;
@@ -77,7 +92,7 @@ public class DasaConsole {
     static void printPath(ArrayList<WorldState> rawPath) {
         if (rawPath.size() > 0) {
             WorldState cursor = rawPath.get(rawPath.size() - 1);
-			System.out.println("# score: " + cursor.score());
+            System.out.println("# score: " + cursor.score());
             ArrayList<WorldState> path = new ArrayList<WorldState>();
             while (cursor != null) {
                 path.add(cursor);
