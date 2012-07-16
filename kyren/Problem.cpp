@@ -72,7 +72,7 @@ std::shared_ptr<Problem> Problem::read(std::istream& is) {
 	      problem->numInitialLambdas++;
       } else if (c == Tile::ClosedLift) {
         problem->liftLoc.push_back({j, i});
-      } else if (c == Tile::Lambda || c == Tile::HigherOrderRock) {
+      } else if (c == Tile::HigherOrderRock) {
 	      problem->numInitialLambdas++;
       } else if (c >= Tile::TrampolineA && c <= Tile::TrampolineI) {
         int index = problem->indexOfTrampTarget(c);
