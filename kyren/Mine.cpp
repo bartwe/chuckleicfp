@@ -322,6 +322,10 @@ int Mine::moveCount() const {
   return totalMoves;
 }
 
+int Mine::collectedLambdas() const {
+  return var.collectedLambdas;
+}
+
 int Mine::remainingLambdas() const {
   return problem->numInitialLambdas - var.collectedLambdas;
 }

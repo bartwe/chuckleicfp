@@ -21,6 +21,9 @@ struct Problem {
   int getTileCount(Tile c) const;
 
   int initialTileHistogram[128];
+  // Does *not* include higher order rocks yet!
+  std::vector<Position> lambdaLoc;
+
   std::vector<Position> liftLoc;
   std::vector<Position> trampLoc;
   std::vector<Position> targetLoc;

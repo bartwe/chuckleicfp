@@ -67,6 +67,8 @@ std::shared_ptr<Problem> Problem::read(std::istream& is) {
       if (c == Tile::Robot) {
         problem->robotX = j;
         problem->robotY = i;
+      } else if (c == Tile::Lambda) {
+        problem->lambdaLoc.push_back({j, i});
       } else if (c == Tile::ClosedLift) {
         problem->liftLoc.push_back({j, i});
       } else if (c == Tile::Lambda || c == Tile::HigherOrderRock) {
