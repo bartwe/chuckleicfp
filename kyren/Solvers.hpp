@@ -46,6 +46,7 @@ private:
   int mixAmount;
   int maxNumStale;
   int ourMaxScore;
+  float distMultiplier;
 
   std::unordered_map<std::string, int> visited;
   std::deque<State> distanceSet;

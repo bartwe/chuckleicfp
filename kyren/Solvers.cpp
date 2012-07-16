@@ -104,12 +104,14 @@ WeirdAStarSolver::WeirdAStarSolver(Best& best) : best(best) {
   maxScoreSet = 1000;
   maxRandomSet = 1000;
 
-  distanceRuns = 500;
-  scoreRuns = 300;
-  randomRuns = 300;
+  distanceRuns = 1000;
+  scoreRuns = 500;
+  randomRuns = 500;
 
-  mixAmount = 200;
+  mixAmount = 100;
   maxNumStale = 500;
+
+  distMultiplier = 1.0f;
 }
 
 void WeirdAStarSolver::run(Mine mine) {
@@ -247,7 +249,7 @@ bool WeirdAStarSolver::checkHashCode(std::string const& hash, int moves) {
 }
 
 int WeirdAStarSolver::distanceHeuristic(Mine const& mine) {
-  return scoreHeuristic(mine) + distanceToNextInterestingThing(mine);
+  return scoreHeuristic(mine) + distanceToNextInterestingThing(mine) * distMultiplier;
 }
 
 int WeirdAStarSolver::scoreHeuristic(Mine const& mine) {
