@@ -61,7 +61,7 @@ def main():
     config = 'config' in sys.argv
     test = 'test' in sys.argv
     if 'map' in sys.argv:
-        maps = [ '../maps/trampoline2.map' ]
+        maps = [ '../maps/horock3.map' ]
     if config:
         print 'graph_title Progress'
         print 'graph_vlabel score'
