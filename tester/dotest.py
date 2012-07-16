@@ -30,7 +30,7 @@ def DoTest(exe, mapfn):
             score = int(line.strip().split()[-1])
     solution =  ""
     for c in out:
-        if c in "LRUDAW":
+        if c in "LRUDAWS":
             solution += c
 
     print '%30s %6d %3d %d %r' % (os.path.basename(mapfn), score, int(e-s), p.returncode, solution)

@@ -66,10 +66,11 @@ bool RandomDijkstraSolver::performCommand(Mine& mine, RobotCommand command) {
 }
 
 bool RandomDijkstraSolver::checkHashCode(std::string const& hash, int moves) {
-  // Skip if we have visited this mine state before with a better score.
+  // Skip if we have visited this mine state before with a better or equal set
+  // of moves.
   auto vi = visited.find(hash);
   if (vi != visited.end()) {
-    if (moves < vi->second)
+    if (moves >= vi->second)
       return false;
   }
   visited[hash] = moves;
@@ -77,13 +78,10 @@ bool RandomDijkstraSolver::checkHashCode(std::string const& hash, int moves) {
 }
 
 int RandomDijkstraSolver::simpleScoreHeuristic(Mine const& mine) {
-  return -mine.score();
-  /*
   if (mine.remainingLambdas() == 0)
     return mine.moveCount();
   else
     return mine.remainingLambdas() * 75 + mine.collectedLambdas() * 25 + mine.moveCount();
-  */
 }
 
 bool reachable(Mine const& mine, Position const& destination) { //start is assumed to be robot location
