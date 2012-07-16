@@ -14,9 +14,6 @@ std::shared_ptr<Problem> m_problem;
 
 static void sighandler(int signum) {
   auto solution = m_best.solution();
-#ifdef DEBUG
-	printf("# score: %d\n", solution.score);
-#endif
 	printf("%s\n", commandString(solution.commands).c_str());
 	fflush(stdout);
 	kill(getpid(), 9);
