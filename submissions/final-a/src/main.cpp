@@ -8,26 +8,31 @@
 #include <signal.h>
 #include <unistd.h>
 
+// Holds global data for the signal handler, so the signal handler can exit(0)
+// without destructors being run.. kind of blech, but it's fine.
+struct RunInfo {
+  Best best;
+  std::shared_ptr<Problem> problem;
+};
 
-Best m_best;
-std::shared_ptr<Problem> m_problem;
+RunInfo* g_info;
 
 static void sighandler(int signum) {
-  auto solution = m_best.solution();
+  auto solution = g_info->best.solution();
+#ifndef NDEBUG
+	printf("Score: %d\n", solution.score);
+#endif
 	printf("%s\n", commandString(solution.commands).c_str());
-	fflush(stdout);
-	kill(getpid(), 9);
+  exit(0);
 }
 
 int main(int argc, char** argv) {
-	// Now register
+  g_info = new RunInfo;
 	signal(SIGINT, sighandler);
-
   srand(time(NULL));
 
-  m_problem = Problem::read(std::cin);
-  WeirdAStarSolver solver(m_best);
-
+  g_info->problem = Problem::read(std::cin);
+  WeirdAStarSolver solver(g_info->best);
   while (true)
-    solver.run(Mine(m_problem));
+    solver.run(Mine(g_info->problem));
 }
