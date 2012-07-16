@@ -104,11 +104,11 @@ WeirdAStarSolver::WeirdAStarSolver(Best& best) : best(best) {
   maxScoreSet = 1000;
   maxRandomSet = 1000;
 
-  distanceRuns = 300;
-  scoreRuns = 300;
-  randomRuns = 100;
+  distanceRuns = 500;
+  scoreRuns = 500;
+  randomRuns = 200;
 
-  mixAmount = 50;
+  mixAmount = 100;
 }
 
 void WeirdAStarSolver::run(Mine mine) {
