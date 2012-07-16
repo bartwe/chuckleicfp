@@ -100,13 +100,13 @@ int distanceToNextInterestingThing(Mine const& mine) {
 }
 
 WeirdAStarSolver::WeirdAStarSolver(Best& best) : best(best) {
-  maxDistanceSet = 500;
+  maxDistanceSet = 1000;
   maxScoreSet = 1000;
   maxRandomSet = 1000;
 
   distanceRuns = 500;
   scoreRuns = 500;
-  randomRuns = 200;
+  randomRuns = 500;
 
   mixAmount = 100;
 }
