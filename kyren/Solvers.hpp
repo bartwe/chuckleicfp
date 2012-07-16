@@ -9,10 +9,11 @@
 #include "Best.hpp"
 
 bool reachable(Mine const& mine, Position const& destination);
+int distanceToNextInterestingThing(Mine const& mine);
 
-class RandomDijkstraSolver {
+class WeirdAStarSolver {
 public:
-  RandomDijkstraSolver(Best& best, int maxOpenSet, int sortNumber, int sortBuff);
+  WeirdAStarSolver(Best& best, int maxOpenSet, int sortNumber, int sortBuff);
 
   void run(Mine mine);
 
@@ -20,7 +21,7 @@ private:
   // Returns true if should continue adding moves
   bool performCommand(Mine& mine, RobotCommand command);
   bool checkHashCode(std::string const& hash, int moves);
-  int simpleScoreHeuristic(Mine const& mine);
+  int calcHeuristic(Mine const& mine);
 
   Best& best;
   int maxOpenSet;

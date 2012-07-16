@@ -330,6 +330,10 @@ int Mine::remainingLambdas() const {
   return problem->numInitialLambdas - var.collectedLambdas;
 }
 
+Position Mine::robotPosition() const {
+  return {var.robotX, var.robotY};
+}
+
 bool Mine::dead() const {
   if (state != State::InProgress)
     return true;

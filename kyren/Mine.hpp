@@ -42,6 +42,7 @@ public:
   int moveCount() const;
   int collectedLambdas() const;
   int remainingLambdas() const;
+  Position robotPosition() const;
 
   // Are we in a non in progress state, *or* there no moves left that have any
   // positive effect?

@@ -87,6 +87,10 @@ inline bool rockType(Tile t) {
   return t == Tile::Rock || t == Tile::HigherOrderRock;
 }
 
+inline bool trampolineType(Tile t) {
+  return (char)t >= (char)Tile::TrampolineA && (char)t <= (char)Tile::TrampolineI;
+}
+
 inline std::string stateToString(State s) {
   switch (s) {
     case State::InProgress: return "InProgress";
