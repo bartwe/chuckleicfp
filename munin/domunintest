@@ -2,7 +2,6 @@ if ps -ef | grep -v grep | grep domunin.py ; then
         echo other domunin.py also running
 fi
 cd ~/git/chuckleicfp
-git pull
 cd munin
 ./domunin.py config
 ./domunin.py test map

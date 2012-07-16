@@ -56,7 +56,7 @@ def gitpull():
     p.wait();
     
 def main():
-#    gitpull();
+    gitpull();
     maps = os.listdir(MAPDIR)
     config = 'config' in sys.argv
     test = 'test' in sys.argv
@@ -69,7 +69,7 @@ def main():
     else:
         for main in PACKAGES:
             if main[3]:
-                p = subprocess.Popen(main[3], shell=True, stderr=subprocess.STDOUT)
+                p = subprocess.Popen(main[3], shell=True, stdout=open('/dev/null', 'w'), stderr=subprocess.STDOUT)
                 p.wait();
                 assert p.returncode == 0
     first = True;
