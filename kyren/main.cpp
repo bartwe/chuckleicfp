@@ -21,10 +21,9 @@ int main(int argc, char** argv) {
   srand(time(NULL));
 
   m_problem = Problem::read(std::cin);
-  WeirdAStarSolver solver(m_best, 500, 100, 50);
+  WeirdAStarSolver solver(m_best);
 
-  while (true)
-    solver.run(Mine(m_problem));
+  solver.run(Mine(m_problem));
 
-  return 0;
+  sighandler(SIGINT);
 }

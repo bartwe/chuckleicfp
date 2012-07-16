@@ -72,30 +72,36 @@ int distanceToNextInterestingThing(Mine const& mine) {
 
   int X = mine.getProblem()->width;
   int Y = mine.getProblem()->height;
-  int max = std::max(X, Y) * std::max(X, y);
+  int max = std::max(X, Y) * std::max(X, Y);
 
   auto rpos = mine.robotPosition();
 
   for (int i = 0; i < max; ++i) {
-    if (x == y || (x < 0 && x == -y) || (x > 0 && x == 1-y))
-      dx, dy = -dy, dx;
-
     auto pos = Position{rpos.x + x, rpos.y +y};
     if (pos.x >= 0 && pos.x < X && pos.y >= 0 && pos.y < Y) {
-      auto t = mine.get(rpos.x + x, rpos.y +y);
+      auto t = mine.get(pos);
       if (mine.remainingLambdas() != 0 && (trampolineType(t) || t == Tile::Lambda))
         return std::abs(x) + std::abs(y);
       else if (mine.remainingLambdas() == 0 && (t == Tile::OpenLift))
         return std::abs(x) + std::abs(y);
     }
 
+    if (x == y || (x < 0 && x == -y) || (x > 0 && x == 1-y)) {
+      int odx = dx;
+      dx = -dy;
+      dy = odx;
+    }
+
     x = x + dx;
     y = y + dy;
   }
+
+  return max;
 }
 
-WeirdAStarSolver::WeirdAStarSolver(Best& best, int maxOpenSet, int sortNumber, int sortBuff) :
-  best(best), maxOpenSet(maxOpenSet), sortNumber(sortNumber), sortBuff(sortBuff) {}
+WeirdAStarSolver::WeirdAStarSolver(Best& best) : best(best) {
+  maxOpenSet = 10000;
+}
 
 void WeirdAStarSolver::run(Mine mine) {
   visited.clear();
@@ -104,37 +110,21 @@ void WeirdAStarSolver::run(Mine mine) {
   for (auto command : AllRobotCommands) {
     Mine m(mine);
     if (performCommand(m, command))
-      openSet.push_back({m, calcHeuristic(m)});
+      insertIntoOpenSet({m, calcHeuristic(m)});
   }
 
-  int numSets = 0;
   while (!openSet.empty()) {
-    std::vector<State> newOpenSet;
-    for (auto const& s : openSet) {
-      for (auto command : AllRobotCommands) {
-        Mine m(s.mine);
-        if (!performCommand(m, command))
-          continue;
+    State top = openSet[0];
+    openSet.pop_front();
+    for (auto command : AllRobotCommands) {
+      Mine m(top.mine);
+      if (!performCommand(m, command))
+        continue;
 
-        State state = {m, calcHeuristic(m)};
-
-        if (newOpenSet.size() < maxOpenSet + sortBuff) {
-          newOpenSet.push_back(state);
-        } else {
-          newOpenSet[rand() % newOpenSet.size()] = state;
-        }
-        ++numSets;
-        if (numSets >= sortNumber && newOpenSet.size() > maxOpenSet) {
-          numSets = 0;
-          std::sort(newOpenSet.begin(), newOpenSet.end(), [](State const& s1, State const& s2) {
-              return s1.heuristic < s2.heuristic;
-            });
-          newOpenSet.erase(newOpenSet.begin() + maxOpenSet, newOpenSet.end());
-        }
-      }
+      insertIntoOpenSet({m, calcHeuristic(m)});
+      if (openSet.size() > maxOpenSet)
+        openSet.pop_back();
     }
-
-    openSet = newOpenSet;
   }
 }
 
@@ -176,4 +166,11 @@ int WeirdAStarSolver::calcHeuristic(Mine const& mine) {
 
   h += distanceToNextInterestingThing(mine);
   return h;
+}
+
+void WeirdAStarSolver::insertIntoOpenSet(State const& state) {
+  auto i = std::lower_bound(openSet.begin(), openSet.end(), state, [](State const& s1, State const& s2) {
+      return s1.heuristic < s2.heuristic;
+    });
+  openSet.insert(i, state);
 }
