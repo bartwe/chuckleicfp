@@ -10,24 +10,7 @@ g++ -std=c++0x -O3   -c -o Solvers.o Solvers.cpp
 g++ -std=c++0x -O3 -static Best.o Grid.o guihook.o main.o Mine.o Problem.o sha1.o Solvers.o -o main
 g++ -DGUI -std=c++0x -O3 -fpic Best.cpp Grid.cpp guihook.cpp main.cpp Mine.cpp Problem.cpp sha1.cpp Solvers.cpp -shared -o libkyren.so
 beard0-kyren.value 138
-beard1-kyren.value 840
-beard2-kyren.value 2973
-beard3-kyren.value 950
+beard1-kyren.value 834
+beard2-kyren.value 2968
+beard3-kyren.value 1010
 beard4-kyren.value 1895
-beard5-kyren.value 661
-contest1-kyren.value 212
-contest10-kyren.value 829
-contest2-kyren.value 278
-contest3-kyren.value 275
-contest4-kyren.value 561
-contest5-kyren.value 728
-contest6-kyren.value 739
-contest7-kyren.value 867
-contest8-kyren.value 1039
-contest9-kyren.value 1934
-flood1-kyren.value 381
-flood2-kyren.value 278
-flood3-kyren.value 728
-flood4-kyren.value 992
-flood5-kyren.value 557
-horock1-kyren.value 411
