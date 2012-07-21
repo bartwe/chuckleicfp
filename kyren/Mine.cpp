@@ -298,7 +298,7 @@ bool Mine::doCommand(RobotCommand command) {
   }
 
   for (auto update : updateQueue) {
-    if (rockType(update.c) && update.x == var.robotX && update.y == var.robotY + 1) {
+    if ((rockType(update.c) || update.c == Tile::Lambda) && update.x == var.robotX && update.y == var.robotY + 1) {
       // Robot was hit on the head by rock
       state = State::Lose;
     }
